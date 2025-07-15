@@ -35,6 +35,18 @@ export const ShopCategory = () => {
     굿즈: Gamepad2,
   };
 
+  // 카테고리 별 아이콘
+  const categoryColors = {
+    전체: 'stroke-[#FAB91D]',
+    향수: 'stroke-[#6E67DA]',
+    러닝: 'stroke-[#D2E308]',
+    홈카페: 'stroke-[#FAB91D]',
+    인테리어: 'stroke-[#6E67DA]',
+    인형: 'stroke-[#FE508B]',
+    패션: 'stroke-[#51AAED]',
+    굿즈: 'stroke-[#D2E308]',
+  };
+
   // 드래그 상태
   const dragRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -62,6 +74,13 @@ export const ShopCategory = () => {
     setIsDragging(false);
   };
 
+  // 클릭된 버튼 색상 바꾸기
+  const [color, setColor] = useState('전체');
+
+  const changeColor = (cat: string) => {
+    setColor(cat);
+  };
+
   return (
     <div
       ref={dragRef}
@@ -74,9 +93,15 @@ export const ShopCategory = () => {
       {categories.map(cat => {
         const Icon = categoryIcons[cat];
         return (
-          <button key={cat} className="flex w-fit flex-col items-center">
+          <button
+            key={cat}
+            className="flex w-fit flex-col items-center"
+            onClick={() => changeColor(cat)}
+          >
             <div className="scrollbar-hide mb-0.5 aspect-square w-[48px] rounded-3xl bg-[#EAEAEA] p-2.5">
-              <Icon className="h-full w-full" />
+              <Icon
+                className={`btn-icon h-full w-full ${color === cat ? categoryColors[cat] : 'stroke-[black]'}`}
+              />
             </div>
             <p className="text-[12px] select-none">{cat}</p>
           </button>
