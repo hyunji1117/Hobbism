@@ -7,15 +7,15 @@ import 'swiper/swiper-bundle.css';
 export const ShopBanner = () => {
   const bannerImgs = [
     {
-      src: 'public/images/ayoung/banner/banner01.webp',
+      src: '/images/ayoung/banner/banner01.webp',
       alt: '고즈넉한 오후를 책임지는홈카페의 시작은 호비즘에서',
     },
     {
-      src: 'public/images/ayoung/banner/banner02.webp',
+      src: '/images/ayoung/banner/banner02.webp',
       alt: '리즈리사 드레스를 50% 할인된 가격으로! 7월 16일 16시 오픈 예정',
     },
     {
-      src: 'public/images/ayoung/banner/banner03.webp',
+      src: '/images/ayoung/banner/banner03.webp',
       alt: '이번 방학에는 닌텐도 어때요? HOBBISM LIVE에서 파격 세일!',
     },
   ];

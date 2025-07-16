@@ -8,7 +8,7 @@ export const ShopProduct = () => {
         <Image
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
-          src="public/images/ayoung/products/dress/ankrouge-03-01.webp"
+          src="/images/ayoung/products/dress/ankrouge-03-01.webp"
           alt="ankrouge"
           className="rounded-xl"
         />
