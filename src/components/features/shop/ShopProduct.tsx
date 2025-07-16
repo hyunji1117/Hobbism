@@ -5,7 +5,10 @@ import Link from 'next/link';
 
 export const ShopProduct = ({ wid }: { wid: string }) => {
   return (
-    <Link href={'/'} className={`flex ${wid} mb-2 flex-col gap-1`}>
+    <Link
+      href={'/shop/productId'}
+      className={`flex ${wid} mb-2 flex-col gap-1`}
+    >
       <div className={`relative mb-1 aspect-square w-full`}>
         <Image
           fill
