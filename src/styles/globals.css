@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -114,7 +114,35 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  @media (min-width: 600px) {
+    .frame-guideline::before,
+    .frame-guideline::after {
+      content: '';
+      display: block;
+      position: fixed;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      background-color: #eaeaea;
+      z-index: 9999;
+    }
+    .frame-guideline::before {
+      left: 50%;
+      transform: translateX(-300px);
+    }
+
+    .frame-guideline::after {
+      right: 50%;
+      transform: translateX(300px);
+    }
   }
 }
