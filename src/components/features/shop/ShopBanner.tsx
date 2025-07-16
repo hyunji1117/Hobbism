@@ -1,3 +1,7 @@
+'use client';
+
+import React from 'react';
+
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
@@ -31,14 +35,10 @@ export const ShopBanner = () => {
       autoplay={{ delay: 2000, disableOnInteraction: false }}
       spaceBetween={50}
       slidesPerView={1}
-      onSlideChange={() => {
-        console.log('slide change');
-      }}
-      onSwiper={swiper => console.log(swiper)}
     >
-      {bannerImgs.map(ban => (
-        <Link href={ban.path} key={ban.path}>
-          <SwiperSlide className="w-full">
+      {bannerImgs.map((ban, idx) => (
+        <SwiperSlide className="w-full" key={`slide-${idx}`}>
+          <Link href={ban.path}>
             <div className="relative aspect-[2/1] w-full">
               <Image
                 fill
@@ -47,8 +47,8 @@ export const ShopBanner = () => {
                 style={{ objectFit: 'cover', objectPosition: 'center' }}
               />
             </div>
-          </SwiperSlide>
-        </Link>
+          </Link>
+        </SwiperSlide>
       ))}
     </Swiper>
   );

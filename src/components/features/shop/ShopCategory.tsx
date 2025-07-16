@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef, useState } from 'react';
 import {
   Flower2,
@@ -86,7 +88,7 @@ export const ShopCategory = () => {
     <>
       <div
         ref={dragRef}
-        className="flex gap-5 overflow-x-hidden"
+        className="flex gap-5 overflow-x-hidden py-10"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -111,8 +113,7 @@ export const ShopCategory = () => {
         })}
       </div>
 
-      {/* shop main page에 이렇게 연결 사용 */}
-      {/* <h2>{selectedBtn} 상품</h2> */}
+      <h2 className="pb-4 text-lg font-semibold">{selectedBtn}</h2>
     </>
   );
 };

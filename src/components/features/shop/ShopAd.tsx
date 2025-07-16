@@ -1,3 +1,7 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade } from 'swiper/modules';
@@ -40,70 +44,47 @@ export const ShopAd = () => {
     },
   ];
 
-  const getRandomAd = (images: imagesType[]): imagesType[] => {
-    const random = [...images].sort(() => 0.5 - Math.random());
-    const count = Math.floor(Math.random() * 2) + 2;
-    return random.slice(0, count);
-  };
+  const [ads, setAds] = useState<imagesType[]>([]);
+
+  useEffect(() => {
+    const getRandomAd = (images: imagesType[]): imagesType[] => {
+      const random = [...images].sort(() => 0.5 - Math.random());
+      const count = Math.floor(Math.random() * 2) + 2;
+      return random.slice(0, count);
+    };
+
+    setAds(getRandomAd(bannerImgs));
+  }, []);
+
+  if (ads.length === 0) return null;
 
   return (
     <>
-      <Swiper
-        loop={true}
-        modules={[Autoplay, EffectFade]}
-        autoplay={{ delay: 2000, disableOnInteraction: false }}
-        spaceBetween={50}
-        slidesPerView={1}
-        effect="fade"
-        onSlideChange={() => {
-          console.log('slide change');
-        }}
-        onSwiper={swiper => console.log(swiper)}
-      >
-        {getRandomAd(bannerImgs).map(ban => (
-          <Link href={ban.path} key={ban.path}>
-            <SwiperSlide className="w-full">
-              <div className="relative aspect-[4/1] w-full">
-                <Image
-                  fill
-                  src={ban.src}
-                  alt={ban.alt}
-                  style={{ objectFit: 'cover', objectPosition: 'center' }}
-                />
-              </div>
+      <div className="col-span-2">
+        <Swiper
+          rewind={true}
+          modules={[Autoplay, EffectFade]}
+          autoplay={{ delay: 2000, disableOnInteraction: false }}
+          spaceBetween={50}
+          slidesPerView={1}
+          effect="fade"
+        >
+          {ads.map((ban, idx) => (
+            <SwiperSlide className="w-full" key={`slide-${idx}`}>
+              <Link href={ban.path}>
+                <div className="relative aspect-[4/1] w-full">
+                  <Image
+                    fill
+                    src={ban.src}
+                    alt={ban.alt}
+                    style={{ objectFit: 'cover', objectPosition: 'center' }}
+                  />
+                </div>
+              </Link>
             </SwiperSlide>
-          </Link>
-        ))}
-      </Swiper>
-
-      {/* 랜덤 확인용 swiper */}
-      <Swiper
-        loop={true}
-        modules={[Autoplay, EffectFade]}
-        autoplay={{ delay: 2000, disableOnInteraction: false }}
-        spaceBetween={50}
-        slidesPerView={1}
-        effect="fade"
-        onSlideChange={() => {
-          console.log('slide change');
-        }}
-        onSwiper={swiper => console.log(swiper)}
-      >
-        {getRandomAd(bannerImgs).map(ban => (
-          <Link href={ban.path} key={ban.path}>
-            <SwiperSlide className="w-full">
-              <div className="relative aspect-[4/1] w-full">
-                <Image
-                  fill
-                  src={ban.src}
-                  alt={ban.alt}
-                  style={{ objectFit: 'cover', objectPosition: 'center' }}
-                />
-              </div>
-            </SwiperSlide>
-          </Link>
-        ))}
-      </Swiper>
+          ))}
+        </Swiper>
+      </div>
     </>
   );
 };
