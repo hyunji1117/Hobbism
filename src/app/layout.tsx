@@ -1,3 +1,4 @@
+import { MobileFrame } from '@/components/layout/moblie-frame/MobileFrame';
 import '@/styles/globals.css';
 
 export default function RootLayout({
@@ -7,7 +8,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <MobileFrame>{children}</MobileFrame>
+      </body>
     </html>
   );
 }

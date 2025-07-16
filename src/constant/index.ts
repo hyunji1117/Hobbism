@@ -1,2 +1,2 @@
 // export constant data
-export {};
+export * from './tabBarItems';
