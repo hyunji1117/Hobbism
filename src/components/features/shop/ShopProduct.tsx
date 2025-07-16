@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const ShopProduct = () => {
   return (
-    <Link href={'/'} className="flex w-1/2 flex-col gap-1">
+    <Link href={'/'} className="flex w-full flex-col gap-1">
       <div className="relative aspect-square w-full">
         <Image
           fill
