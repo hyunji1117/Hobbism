@@ -3,7 +3,7 @@ import { Minus, Plus } from 'lucide-react';
 // 상품 상세 정보 컴포넌트
 export const ProductDetailInfo = () => {
   return (
-    <section className="h-[160px] items-center justify-center bg-blue-500 p-5">
+    <section className="h-[160px] items-center justify-center p-5">
       <h1 className="text-[24px] font-semibold text-black">
         아디다스 언더아머 2.0 윈터브레이크
       </h1>
@@ -66,13 +66,13 @@ export const ProductActionButtons = () => {
     <section className="flex h-[54px] gap-3">
       <button
         type="button"
-        className="w-[134px] rounded-[8px] bg-[#EAEAEA] text-[16px]"
+        className="w-[40%] rounded-[8px] bg-[#EAEAEA] text-[16px]"
       >
         장바구니 담기
       </button>
       <button
         type="button"
-        className="w-[205px] rounded-[8px] bg-[#FE508B] text-[18px] font-semibold text-white"
+        className="w-[60%] rounded-[8px] bg-[#FE508B] text-[18px] font-semibold text-white"
       >
         구매하기
       </button>
