@@ -17,28 +17,28 @@ export const ShopLiveProducts = () => {
       onSwiper={swiper => console.log(swiper)}
     >
       <SwiperSlide className="w-full">
-        <ShopProduct wid="w-full" />
+        <ShopProduct />
       </SwiperSlide>
       <SwiperSlide className="w-full">
-        <ShopProduct wid="w-full" />
+        <ShopProduct />
       </SwiperSlide>
       <SwiperSlide className="w-full">
-        <ShopProduct wid="w-full" />
+        <ShopProduct />
       </SwiperSlide>
       <SwiperSlide className="w-full">
-        <ShopProduct wid="w-full" />
+        <ShopProduct />
       </SwiperSlide>
       <SwiperSlide className="w-full">
-        <ShopProduct wid="w-full" />
+        <ShopProduct />
       </SwiperSlide>
       <SwiperSlide className="w-full">
-        <ShopProduct wid="w-full" />
+        <ShopProduct />
       </SwiperSlide>
       <SwiperSlide className="w-full">
-        <ShopProduct wid="w-full" />
+        <ShopProduct />
       </SwiperSlide>
       <SwiperSlide className="w-full">
-        <ShopProduct wid="w-full" />
+        <ShopProduct />
       </SwiperSlide>
     </Swiper>
   );
