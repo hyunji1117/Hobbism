@@ -52,16 +52,13 @@ const handler = NextAuth({
             body: JSON.stringify(token),
           });
 
-          if (signupRes.ok) {
-            const userData = await signupRes.json();
-            console.log('user data:', userData);
-            token.accessToken = userData.token.accessToken;
-            token.refreshToken = userData.token.refreshToken;
-          }
-
-          // 로그인 시도
-          else if (signupRes.status === 409) {
-            console.log('이미 가입된 사용자 - 로그인을 시도해주세요.');
+          // 회원가입 성공 시 자동 로그인
+          if (signupRes.ok || signupRes.status === 409) {
+            if (signupRes.ok) {
+              console.log('회원가입 완료 - 자동 로그인 시도');
+            } else {
+              console.log('이미 가입한 사용자 - 로그인 시도');
+            }
 
             let loginUrl = '';
             let loginData = {};
@@ -89,12 +86,23 @@ const handler = NextAuth({
             if (loginRes.ok) {
               console.log('로그인에 성공했습니다.');
               const userData = await loginRes.json();
-              console.log('사용자 데이터: ', userData);
+              console.log('로그인 응답 데이터:', userData);
 
-              token.accessToken = userData.item.token.accessToken;
-              token.refreshToken = userData.item.token.refreshToken;
-            } else console.log('로그인 실패 :', loginRes.status);
-          } else console.log('회원가입 실패:', signupRes.status);
+              if (userData.token) {
+                token.accessToken = userData.token.accessToken;
+                token.refreshToken = userData.token.refreshToken;
+              } else if (userData.item && userData.item.token) {
+                token.accessToken = userData.item.token.accessToken;
+                token.refreshToken = userData.item.token.refreshToken;
+              } else {
+                console.log('토큰을 찾을 수 없습니다');
+              }
+            } else {
+              console.log('로그인 실패 :', loginRes.status);
+            }
+          } else {
+            console.log('회원가입 실패:', signupRes.status);
+          }
 
           console.log('최종 토큰 :::::', token);
         } catch (error) {
