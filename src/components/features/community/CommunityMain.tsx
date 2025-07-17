@@ -16,7 +16,7 @@ export default function CommunityMain({
 }: CommunityMainProps) {
   return (
     <div>
-      {/* 상단 - 프로필, 닉네임, 시간 */}
+      {/* 상단 프로필 영역 (60px) */}
       <div>
         <div>
           {/* 프로필 이미지 */}
@@ -32,7 +32,7 @@ export default function CommunityMain({
 
       {/* 중간 - 피드 이미지 */}
       <div>
-        <Image src={image} alt="피드 이미지" width={innerWidth} height={390} />
+        <Image src={image} alt="피드 이미지" width={390} height={390} />
       </div>
 
       {/* 하단 - 게시글, 상세보기 버튼 */}
