@@ -1,4 +1,4 @@
-import FeedSubmitButton from './FeedSubmitButton';
+import FeedSubmitButton from '../community-create/FeedSubmitButton';
 
 export default function CommentOptionsModal() {
   return (
