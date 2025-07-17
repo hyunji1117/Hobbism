@@ -23,6 +23,8 @@ export const OptionSelector = () => {
         type="button"
         className="flex w-full cursor-pointer items-center justify-between bg-transparent p-2"
         onClick={toggleDropdown}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
       >
         <h2
           className={`text-[16px] ${
@@ -38,32 +40,44 @@ export const OptionSelector = () => {
         />
       </button>
       {isOpen && (
-        <div className="border-t border-[#EAEAEA]">
-          <div
+        <ul
+          className="border-t border-[#EAEAEA]"
+          role="listbox"
+          aria-label="옵션 선택"
+        >
+          <li
             className="cursor-pointer border-b border-[#EAEAEA] p-2 text-[#666]"
             onClick={() => handleOptionClick('S')}
+            role="option"
+            aria-selected={selectedOption === 'S'}
           >
             S
-          </div>
-          <div
+          </li>
+          <li
             className="cursor-pointer border-b border-[#EAEAEA] p-2 text-[#666]"
             onClick={() => handleOptionClick('M')}
+            role="option"
+            aria-selected={selectedOption === 'M'}
           >
             M
-          </div>
-          <div
+          </li>
+          <li
             className="cursor-pointer border-b border-[#EAEAEA] p-2 text-[#666]"
             onClick={() => handleOptionClick('L')}
+            role="option"
+            aria-selected={selectedOption === 'L'}
           >
             L
-          </div>
-          <div
+          </li>
+          <li
             className="cursor-pointer p-2 text-[#666]"
             onClick={() => handleOptionClick('XL')}
+            role="option"
+            aria-selected={selectedOption === 'XL'}
           >
             XL
-          </div>
-        </div>
+          </li>
+        </ul>
       )}
     </section>
   );
