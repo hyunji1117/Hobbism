@@ -8,8 +8,10 @@ interface CardItemCardProps {
   productImg: string;
   name: string;
   price: number;
+  isChecked?: boolean
   onQuantityChange?: (id: number, quantity: number) => void;
   onRemove?: (id: number) => void;
+  onCheck?: (id: number, checked: boolean) => void
 }
 
 export function CartItemCard({
@@ -17,15 +19,17 @@ export function CartItemCard({
   productImg,
   name,
   price,
+  isChecked = false,
   onQuantityChange,
   onRemove,
+  onCheck
 }: CardItemCardProps) {
-  const [isChecked, setIsChecked] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
-  const handleCheckIcon = () => {
-    setIsChecked(!isChecked);
-  };
+
+  const handleCheckedChange = () => {
+    onCheck?.(id, !isChecked);
+  }
 
   const handleUp = () => {
     if (quantity < 99) {
@@ -49,12 +53,12 @@ export function CartItemCard({
 
   return (
     <>
-      <div className="relative mx-auto h-[104px] w-[21.875rem]">
+      <div className="relative mx-auto h-[6.5rem] w-[21.875rem]">
         {/* 체크박스 */}
-        <div className="mt-1">
+        <div className="mt-1" onClick={handleCheckedChange}>
           <button
             className="cursor-pointer"
-            onClick={handleCheckIcon}
+            onClick={handleCheckedChange}
             aria-label={isChecked ? '상품 선택 해제' : '상품 선택'}
           >
             {isChecked ? (
@@ -112,7 +116,7 @@ export function CartItemCard({
           </button>
         </div>
       </div>
-      <hr className="mx-7" />
+      <hr className="mx-7 mb-7" />
     </>
   );
 }
