@@ -1,3 +1,6 @@
+'use client'
+
+import AuthContext from '@/context/AuthContext';
 import '@/styles/globals.css';
 import localFont from 'next/font/local';
 import { MobileFrame } from '@/components/layout/moblie-frame/MobileFrame';
