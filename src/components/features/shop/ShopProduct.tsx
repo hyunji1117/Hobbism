@@ -31,7 +31,7 @@ export const ShopProduct = ({
         <Image
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
-          src={`/${mainImageSrc}`}
+          src={`https://fesp-api.koyeb.app/market/${mainImageSrc}`}
           alt={`/${mainImageSrc}`}
           className="pointer-events-none rounded-xl"
         />
