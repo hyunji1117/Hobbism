@@ -9,11 +9,11 @@ export default function FeedSubmitButton({
 }: FeedSubmitButtonProps) {
   return (
     <button
-      className={
+      className={`h-14 w-[350px] rounded-lg text-xl font-bold ${
         variant === 'submitBtn'
-          ? 'bg-pink-500 text-white' // 작성완료 버튼 (등록페이지)
-          : 'bg-gray-300 text-gray-700' // 취소 버튼 (댓글취소모달)
-      }
+          ? 'bg-[#FE508B] text-white' // 핑크 배경, 흰색 텍스트
+          : 'bg-white text-black' // 흰색 배경, 검은색 텍스트
+      }`}
     >
       {text}
     </button>

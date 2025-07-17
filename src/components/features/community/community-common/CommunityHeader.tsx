@@ -9,17 +9,16 @@ interface CommunityHeaderProps {
 
 export default function CommunityHeader({ title }: CommunityHeaderProps) {
   return (
-    <div>
+    <div className="relative flex h-[38px] w-full items-center justify-center px-5">
       {/* 왼쪽 - 뒤로가기 아이콘 */}
-      <div>
-        <ChevronLeft />
+      <div className="absolute left-5">
+        <ChevronLeft size={24} />
       </div>
 
       {/* 가운데 - 타이틀 텍스트 */}
       <div>
-        <h1>{title}</h1>
+        <h1 className="text-xl font-bold text-black">{title}</h1>
       </div>
-
     </div>
   );
 }

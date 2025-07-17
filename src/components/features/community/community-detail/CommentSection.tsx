@@ -3,10 +3,10 @@ import CommentInput from './CommentInput';
 
 export default function CommentSection() {
   return (
-    <div>
-      {/* 댓글 부붙 타이틀 */}
-      <div>
-        <span>댓글</span>
+    <div className="w-full">
+      {/* 댓글 타이틀 */}
+      <div className="px-5 mt-2.5">
+        <span className="text-sm text-black font-bold">댓글</span>
       </div>
 
       {/* 댓글 목록 */}

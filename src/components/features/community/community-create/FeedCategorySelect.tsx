@@ -1,26 +1,31 @@
 export default function FeedCategorySelect() {
   // 7개 카테고리 목록
   const categories = [
-    '학수',
+    '항수',
     '리빙',
     '홈카페',
     '인테리어',
-    '인형', // 임시
-    '패션', // 임시
-    '굿즈', // 임시
+    '인형',
+    '패션',
+    '굿즈',
   ];
 
   return (
-    <div>
+    <div className="w-full pl-5">
       {/* 제목 텍스트 */}
-      <div>
-        <span>카테고리 설정</span>
+      <div className="mb-3">
+        <span className="text-sm font-bold text-black">카테고리 설정</span>
       </div>
 
-      {/* 카테고리들들 */}
-      <div>
+      {/* 카테고리 버튼들 */}
+      <div className="flex flex-wrap gap-2">
         {categories.map((category, index) => (
-          <button key={index}>{category}</button>
+          <button
+            key={index}
+            className="h-10 w-[82px] rounded-3xl bg-[#F3F4F6] text-sm text-[#4B5563]"
+          >
+            {category}
+          </button>
         ))}
       </div>
     </div>
