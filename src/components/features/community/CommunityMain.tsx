@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
 
 interface CommunityMainProps {
+  profileImage: string;
   userName: string;
   timeAgo: string;
   description: string;
@@ -13,6 +14,7 @@ export default function CommunityMain({
   timeAgo = '2시간 전',
   description = '드디어 완성된 결계 마왕의 졸개를 처리하느라 ...',
   image = '/images/inhwan/barrier.webp',
+  profileImage = '/images/inhwan/profile-default.png',
 }: CommunityMainProps) {
   return (
     <div>
@@ -20,7 +22,14 @@ export default function CommunityMain({
       <div>
         <div>
           {/* 프로필 이미지 */}
-          <div>프로필</div>
+          <div>
+            <Image
+              src={profileImage}
+              alt={`${userName} 프로필`}
+              width={32}
+              height={32}
+            />
+          </div>
 
           {/* 닉네임, 시간 */}
           <div>

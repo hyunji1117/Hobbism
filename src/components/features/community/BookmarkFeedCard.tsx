@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { MessageCircle, Share, Bookmark } from 'lucide-react';
 
 interface BookmarkFeedCardProps {
+  profileImage: string;
   userName: string;
   timeAgo: string;
   image: string;
@@ -13,6 +14,7 @@ export default function BookmarkFeedCard({
   timeAgo = '2시간 전',
   description = '드디어 완성된 결계 마왕의 졸개를 처리하느라 힘들었지만 만족스럽다능~',
   image = '/images/inhwan/barrier.webp',
+  profileImage = '/images/inhwan/profile-default.png',
 }: BookmarkFeedCardProps) {
   return (
     <div>
@@ -20,7 +22,14 @@ export default function BookmarkFeedCard({
       <div>
         <div>
           {/* 프로필 이미지 */}
-          <div>프로필</div>
+          <div>
+            <Image
+              src={profileImage}
+              alt={`${userName} 프로필`}
+              width={32}
+              height={32}
+            />
+          </div>
 
           {/* 닉네임, 시간 */}
           <div>
@@ -52,10 +61,10 @@ export default function BookmarkFeedCard({
       {/* 하단 - 텍스트 영역 (가변형이고 기본높이 48px) */}
       <div>
         <p>{description}</p>
-      </div>
 
-      {/* 하단 보더라인 */}
-      <div></div>
+        {/* 하단 보더라인 */}
+        <div></div>
+      </div>
     </div>
   );
 }
