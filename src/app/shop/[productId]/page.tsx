@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useSwipeable } from 'react-swipeable';
 import Image from 'next/image';
 import { ChevronLeft, ShoppingCart } from 'lucide-react';
@@ -23,17 +22,27 @@ export default function ProductPage() {
   const [isQuantitySelectorEnabled, setIsQuantitySelectorEnabled] =
     useState(false);
   const price = 158900;
-  const router = useRouter();
   const swipeHandlers = useSwipeable({
     onSwipedDown: () => setIsBottomSheetOpen(false),
     trackMouse: true,
   });
 
+  // 뒤로가기 버튼 핸들러
+  function handleGoBack(): void {
+    if (window.history.length > 2) {
+      // 사용자가 URL을 직접 입력하여 접속 경우, 뒤로가기 버튼을 클릭하면 검색 엔진이나 서비스 외부 페이지로 이동하는 문제 해결 가능
+      // browser history stack이 2 이하일 때 내부경로로 이동하도록 설정 (history 1개로 설정 시 브라우저 첫 페이지가 이전 기록이 되어 문제 해결이 어렵기 때문)
+      window.history.back();
+    } else {
+      window.location.href = '/';
+    }
+  }
+
   return (
     <>
       <HeaderNav>
         <HeaderNav.LeftContent>
-          <button onClick={() => router.back()}>
+          <button onClick={handleGoBack}>
             <ChevronLeft />
           </button>
         </HeaderNav.LeftContent>
