@@ -27,16 +27,35 @@ export const ProductDetailInfo = () => {
 };
 
 // 상품 수량 선택 컴포넌트
-export const ProductQuantitySelector = () => {
+export const ProductQuantitySelector = ({
+  selectedOption,
+  quantity,
+  onIncrease,
+  onDecrease,
+  price,
+}: {
+  selectedOption: string;
+  quantity: number;
+  onIncrease: () => void;
+  onDecrease: () => void;
+  price: number;
+}) => {
   return (
     <section className="h-[100px] w-full rounded-[8px] bg-[#EAEAEA] p-3">
       <h2 className="mb-4 text-[18px] font-semibold text-black">
-        리미티드 스페이스블랙 L
+        {/* 리미티드 스페이스블랙 L */}
+        {selectedOption || '옵션을 선택하세요'}
       </h2>
       <div id="counter" className="flex gap-4">
         <button
           type="button"
-          className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-white text-[18px] leading-none text-[#4B5563]"
+          className={`flex h-[28px] w-[28px] items-center justify-center rounded-full border ${
+            quantity === 1
+              ? 'border-[#C3C3C3] bg-[#C3C3C3]'
+              : 'border-[#C3C3C3] bg-white'
+          } text-[18px] leading-none text-[#4B5563]`}
+          onClick={onDecrease}
+          disabled={quantity === 1}
         >
           <Minus className="h-[20] w-[20]" />
         </button>
@@ -44,16 +63,18 @@ export const ProductQuantitySelector = () => {
           type="button"
           className="text-[18px] font-semibold text-[#4B5563]"
         >
-          0
+          {quantity}
         </button>
         <button
           type="button"
-          className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-white text-[18px] leading-none text-[#4B5563]"
+          className="flex h-[28px] w-[28px] items-center justify-center rounded-full border border-[#C3C3C3] bg-white text-[18px] leading-none text-[#4B5563]"
+          onClick={onIncrease}
         >
-          <Plus className="h-[20] w-[20]" />
+          <Plus className="h-[20] w-[20] border-[#C3C3C3]" />
         </button>
         <span className="ml-auto flex items-center justify-center text-[18px] font-semibold text-black">
-          158,900원
+          {/* 158,900원 */}
+          {(quantity * price).toLocaleString()}
         </span>
       </div>
     </section>
