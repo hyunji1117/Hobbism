@@ -13,12 +13,12 @@ export default function FeedImageUpload() {
       <div className="flex gap-3 overflow-x-auto">
         {/* 업로드 박스들 - 5개 한줄로 배치(나중에 slide 예정) */}
         {Array.from({ length: 5 }, (_, index) => (
-          <div
+          <button
             key={index}
             className="flex h-[100px] w-[100px] flex-shrink-0 items-center justify-center rounded-lg border border-dashed border-[#C3C3C3]"
           >
             <Plus size={24} className="text-[#C3C3C3]" />
-          </div>
+          </button>
         ))}
       </div>
     </div>
