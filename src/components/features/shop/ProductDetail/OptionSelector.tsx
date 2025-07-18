@@ -18,7 +18,7 @@ export const OptionSelector = () => {
   };
 
   return (
-    <section className="h-auto rounded-[8px] border border-[#EAEAEA]">
+    <section className="h-auto rounded-[8px] border border-[#EAEAEA] bg-white">
       <button
         type="button"
         className="flex w-full cursor-pointer items-center justify-between bg-transparent p-2"

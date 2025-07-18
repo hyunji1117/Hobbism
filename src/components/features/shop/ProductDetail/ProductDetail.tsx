@@ -29,7 +29,7 @@ export const ProductDetailInfo = () => {
 // 상품 수량 선택 컴포넌트
 export const ProductQuantitySelector = () => {
   return (
-    <section className="h-[100px] w-[350px] rounded-[8px] bg-[#EAEAEA] p-3">
+    <section className="h-[100px] w-full rounded-[8px] bg-[#EAEAEA] p-3">
       <h2 className="mb-4 text-[18px] font-semibold text-black">
         리미티드 스페이스블랙 L
       </h2>
@@ -61,18 +61,23 @@ export const ProductQuantitySelector = () => {
 };
 
 // 상품 액션 버튼 컴포넌트
-export const ProductActionButtons = () => {
+export const ProductActionButtons = ({
+  onCartClick,
+}: {
+  onCartClick: () => void;
+}) => {
   return (
     <section className="flex h-[54px] gap-3">
       <button
         type="button"
-        className="w-[40%] rounded-[8px] bg-[#EAEAEA] text-[16px]"
+        className="w-[40%] cursor-pointer rounded-[8px] bg-[#EAEAEA] text-[16px]"
+        onClick={onCartClick}
       >
         장바구니 담기
       </button>
       <button
         type="button"
-        className="w-[60%] rounded-[8px] bg-[#FE508B] text-[18px] font-semibold text-white"
+        className="w-[60%] cursor-pointer rounded-[8px] bg-[#FE508B] text-[18px] font-semibold text-white"
       >
         구매하기
       </button>
@@ -81,3 +86,23 @@ export const ProductActionButtons = () => {
 };
 
 // 옵션 선택 컴포넌트 클라이언트 사이드 관리로 별도 파일 생성 (OptionSelector.tsx)
+
+// 총 결제 금액 컴포넌트
+export const TotalPrice = ({
+  quantity,
+  price,
+}: {
+  quantity: number;
+  price: number;
+}) => {
+  const totalPrice = quantity * price;
+
+  return (
+    <section className="z-20 flex h-[54px] items-center justify-between border-t border-[#EAEAEA] bg-white px-4 pt-4">
+      <span className="text-[18px] font-semibold text-black">총 결제 금액</span>
+      <span className="text-[24px] font-semibold text-black">
+        {totalPrice.toLocaleString()}원
+      </span>
+    </section>
+  );
+};
