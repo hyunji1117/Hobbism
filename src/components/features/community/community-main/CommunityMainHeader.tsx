@@ -6,7 +6,7 @@ export default function CommunityMainHeader() {
     <div className="flex w-full items-center justify-between px-5">
       {/* 왼쪽 - 로고 */}
       <div>
-        <Image src="/inhwan/logo-H.svg" alt="로고" width={24} height={24} />
+        <Image src="/images/inhwan/logo-H.svg" alt="로고" width={24} height={24} />
       </div>
 
       {/* 가운데 - 커뮤니티 텍스트 */}
