@@ -3,7 +3,7 @@ import { Minus, Plus } from 'lucide-react';
 // 상품 상세 정보 컴포넌트
 export const ProductDetailInfo = () => {
   return (
-    <section className="h-[160px] items-center justify-center bg-blue-500 p-5">
+    <section className="h-[160px] items-center justify-center p-5">
       <h1 className="text-[24px] font-semibold text-black">
         아디다스 언더아머 2.0 윈터브레이크
       </h1>
@@ -27,16 +27,35 @@ export const ProductDetailInfo = () => {
 };
 
 // 상품 수량 선택 컴포넌트
-export const ProductQuantitySelector = () => {
+export const ProductQuantitySelector = ({
+  selectedOption,
+  quantity,
+  onIncrease,
+  onDecrease,
+  price,
+}: {
+  selectedOption: string;
+  quantity: number;
+  onIncrease: () => void;
+  onDecrease: () => void;
+  price: number;
+}) => {
   return (
-    <section className="h-[100px] w-[350px] rounded-[8px] bg-[#EAEAEA] p-3">
+    <section className="h-[100px] w-full rounded-[8px] bg-[#EAEAEA] p-3">
       <h2 className="mb-4 text-[18px] font-semibold text-black">
-        리미티드 스페이스블랙 L
+        {/* 리미티드 스페이스블랙 L */}
+        {selectedOption || '옵션을 선택하세요'}
       </h2>
       <div id="counter" className="flex gap-4">
         <button
           type="button"
-          className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-white text-[18px] leading-none text-[#4B5563]"
+          className={`flex h-[28px] w-[28px] items-center justify-center rounded-full border ${
+            quantity === 1
+              ? 'border-[#C3C3C3] bg-[#C3C3C3]'
+              : 'border-[#C3C3C3] bg-white'
+          } text-[18px] leading-none text-[#4B5563]`}
+          onClick={onDecrease}
+          disabled={quantity === 1}
         >
           <Minus className="h-[20] w-[20]" />
         </button>
@@ -44,16 +63,18 @@ export const ProductQuantitySelector = () => {
           type="button"
           className="text-[18px] font-semibold text-[#4B5563]"
         >
-          0
+          {quantity}
         </button>
         <button
           type="button"
-          className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-white text-[18px] leading-none text-[#4B5563]"
+          className="flex h-[28px] w-[28px] items-center justify-center rounded-full border border-[#C3C3C3] bg-white text-[18px] leading-none text-[#4B5563]"
+          onClick={onIncrease}
         >
-          <Plus className="h-[20] w-[20]" />
+          <Plus className="h-[20] w-[20] border-[#C3C3C3]" />
         </button>
         <span className="ml-auto flex items-center justify-center text-[18px] font-semibold text-black">
-          158,900원
+          {/* 158,900원 */}
+          {(quantity * price).toLocaleString()}
         </span>
       </div>
     </section>
@@ -61,18 +82,23 @@ export const ProductQuantitySelector = () => {
 };
 
 // 상품 액션 버튼 컴포넌트
-export const ProductActionButtons = () => {
+export const ProductActionButtons = ({
+  onCartClick,
+}: {
+  onCartClick: () => void;
+}) => {
   return (
     <section className="flex h-[54px] gap-3">
       <button
         type="button"
-        className="w-[134px] rounded-[8px] bg-[#EAEAEA] text-[16px]"
+        className="w-[40%] cursor-pointer rounded-[8px] bg-[#EAEAEA] text-[16px]"
+        onClick={onCartClick}
       >
         장바구니 담기
       </button>
       <button
         type="button"
-        className="w-[205px] rounded-[8px] bg-[#FE508B] text-[18px] font-semibold text-white"
+        className="w-[60%] cursor-pointer rounded-[8px] bg-[#FE508B] text-[18px] font-semibold text-white"
       >
         구매하기
       </button>
@@ -81,3 +107,23 @@ export const ProductActionButtons = () => {
 };
 
 // 옵션 선택 컴포넌트 클라이언트 사이드 관리로 별도 파일 생성 (OptionSelector.tsx)
+
+// 총 결제 금액 컴포넌트
+export const TotalPrice = ({
+  quantity,
+  price,
+}: {
+  quantity: number;
+  price: number;
+}) => {
+  const totalPrice = quantity * price;
+
+  return (
+    <section className="z-20 flex h-[54px] items-center justify-between border-t border-[#EAEAEA] bg-white px-4 pt-4">
+      <span className="text-[18px] font-semibold text-black">총 결제 금액</span>
+      <span className="text-[24px] font-semibold text-black">
+        {totalPrice.toLocaleString()}원
+      </span>
+    </section>
+  );
+};
