@@ -19,27 +19,27 @@ export const ShopAd = () => {
   const bannerImgs = [
     {
       src: '/images/ayoung/ad/ad01.webp',
-      alt: '조명 하나로 편안하게 주무세요. 무아스 충전식 LED 큐브 타이머 무드등',
+      alt: '인테리어 조명의 표준, LEXON MINA M',
       path: '/',
     },
     {
       src: '/images/ayoung/ad/ad02.webp',
-      alt: 'Live 예정, 올 여름부터 러닝 시장! 나이키 V5 RNR 러닝화와 함께 달려요',
+      alt: 'Live 예정, 올 여름부터 러닝 시작! 나이키 ZOOM FLY 6 러닝화와 함께 달려요',
       path: '/',
     },
     {
-      src: '/images/ayoung/banner/banner01.webp',
-      alt: 'Live 예정, 올 여름부터 러닝 시장! 나이키 V5 RNR 러닝화와 함께 달려요',
+      src: '/images/ayoung/ad/ad03.webp',
+      alt: '2022 커스텀돌 콘테스트 그랑프리 Yanfy의 수상작, 엘파라',
       path: '/',
     },
     {
-      src: '/images/ayoung/banner/banner02.webp',
-      alt: 'Live 예정, 올 여름부터 러닝 시장! 나이키 V5 RNR 러닝화와 함께 달려요',
+      src: '/images/ayoung/ad/ad04.webp',
+      alt: '모모스커피의 첫 번째 시그니처 블렌드 에스 쇼콜라',
       path: '/',
     },
     {
-      src: '/images/ayoung/banner/banner03.webp',
-      alt: 'Live 예정, 올 여름부터 러닝 시장! 나이키 V5 RNR 러닝화와 함께 달려요',
+      src: '/images/ayoung/ad/ad05.webp',
+      alt: '내 방의 작은 정원, 플랜테리어로 완성하는 나만의 힐링 스팟',
       path: '/',
     },
   ];
