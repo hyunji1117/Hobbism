@@ -13,16 +13,17 @@ import {
   ProductQuantitySelector,
   TotalPrice,
 } from '@/components/features/shop/ProductDetail/ProductDetail';
+
 import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
 
 export default function ProductPage() {
   const [selectedOption, setSelectedOption] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const price = 158900;
-
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [isQuantitySelectorEnabled, setIsQuantitySelectorEnabled] =
+    useState(false);
+  const price = 158900;
   const router = useRouter();
-
   const swipeHandlers = useSwipeable({
     onSwipedDown: () => setIsBottomSheetOpen(false),
     trackMouse: true,
@@ -65,16 +66,15 @@ export default function ProductPage() {
       </div>
 
       {/* 상품 액션 버튼 컴포넌트 */}
-      <div className="bt-rounded-[8px] fixed bottom-[55px] z-30 w-full max-w-[600px] bg-white px-5 py-3">
-        <ProductActionButtons onCartClick={() => setIsBottomSheetOpen(true)} />
-      </div>
 
-      {/* {isBottomSheetOpen && (
-        <div
-          className="bg-opacity-50 fixed inset-0 z-10 bg-black"
-          onClick={() => setIsBottomSheetOpen(false)}
-        ></div>
-      )} */}
+      <div className="bt-rounded-[8px] fixed bottom-[55px] z-30 w-full max-w-[600px] bg-white px-5 py-3">
+        <ProductActionButtons
+          onCartClick={() => {
+            setIsBottomSheetOpen(true);
+            setIsQuantitySelectorEnabled(false);
+          }}
+        />
+      </div>
 
       {/* 바텀시트 */}
       {isBottomSheetOpen && (
@@ -92,25 +92,32 @@ export default function ProductPage() {
             <OptionSelector
               options={['S', 'M', 'L', 'XL']}
               selectedOption={selectedOption}
-              onSelect={option => setSelectedOption(option)}
+              onSelect={option => {
+                setSelectedOption(option);
+                setIsQuantitySelectorEnabled(true);
+              }}
             />
           </div>
 
-          {/* 상품 수량 선택 컴포넌트 */}
-          <div className="bg-white px-5 py-3">
-            <ProductQuantitySelector
-              selectedOption={selectedOption}
-              quantity={quantity}
-              onIncrease={() => setQuantity(quantity + 1)}
-              onDecrease={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
-              price={price}
-            />
-          </div>
+          {/* 상품 수량 선택 컴포넌트: 옵션이 선택된 경우에만 렌더링 */}
+          {isQuantitySelectorEnabled && (
+            <div className="bg-white px-5 py-3">
+              <ProductQuantitySelector
+                selectedOption={selectedOption}
+                quantity={quantity}
+                onIncrease={() => setQuantity(quantity + 1)}
+                onDecrease={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
+                price={price}
+              />
+            </div>
+          )}
 
-          <TotalPrice quantity={quantity} price={price} />
+          {/* 총 결제 금액 컴포넌트: 옵션이 선택된 경우에만 렌더링 */}
+          {isQuantitySelectorEnabled && (
+            <TotalPrice quantity={quantity} price={price} />
+          )}
         </div>
       )}
-
       <Tabbar />
     </>
   );
