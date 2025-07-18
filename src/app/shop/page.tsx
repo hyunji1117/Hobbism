@@ -1,8 +1,6 @@
-import { ShopAd } from '@/components/features/shop/ShopAd';
+import ShopCategoryProducts from '@/app/shop/ShopCategoryProducts';
 import { ShopBanner } from '@/components/features/shop/ShopBanner';
-import { ShopCategory } from '@/components/features/shop/ShopCategory';
 import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';
-import { ShopProduct } from '@/components/features/shop/ShopProduct';
 import TabBar from '@/components/layout/tabbar/Tabbar';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Metadata } from 'next';
@@ -17,20 +15,10 @@ export default async function ShopPage() {
 
   const data = await fetchProducts();
   // console.log('API 서버로부터 받은 상품 목록 수', data.length);
-  console.log(data);
+  // console.log(data);
 
-  const products = data.map(product => (
-    <ShopProduct
-      price={product.price}
-      name={product.name}
-      mainImageSrc={product.mainImages[0]?.path}
-      category={product.extra.category}
-      isLiveSpecial={product.extra.isLiveSpecial}
-      discountRate={product.extra.discountRate}
-      discountPrice={product.extra.discountedPrice}
-      key={product._id}
-    />
-  ));
+  const notLiveData = data.filter(product => !product.extra.isLiveSpecial);
+  const liveData = data.filter(product => product.extra.isLiveSpecial);
 
   return (
     <>
@@ -42,11 +30,12 @@ export default async function ShopPage() {
       {/* 라이브 특별 기획 상품 */}
       <section className="ml-5">
         <h2 className="py-4 text-lg font-semibold">라이브 특별 기획 상품</h2>
-        {/* <ShopLiveProducts /> */}
+        <ShopLiveProducts liveData={liveData} />
       </section>
 
       {/* 전체(카테고리 별) 상품 */}
-      <section>
+      <ShopCategoryProducts notLiveData={notLiveData} />
+      {/* <section>
         <div className="ml-5">
           <ShopCategory />
         </div>
@@ -57,7 +46,7 @@ export default async function ShopPage() {
             <ShopAd />
           </div>
         </div>
-      </section>
+      </section> */}
       <TabBar />
     </>
   );
