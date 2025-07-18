@@ -47,13 +47,13 @@ export const ShopAd = () => {
   const [ads, setAds] = useState<imagesType[]>([]);
 
   useEffect(() => {
-    const getRandomAd = (images: imagesType[]): imagesType[] => {
-      const random = [...images].sort(() => 0.5 - Math.random());
+    const getRandomAd = (): imagesType[] => {
+      const random = [...bannerImgs].sort(() => 0.5 - Math.random());
       const count = Math.floor(Math.random() * 2) + 2;
       return random.slice(0, count);
     };
 
-    setAds(getRandomAd(bannerImgs));
+    setAds(getRandomAd());
   }, []);
 
   if (ads.length === 0) return null;
