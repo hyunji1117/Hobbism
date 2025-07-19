@@ -11,6 +11,7 @@ interface ShopProductProps {
   discountRate: number;
   discountPrice: number;
   recommendedBy: string;
+  textPrice: string;
 }
 
 export const ShopProduct = ({
@@ -20,6 +21,7 @@ export const ShopProduct = ({
   discountRate,
   recommendedBy,
   discountPrice,
+  textPrice,
 }: ShopProductProps) => {
   const recommendKr: Record<string, string> = {
     inhwan: '인환',
@@ -50,6 +52,8 @@ export const ShopProduct = ({
           style={{ objectFit: 'cover', objectPosition: 'center' }}
           src={`https://fesp-api.koyeb.app/market/${mainImageSrc}`}
           alt={`/${mainImageSrc}`}
+          sizes="100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={false}
           className="pointer-events-none rounded-xl"
         />
       </div>
@@ -67,7 +71,7 @@ export const ShopProduct = ({
           </span>
         )}
       </div>
-      <p className="text-base font-semibold">
+      <p className={`${textPrice} font-semibold`}>
         {discountRate && (
           <span className="sale pointer-events-none mr-1 text-[#FE508B]">
             {discountRate}%
