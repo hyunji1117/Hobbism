@@ -22,16 +22,16 @@ export default function CommentInput({
       </div>
 
       {/* 입력창 + 전송 버튼 */}
-      <div className="relative flex flex-1 items-center">
+      <div className="relative flex-1 items-center pr-3">
         <input
           type="text"
           placeholder="댓글을 입력하세요"
-          className="h-10 w-[276px] rounded-full bg-[#F3F4F6] px-4 text-sm placeholder-[#c3c3c3] focus:outline-none"
+          className="h-10 w-full rounded-full bg-[#F3F4F6] px-4 text-sm placeholder-[#c3c3c3] focus:outline-none"
         />
-        <button className="absolute right-2">
-          <CircleArrowUp size={24} className="text-black" />
-        </button>
       </div>
+      <button className="absolute right-2">
+        <CircleArrowUp size={24} className="mr-4" />
+      </button>
     </div>
   );
 }
