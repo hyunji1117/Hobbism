@@ -1,0 +1,18 @@
+meta {
+  name: 로그인
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}/users/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "woomin013@gmail.com",
+    "password": "woomin1818!"
+  }
+}
