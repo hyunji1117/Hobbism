@@ -44,7 +44,11 @@ export default function UserPreviewList({ recommendedUser }: Props) {
             id={user._id}
             name={user.name}
             introduction={user.introduction}
-            image={`https://fesp-api.koyeb.app/market/${user.image}`}
+            image={
+              user.image
+                ? `https://fesp-api.koyeb.app/market/${user.image}`
+                : '/images/default-profile-image.webp'
+            }
             onRemove={handleRemove}
           />
         ))}

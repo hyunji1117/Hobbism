@@ -10,7 +10,7 @@ interface Props {
   id: number;
   name: string;
   introduction: string;
-  image?: string;
+  image: string;
   onRemove: (id: number) => void;
 }
 
@@ -34,9 +34,9 @@ export function UserPreviewCard({
       >
         {/* 유저 이미지 */}
         <Image
-          src={image || '/images/discord_profile.webp'}
+          src={image}
           alt="프로필 이미지"
-          className="pointer-events-none mb-3 size-14 select-none"
+          className="pointer-events-none mb-3 size-14 rounded-full select-none"
           width={56}
           height={56}
           draggable={false}

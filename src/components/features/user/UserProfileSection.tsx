@@ -17,15 +17,16 @@ interface Props {
  * - 마이페이지일 경우 수정 버튼 및 스크랩 탭 표시
  */
 export function UserProfileSection({ user, isMypage }: Props) {
+  const imageUrl = user.image
+    ? `https://fesp-api.koyeb.app/market/${user.image}`
+    : '/lelabo-01.webp';
   return (
     <div className="flex flex-col gap-4">
       {/* 프로필 상단 영역 */}
       <div className="flex items-center gap-4">
         {/* 프로필 이미지 */}
         <Image
-          src={
-            user.image ? `https://fesp-api.koyeb.app/market/${user.image}` : ''
-          }
+          src={imageUrl}
           alt="프로필 이미지"
           className="rounded-full object-cover"
           width={64}
