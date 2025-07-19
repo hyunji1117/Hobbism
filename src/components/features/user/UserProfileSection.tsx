@@ -68,7 +68,7 @@ export function UserProfileSection({ user, isMypage }: Props) {
             <span>팔로우</span>
           </div>
           <div className="text-muted-foreground text-xs">
-            {user.bookmark?.users ?? 0}
+            {user.bookmark.users ?? 0}
           </div>
         </Link>
 
