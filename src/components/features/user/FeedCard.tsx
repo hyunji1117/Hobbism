@@ -4,17 +4,12 @@ import Link from 'next/link';
 
 interface Props {
   images: string | string[];
-  alt?: string;
   href: string;
+  alt: string;
   onClick?: () => void;
 }
 
-export function FeedCard({
-  images,
-  alt = '피드 이미지',
-  onClick,
-  href,
-}: Props) {
+export function FeedCard({ images, onClick, href }: Props) {
   const isMultiple = Array.isArray(images) && images.length > 1;
   const firstImage = Array.isArray(images) ? images[0] : images;
 
@@ -23,11 +18,12 @@ export function FeedCard({
       href={href}
       className="relative aspect-square w-full cursor-pointer overflow-hidden rounded"
       onClick={onClick}
+      prefetch={true}
     >
       {images && (
         <Image
           src={`https://fesp-api.koyeb.app/market/${firstImage}`}
-          alt={alt}
+          alt="피드 이미지"
           fill
           sizes="184px"
           className="object-cover"
