@@ -1,5 +1,7 @@
 import Image from 'next/image';
-import { MoreHorizontal } from 'lucide-react';
+import { EllipsisVertical } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import CommentOptionsModal from './CommentOptionsModal';
 
 interface CommentItemProps {
   profileImage: string;
@@ -14,6 +16,29 @@ export default function CommentItem({
   comment = '정말 날씨가 좋네요 저도 싸우러 갈게요!',
   profileImage = '/images/inhwan/profile-default.png',
 }: CommentItemProps) {
+  const [isOptionModal, setIsOptionModal] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  const handleCommentOption = () => {
+    setIsOptionModal(!isOptionModal);
+  };
+
+  // 빈 화면 클릭 시 해제
+  useEffect(() => {
+    const handleClickOutside = (e: PointerEvent) => {
+      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        setIsOptionModal(false);
+      }
+    };
+    if (isOptionModal) {
+      document.addEventListener('pointerdown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside);
+    };
+  }, [isOptionModal]);
+
   return (
     <div className="w-full">
       {/* 댓글 내용 영역 */}
@@ -36,7 +61,9 @@ export default function CommentItem({
             {/* 작성자, 시간 */}
             <div className="mb-1 flex items-center gap-2">
               <span className="text-sm font-normal text-black">{userName}</span>
-              <span className="text-sm font-normal text-[#C3C3C3]">{timeAgo}</span>
+              <span className="text-sm font-normal text-[#C3C3C3]">
+                {timeAgo}
+              </span>
             </div>
 
             {/* 댓글 텍스트 */}
@@ -49,9 +76,15 @@ export default function CommentItem({
         </div>
 
         {/* 우측 설정 아이콘 */}
-        <div className="flex-shrink-0">
-          <MoreHorizontal size={18} className="text-black" />
+        <div ref={modalRef} className="relative">
+          <button
+            className="relative bottom-3 flex-shrink-0"
+            onClick={handleCommentOption}
+          >
+            <EllipsisVertical size={18} className="text-black" />
+          </button>
         </div>
+        {isOptionModal && <CommentOptionsModal />}
       </div>
 
       {/* 하단 보더 (1px) */}
