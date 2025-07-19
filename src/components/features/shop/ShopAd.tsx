@@ -77,6 +77,8 @@ export const ShopAd = () => {
                     fill
                     src={ban.src}
                     alt={ban.alt}
+                    sizes="100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={false}
                     style={{ objectFit: 'cover', objectPosition: 'center' }}
                   />
                 </div>
