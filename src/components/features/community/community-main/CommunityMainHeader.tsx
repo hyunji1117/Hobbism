@@ -3,10 +3,15 @@ import { Pencil } from 'lucide-react';
 
 export default function CommunityMainHeader() {
   return (
-    <div className="flex w-full items-center justify-between px-5">
+    <div className="flex w-full items-center justify-between border-b border-[#F3F4F6] px-5 pt-5 pb-8 h-[38px]">
       {/* 왼쪽 - 로고 */}
       <div>
-        <Image src="/inhwan/logo-H.svg" alt="로고" width={24} height={24} />
+        <Image
+          src="/images/inhwan/logo-H.svg"
+          alt="로고"
+          width={24}
+          height={24}
+        />
       </div>
 
       {/* 가운데 - 커뮤니티 텍스트 */}
