@@ -5,6 +5,7 @@ import { ShopBanner } from '@/components/features/shop/ShopBanner';
 import { ShopCategory } from '@/components/features/shop/ShopCategory';
 import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
+import { fetchLiveProducts } from '@/data/functions/LiveProductFetch';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Product } from '@/types/interface/product';
 import { JSX, useEffect, useRef, useState } from 'react';
@@ -15,6 +16,18 @@ export default function ShopCategoryProducts() {
 
   /* 라이브 특별 기획 상품 */
   const [liveProducts, setLiveProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const liveDataList = async () => {
+      const liveData = await fetchLiveProducts();
+      const liveFiltered = liveData.filter(
+        product => product.extra.isLiveSpecial,
+      );
+      setLiveProducts(liveFiltered);
+    };
+
+    liveDataList();
+  }, []);
 
   /* ======================== 무한 스크롤 ======================== */
   /* ------------ 상태 변수 --------------- */
@@ -33,11 +46,15 @@ export default function ShopCategoryProducts() {
     setLoading(true);
 
     const data = await fetchProducts(page); // 서버에서 (page)번 페이지 게시물 받아옴
-    setProducts(prev => [...prev, ...data]); // 기존 posts 뒤에 새 게시물(data) 추가
+    // setProducts(prev => [...prev, ...data]); // 기존 posts 뒤에 새 게시물(data) 추가
+    setProducts(prev => {
+      const newData = data.filter(d => !prev.some(p => p._id === d._id)); // 중복 제거 로직
+      return [...prev, ...newData];
+    });
 
     /* 라이브 특별 기획 상품 */
-    const newLive = data.filter(product => product.extra.isLiveSpecial);
-    setLiveProducts(prev => [...prev, ...newLive]); // 누적 추가
+    // const newLive = data.filter(product => product.extra.isLiveSpecial);
+    // setLiveProducts(prev => [...prev, ...newLive]); // 누적 추가
     /* 라이브 특별 기획 상품 */
 
     setPageParams(prev => [...prev, page]); // 요청한 page 번호를 기록 -> 중복 호출 방지
@@ -83,19 +100,6 @@ export default function ShopCategoryProducts() {
           product.extra.category.includes(selectedCategory),
         );
 
-  // const productsList = filteredProducts.map(product => (
-  //   <ShopProduct
-  //     price={product.price}
-  //     name={product.name}
-  //     mainImageSrc={product.mainImages[0]?.path}
-  //     category={product.extra.category}
-  //     discountRate={product.extra.discountRate}
-  //     discountPrice={product.extra.discountedPrice}
-  //     recommendedBy={product.extra.recommendedBy}
-  //     key={product._id}
-  //   />
-  // ));
-
   const productsList = filteredProducts.reduce<JSX.Element[]>(
     (acc, product, idx) => {
       // 8개마다 광고 삽입
@@ -113,6 +117,7 @@ export default function ShopCategoryProducts() {
           discountPrice={product.extra.discountedPrice}
           recommendedBy={product.extra.recommendedBy}
           key={product._id}
+          textPrice="text-base"
         />,
       );
 
@@ -152,7 +157,7 @@ export default function ShopCategoryProducts() {
 
         <div ref={observerRef} className="h-10" />
         {loading && <div className="py-4 text-center">불러오는 중...</div>}
-        {!hasNextPage && (
+        {!hasNextPage && !loading && (
           <p className="py-4 text-center text-gray-500">
             더 이상 상품이 없어요
           </p>
