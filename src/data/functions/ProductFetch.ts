@@ -1,6 +1,6 @@
 'use server';
 
-import { Product } from '@/types/interface/product';
+import { Product } from '@/types/product';
 
 export async function fetchProducts(): Promise<Product[]> {
   const CLIENT_ID = 'febc13-final01-emjf';
