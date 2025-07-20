@@ -21,6 +21,7 @@ export default function ProductPage() {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isQuantitySelectorEnabled, setIsQuantitySelectorEnabled] =
     useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const price = 158900;
   const swipeHandlers = useSwipeable({
     onSwipedDown: () => setIsBottomSheetOpen(false),
@@ -49,6 +50,11 @@ export default function ProductPage() {
         <HeaderNav.Title>제품상세</HeaderNav.Title>
         <HeaderNav.RightContent>
           <ShoppingCart />
+          {cartCount > 0 && (
+            <span className="absolute -top-1 right-[15] flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+              {cartCount}
+            </span>
+          )}
         </HeaderNav.RightContent>
       </HeaderNav>
 
@@ -79,6 +85,9 @@ export default function ProductPage() {
       <div className="bt-rounded-[8px] fixed bottom-[55px] z-30 w-full max-w-[600px] bg-white px-5 py-3">
         <ProductActionButtons
           onCartClick={() => {
+            setIsBottomSheetOpen(true);
+            setIsQuantitySelectorEnabled(false);
+            setCartCount(cartCount + quantity);
             setIsBottomSheetOpen(true);
             setIsQuantitySelectorEnabled(false);
           }}
