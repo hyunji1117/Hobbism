@@ -1,3 +1,4 @@
+'use client';
 import { cn } from '@/lib/utils';
 import {
   Children,
@@ -36,8 +37,8 @@ function Title({ children, className }: PropsWithChildren<SlotProps>) {
 function RightContent({ children, className }: PropsWithChildren<SlotProps>) {
   return (
     <div className={cn('absolute right-4 flex gap-6', className)}>
-      {Children.toArray(children).map((child, idx) => (
-        <div key={idx}>{child}</div>
+      {Children.toArray(children).map((child, i) => (
+        <div key={i}>{child}</div>
       ))}
     </div>
   );

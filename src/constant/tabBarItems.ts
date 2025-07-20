@@ -30,7 +30,7 @@ export const TAB_BAR_ITEMS = [
   {
     label: '마이',
     icon: UserRound,
-    route: '/user',
+    route: '/user/1',
     selectedColor: '#FAB91D',
   },
 ];

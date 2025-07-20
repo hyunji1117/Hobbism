@@ -4,6 +4,8 @@ import AuthContext from '@/context/AuthContext';
 import '@/styles/globals.css';
 import localFont from 'next/font/local';
 import { MobileFrame } from '@/components/layout/moblie-frame/MobileFrame';
+import TabBar from '@/components/layout/tabbar/Tabbar';
+import ModalProvider from '@/components/common/ModalProvider';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -20,7 +22,11 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${pretendard.variable}`}>
       <body className={`${pretendard.className}`}>
-        <MobileFrame>{children}</MobileFrame>
+        <MobileFrame>
+          {children}
+          <TabBar />
+          <ModalProvider />
+        </MobileFrame>
       </body>
     </html>
   );

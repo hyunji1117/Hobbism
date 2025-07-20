@@ -60,7 +60,7 @@ export async function updateUserInfo(
   try {
     const attach = formData.get('attach') as File;
     const accessToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjEsInR5cGUiOiJ1c2VyIiwibmFtZSI6IuyasOuvvCIsImVtYWlsIjoid29vbWluMDEzQGdtYWlsLmNvbSIsImltYWdlIjoiL2ZpbGVzL2ZlYmMxMy1maW5hbDAxLWVtamYvd29vbWluLXByb2ZpbGUuanBnIiwibG9naW5UeXBlIjoiZW1haWwiLCJpYXQiOjE3NTI4NDk1MDYsImV4cCI6MTc1MjkzNTkwNiwiaXNzIjoiRkVCQyJ9.zJvT6wacWOp-_oxSYRkBoLJLSchpXPJhyR2wKLP1Sgc';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjEsInR5cGUiOiJ1c2VyIiwibmFtZSI6IuyasOuvvCIsImVtYWlsIjoid29vbWluMDEzQGdtYWlsLmNvbSIsImltYWdlIjoiZmlsZXMvZmViYzEzLWZpbmFsMDEtZW1qZi9zcC1zUm8zRjguanBnIiwibG9naW5UeXBlIjoiZW1haWwiLCJpYXQiOjE3NTI5MzYyMDgsImV4cCI6MTc1MzAyMjYwOCwiaXNzIjoiRkVCQyJ9.bJUGIX-Yol1zjZwA0POmfuvDjXw5CS5xTeAZiPmx31o';
     let image;
     if (attach.size > 0) {
       const fileRes = await uploadFile(formData);

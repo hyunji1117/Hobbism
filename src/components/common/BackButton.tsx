@@ -1,23 +1,38 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ChevronLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useModalStore } from '@/store/modal.store';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
-type BackButtonProps = {
+interface BackButtonProps {
   onClickBack?: () => void;
   className?: string;
-};
+  isWriting?: boolean;
+  needConfirm?: boolean;
+}
 
-export const BackButton = ({ onClickBack, className }: BackButtonProps) => {
+export const BackButton = ({
+  onClickBack,
+  className,
+  isWriting,
+  needConfirm,
+}: BackButtonProps) => {
   const router = useRouter();
+  const { openModal } = useModalStore();
 
   const handleBackClick = () => {
-    if (onClickBack) {
-      onClickBack();
-    } else {
-      router.back();
+    if (onClickBack) return onClickBack();
+
+    if (needConfirm && isWriting) {
+      openModal(({ onClose }) => (
+        <ConfirmModal onClose={onClose} onConfirm={() => router.back()} />
+      ));
+      return;
     }
+
+    router.back();
   };
 
   return (
