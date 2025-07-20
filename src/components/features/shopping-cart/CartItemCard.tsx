@@ -1,5 +1,6 @@
 'use client';
 
+import { Minus, Plus, X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -8,10 +9,10 @@ interface CardItemCardProps {
   productImg: string;
   name: string;
   price: number;
-  isChecked?: boolean
+  isChecked?: boolean;
   onQuantityChange?: (id: number, quantity: number) => void;
   onRemove?: (id: number) => void;
-  onCheck?: (id: number, checked: boolean) => void
+  onCheck?: (id: number, checked: boolean) => void;
 }
 
 export function CartItemCard({
@@ -22,14 +23,13 @@ export function CartItemCard({
   isChecked = false,
   onQuantityChange,
   onRemove,
-  onCheck
+  onCheck,
 }: CardItemCardProps) {
   const [quantity, setQuantity] = useState(1);
 
-
   const handleCheckedChange = () => {
     onCheck?.(id, !isChecked);
-  }
+  };
 
   const handleUp = () => {
     if (quantity < 99) {
@@ -100,19 +100,29 @@ export function CartItemCard({
 
         {/* 수량 변경 */}
         <div className="absolute top-14 left-34">
-          <button className="cursor-pointer" onClick={handleDown}>
-            <Image src="/minus.svg" alt="minus button" width={28} height={28} />
+          <button
+            className="relative bottom-1 cursor-pointer"
+            onClick={handleDown}
+          >
+            <div className="flex size-7 items-center justify-center rounded-full border border-[#CECECE]">
+              <Minus size={20} />
+            </div>
           </button>
           <span className="relative bottom-2 px-6">{quantity}</span>
-          <button className="cursor-pointer" onClick={handleUp}>
-            <Image src="/plus.svg" alt="plus button" width={28} height={28} />
+          <button
+            className="relative bottom-1 cursor-pointer"
+            onClick={handleUp}
+          >
+            <div className="flex size-7 items-center justify-center rounded-full border border-[#CECECE]">
+              <Plus size={20} />
+            </div>
           </button>
         </div>
 
         {/* 삭제 아이콘 */}
         <div className="absolute top-2 right-0">
           <button className="cursor-pointer" onClick={handleRemove}>
-            <Image src="/delete.svg" alt="delete icon" width={18} height={18} />
+            <X size={18} />
           </button>
         </div>
       </div>
