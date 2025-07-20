@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
+import { cookies } from 'next/headers';
 
 declare module 'next-auth/jwt' {
   interface JWT {
@@ -11,7 +12,21 @@ declare module 'next-auth/jwt' {
     loginType?: string;
     type?: string;
     accessToken?: string;
-    refreshToken?: string;
+    _id?: number;
+    name?: string;
+    email?: string;
+  }
+}
+
+declare module 'next-auth' {
+  interface Session {
+    accessToken?: string;
+    loginType?: string;
+    user: {
+      _id?: number;
+      name?: string;
+      email?: string;
+    };
   }
 }
 
@@ -88,12 +103,27 @@ const handler = NextAuth({
               const userData = await loginRes.json();
               console.log('로그인 응답 데이터:', userData);
 
-              if (userData.token) {
-                token.accessToken = userData.token.accessToken;
-                token.refreshToken = userData.token.refreshToken;
-              } else if (userData.item && userData.item.token) {
+              if (userData.item && userData.item.token) {
                 token.accessToken = userData.item.token.accessToken;
-                token.refreshToken = userData.item.token.refreshToken;
+                token._id = userData.item._id;
+                token.name = userData.item.name;
+                token.email = userData.item.email || token.email;
+
+                if (userData.item.token.refreshToken) {
+                  const cookieStore = await cookies();
+                  cookieStore.set(
+                    'refresh-token',
+                    userData.item.token.refreshToken,
+                    {
+                      httpOnly: true,
+                      secure: process.env.NODE_ENV === 'production',
+                      sameSite: 'lax',
+                      maxAge: 60 * 60 * 24 * 30, // 30일
+                      path: '/',
+                    },
+                  );
+                  console.log('RefreshToken이 httpOnly 쿠키에 저장됨');
+                }
               } else {
                 console.log('토큰을 찾을 수 없습니다');
               }
@@ -110,6 +140,18 @@ const handler = NextAuth({
         }
       }
       return token;
+    },
+    async session({ session, token }) {
+      session.accessToken = token.accessToken;
+      session.loginType = token.loginType;
+
+      if (session.user) {
+        session.user._id = token._id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+      }
+
+      return session;
     },
   },
 });
