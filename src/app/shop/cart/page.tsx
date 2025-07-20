@@ -1,6 +1,14 @@
 'use client';
 
 import CartItemCard from '@/components/features/shopping-cart/CartItemCard';
+import {
+  Banknote,
+  ChevronLeft,
+  CreditCard,
+  MapPin,
+  WalletCards,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -89,13 +97,8 @@ export function CartPage() {
     <div className="flex flex-col">
       {/* 상단 */}
       <div className="mt-10">
-        <Link href="/shop" className="relative top-7 left-4">
-          <Image
-            src="/back.svg"
-            alt="이전 페이지 이동 버튼"
-            width={24}
-            height={24}
-          />
+        <Link href="/shop" className="relative top-7 left-4" prefetch>
+          <ChevronLeft size={24} />
         </Link>
         <p className="text-center text-lg leading-6 font-semibold">장바구니</p>
       </div>
@@ -188,7 +191,7 @@ export function CartPage() {
             <div className="flex items-center justify-between rounded-t-2xl border-t-2 px-6 py-6">
               <h2 className="text-lg leading-6 font-semibold">결제하기</h2>
               <button onClick={handleClosePaymentSheet} className="p-1">
-                <Image src="/delete.svg" alt="닫기" width={18} height={18} />
+                <X size={18} />
               </button>
             </div>
             <hr />
@@ -200,12 +203,7 @@ export function CartPage() {
                   배송지
                 </h3>
                 <div className="flex items-start">
-                  <Image
-                    src="/location.svg"
-                    alt="delivery location icon"
-                    width={24}
-                    height={24}
-                  />
+                  <MapPin />
                   <div className="flex-1">
                     <p className="pl-2.5 font-semibold">홍길동</p>
                     <p className="mt-1 pl-2.5 text-sm text-[#4B5563]">
@@ -232,12 +230,7 @@ export function CartPage() {
                       defaultChecked
                     />
                     <div className="flex items-center">
-                      <Image
-                        src="/credit-card.svg"
-                        alt="credit-card icon"
-                        width={24}
-                        height={24}
-                      />
+                      <CreditCard />
                       <span className="pl-2.5">신용카드</span>
                     </div>
                   </label>
@@ -250,12 +243,7 @@ export function CartPage() {
                       className="mr-3 h-5 w-5"
                     />
                     <div className="flex items-center">
-                      <Image
-                        src="/cash.svg"
-                        alt="cash icon"
-                        width={24}
-                        height={24}
-                      />
+                      <Banknote />
                       <span className="pl-2.5">무통장입금</span>
                     </div>
                   </label>
@@ -268,12 +256,7 @@ export function CartPage() {
                       className="mr-3 h-5 w-5"
                     />
                     <div className="flex items-center">
-                      <Image
-                        src="/wallet-cards.svg"
-                        alt="simple payment icon"
-                        width={24}
-                        height={24}
-                      />
+                      <WalletCards />
                       <span className="pl-2.5">간편결제</span>
                     </div>
                   </label>
