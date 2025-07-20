@@ -81,7 +81,6 @@ export default function ProductPage() {
       </div>
 
       {/* 상품 액션 버튼 컴포넌트 */}
-
       <div className="bt-rounded-[8px] fixed bottom-[55px] z-30 w-full max-w-[600px] bg-white px-5 py-3">
         <ProductActionButtons
           onCartClick={() => {
@@ -94,11 +93,18 @@ export default function ProductPage() {
         />
       </div>
 
+      {/* 바텀시트 on 어두운 배경 */}
+      {isBottomSheetOpen && (
+        <div className="fixed inset-0 z-10 flex items-center justify-center">
+          <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
+        </div>
+      )}
+
       {/* 바텀시트 */}
       {isBottomSheetOpen && (
         <div
           {...swipeHandlers}
-          className="fixed bottom-[133px] z-20 w-full max-w-[600px] rounded-t-[16px] bg-white shadow-lg"
+          className="flexbox fixed bottom-[133px] z-20 w-full max-w-[600px] rounded-t-[16px] bg-white shadow-lg"
         >
           {/* 스와이프 핸들 디자인 */}
           <div className="flex justify-center">
