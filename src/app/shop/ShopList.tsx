@@ -9,10 +9,10 @@ import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Product } from '@/types/interface/product';
 import { JSX, useEffect, useRef, useState } from 'react';
 
-export default function ShopCategoryProducts() {
+export default function ShopList({ initialData }: { initialData: Product[] }) {
   /* ======================== 무한 스크롤 ======================== */
   /* ------------ 상태 변수 --------------- */
-  const [products, setProducts] = useState<Product[]>([]); // 화면에 그려질 게시물 목록
+  const [products, setProducts] = useState<Product[]>(initialData ?? []); // 화면에 그려질 게시물 목록
   const [page, setPage] = useState(1); // 현재 불러올 페이지 번호
   const [loading, setLoading] = useState(false); // fetch 진행중 여부
   const [hasNextPage, setHasNextPage] = useState(false); // 다음 페이지가 있는지
@@ -27,7 +27,6 @@ export default function ShopCategoryProducts() {
     setLoading(true);
 
     const data = await fetchProducts(page); // 서버에서 (page)번 페이지 게시물 받아옴
-    // setProducts(prev => [...prev, ...data]); // 기존 posts 뒤에 새 게시물(data) 추가
     setProducts(prev => {
       const newData = data.filter(d => !prev.some(p => p._id === d._id)); // 중복 제거 로직
       return [...prev, ...newData];
@@ -45,10 +44,12 @@ export default function ShopCategoryProducts() {
     if (!target) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      async ([entry]) => {
         // div가 화면에 50% 이상 보이고, 다음 페이지도 있으며, 로딩 중이 아닐 때
         if (entry.isIntersecting && hasNextPage && !loading) {
-          setPage(prev => prev + 1); // page 값을 1 증가
+          const nextPage = page + 1;
+          await loadingProducts(nextPage);
+          setPage(nextPage); // page 값을 1 증가
         }
       },
       {
@@ -59,7 +60,7 @@ export default function ShopCategoryProducts() {
     observer.observe(target);
 
     return () => observer.disconnect(); // 클린업
-  }, [hasNextPage, loading]);
+  }, [page, hasNextPage, loading]);
 
   /* ============== page 값이 변할 때마다 fetch =========== */
   useEffect(() => {
