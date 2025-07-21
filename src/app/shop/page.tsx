@@ -1,7 +1,8 @@
 import ShopList from '@/app/shop/ShopList';
-import ShopLiveList from '@/app/shop/ShopLiveList';
 import { ShopBanner } from '@/components/features/shop/ShopBanner';
+import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';
 import TabBar from '@/components/layout/tabbar/Tabbar';
+import { fetchLiveProducts } from '@/data/functions/LiveProductFetch';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Metadata } from 'next';
 
@@ -11,9 +12,13 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopPage() {
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  // await new Promise(resolve => setTimeout(resolve, 2000));
 
   const initialData = await fetchProducts(1); // 서버에서 (page)번 페이지 게시물 받아옴
+  const liveData = await fetchLiveProducts();
+  const initialLiveFiltered = liveData.filter(
+    product => product.extra.isLiveSpecial,
+  );
 
   return (
     <>
@@ -23,7 +28,11 @@ export default async function ShopPage() {
       </section>
 
       {/* 라이브 특별 기획 상품 */}
-      <ShopLiveList />
+      <section className="ml-5">
+        <h2 className="py-4 text-lg font-semibold">라이브 특별 기획 상품</h2>
+        <ShopLiveProducts liveData={initialLiveFiltered} />
+      </section>
+
       {/* 전체(카테고리 별) 상품 */}
       <ShopList initialData={initialData} />
       <TabBar />
