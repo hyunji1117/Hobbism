@@ -5,7 +5,7 @@ import { Product, ProductListRes } from '@/types/interface/product';
 const API_URL = 'https://fesp-api.koyeb.app/market';
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
 export async function fetchProducts(page: number): Promise<Product[]> {
-  const res = await fetch(`${API_URL}/products?page=${page}&limit=4`, {
+  const res = await fetch(`${API_URL}/products?page=${page}&limit=10`, {
     headers: {
       'Client-Id': CLIENT_ID,
     },
