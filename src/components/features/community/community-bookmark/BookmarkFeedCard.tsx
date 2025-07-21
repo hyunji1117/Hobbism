@@ -44,9 +44,11 @@ interface BookmarkFeedCardProps {
   timeAgo: string;
   image: string;
   description: string;
+  postId: number;
 }
 
 export default function BookmarkFeedCard({
+  postId,
   userName = '오다구',
   timeAgo = '2시간 전',
   description = '드디어 완성된 결계 마왕의 졸개를 처리하느라 힘들었지만 만족스럽다고 말하고 싶다',
@@ -95,9 +97,7 @@ export default function BookmarkFeedCard({
   };
 
   const handleShare = () => {
-    if (navigator.clipboard) {
-      handleShareToKakao();
-    }
+    handleShareToKakao();
   };
 
   const handleCheckBookmark = () => {
@@ -174,7 +174,7 @@ export default function BookmarkFeedCard({
       {/* 댓글 영역 */}
       {isOpenComment && (
         <div className="border-b border-[#EAEAEA] px-5 py-4">
-          <CommentSection />
+          <CommentSection postId={postId} />
         </div>
       )}
     </div>
