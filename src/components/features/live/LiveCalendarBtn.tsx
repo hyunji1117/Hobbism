@@ -2,9 +2,17 @@
 
 import { LiveCalendar } from '@/components/features/live/LiveCalendar';
 import { CalendarFold } from 'lucide-react';
+import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 
-export const LiveCalendarBtn = () => {
+export interface LiveDataType {
+  id: number;
+  start: moment.Moment;
+  end: moment.Moment;
+  title: string;
+}
+
+export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
   const [isDropdownOpen, setIsDropDownOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -42,7 +50,7 @@ export const LiveCalendarBtn = () => {
             className="absolute top-0 left-0 z-1 h-[100vh] w-full bg-black/50"
           ></div>
           <div className="absolute top-0 z-2 w-full">
-            <LiveCalendar />
+            <LiveCalendar liveData={liveData} />
           </div>
         </>
       )}

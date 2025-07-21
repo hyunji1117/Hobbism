@@ -1,33 +1,12 @@
 'use client';
 
+import { LiveDataType } from '@/components/features/live/LiveCalendarBtn';
 import moment from 'moment';
 import 'moment/locale/ko';
 import { useEffect, useState } from 'react';
 
-export const LiveCalendar = () => {
+export const LiveCalendar = ({ liveData }: { liveData: LiveDataType[] }) => {
   const [selectedDate, setSelectedDate] = useState(moment());
-
-  // 라이브 일정
-  const liveData = [
-    {
-      id: 1,
-      start: moment('2025-07-21 10:00'),
-      end: moment('2025-07-21 12:00'),
-      title: '여름 신상 라이브 세일',
-    },
-    {
-      id: 2,
-      start: moment('2025-07-23 13:00'),
-      end: moment('2025-07-23 15:00'),
-      title: '여름  라이브 세일',
-    },
-    {
-      id: 3,
-      start: moment('2025-07-24 14:00'),
-      end: moment('2025-07-24 15:00'),
-      title: '여름  세일',
-    },
-  ];
 
   // moment 로케일을 한국어로 설정
   useEffect(() => {
@@ -48,11 +27,6 @@ export const LiveCalendar = () => {
     weekDays.some(day => live.start.isSame(day, 'day')),
   );
 
-  // 지금 방송 중인 라이브
-  const now = moment();
-  const currentLive = liveData.find(live =>
-    now.isBetween(live.start, live.end),
-  );
   return (
     <>
       <div className="w-full rounded-b-3xl bg-white px-2.5 py-3">
