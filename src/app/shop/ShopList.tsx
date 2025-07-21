@@ -52,11 +52,6 @@ export default function ShopCategoryProducts() {
       return [...prev, ...newData];
     });
 
-    /* 라이브 특별 기획 상품 */
-    // const newLive = data.filter(product => product.extra.isLiveSpecial);
-    // setLiveProducts(prev => [...prev, ...newLive]); // 누적 추가
-    /* 라이브 특별 기획 상품 */
-
     setPageParams(prev => [...prev, page]); // 요청한 page 번호를 기록 -> 중복 호출 방지
     setHasNextPage(data.length !== 0); // '다음 페이지가 있는가?' 판정: 이번에 가져온 data가 0개면 더 없음
 
@@ -99,6 +94,43 @@ export default function ShopCategoryProducts() {
       : products.filter(product =>
           product.extra.category.includes(selectedCategory),
         );
+
+  const handleCategoryChange = async (newCategory: string) => {
+    setLoading(true);
+    setProducts([]);
+    setPageParams([]);
+
+    let targetPage = 1;
+    let firstPageData: Product[] = [];
+
+    if (newCategory !== 'ALL') {
+      while (true) {
+        const data = await fetchProducts(targetPage);
+        if (data.length === 0) break;
+
+        const filtered = data.filter(p =>
+          p.extra.category.includes(newCategory),
+        );
+
+        if (filtered.length > 0) {
+          firstPageData = filtered;
+          break;
+        }
+
+        targetPage++;
+      }
+    } else {
+      const data = await fetchProducts(1);
+      firstPageData = data;
+    }
+
+    setSelectedCategory(newCategory);
+    setProducts(firstPageData);
+    setPage(targetPage);
+    setPageParams([targetPage]);
+    setHasNextPage(firstPageData.length !== 0);
+    setLoading(false);
+  };
 
   const productsList = filteredProducts.reduce<JSX.Element[]>(
     (acc, product, idx) => {
@@ -144,7 +176,7 @@ export default function ShopCategoryProducts() {
         <div className="ml-5">
           <ShopCategory
             selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            setSelectedCategory={handleCategoryChange}
           />
         </div>
 
