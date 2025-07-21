@@ -9,7 +9,8 @@ import 'swiper/swiper-bundle.css';
 
 export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
   const liveProducts = liveData.map(product => (
-    <SwiperSlide className="w-full" key={product._id}>
+    // TODO 리팩토링 필요(CSS)
+    <SwiperSlide key={product._id} className="mr-2.5 !w-[calc(100%/3.5)]">
       <ShopProduct
         price={product.price}
         name={product.name}
