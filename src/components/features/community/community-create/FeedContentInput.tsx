@@ -1,4 +1,20 @@
-export default function FeedContentInput() {
+interface FeedContentInputProps {
+  value?: string;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+}
+
+export default function FeedContentInput({
+  value = '',
+  onChange,
+  placeholder = '내용을 입력해주세요',
+}: FeedContentInputProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (onChange) {
+      onChange(e.target.value);
+    }
+  };
+
   return (
     <div className="w-full px-5">
       {/* 라벨 텍스트 */}
@@ -9,9 +25,11 @@ export default function FeedContentInput() {
       {/* 텍스트 입력 필드 */}
       <div>
         <textarea
-          placeholder="내용을 입력해주세요"
+          value={value}
+          onChange={handleChange}
+          placeholder={placeholder}
           rows={8}
-          className="h-[180px] w-full resize-none rounded-lg border border-[#C3C3C3] bg-[#F3F4F6] p-6 text-sm font-normal text-[#C3C3C3] placeholder-[#C3C3C3] focus:outline-none"
+          className="h-[180px] w-full resize-none rounded-lg border border-[#C3C3C3] bg-[#F3F4F6] p-6 text-sm font-normal text-black placeholder-[#C3C3C3] focus:border-[#FE508B] focus:outline-none"
         />
       </div>
     </div>

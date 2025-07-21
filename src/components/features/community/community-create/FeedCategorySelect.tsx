@@ -1,4 +1,12 @@
-export default function FeedCategorySelect() {
+interface FeedCategorySelectProps {
+  value?: string;
+  onChange?: (category: string) => void;
+}
+
+export default function FeedCategorySelect({
+  value = '',
+  onChange,
+}: FeedCategorySelectProps) {
   // 7개 카테고리 목록
   const categories = [
     '항수',
@@ -9,6 +17,12 @@ export default function FeedCategorySelect() {
     '패션',
     '굿즈',
   ];
+
+  const handleCategoryClick = (category: string) => {
+    if (onChange) {
+      onChange(category);
+    }
+  };
 
   return (
     <div className="w-full pl-5">
@@ -22,7 +36,12 @@ export default function FeedCategorySelect() {
         {categories.map((category, index) => (
           <button
             key={index}
-            className="h-10 w-[82px] rounded-3xl bg-[#F3F4F6] text-sm text-[#4B5563]"
+            onClick={() => handleCategoryClick(category)}
+            className={`h-10 w-[82px] rounded-3xl text-sm ${
+              value === category
+                ? 'bg-[#FE508B] text-white' // 선택된 상태
+                : 'bg-[#F3F4F6] text-[#4B5563]' // 기본 상태
+            }`}
           >
             {category}
           </button>
