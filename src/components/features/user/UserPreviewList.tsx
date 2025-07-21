@@ -25,7 +25,7 @@ export default function UserPreviewList({ recommendedUser }: Props) {
   };
 
   return (
-    <section className="mt-4 px-5">
+    <section className="mb-4 px-5">
       {/* 섹션 제목 */}
       <p className="mb-4 font-semibold">
         같은 취미를 공유하는 사람들을 만나보세요

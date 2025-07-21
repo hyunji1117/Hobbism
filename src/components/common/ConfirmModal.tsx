@@ -1,5 +1,4 @@
 import Modal, { ModalBackdrop, ModalPanel } from '@/components/common/Modal';
-import { motion } from 'motion/react';
 
 interface ConfirmModalProps {
   onConfirm: () => void;
