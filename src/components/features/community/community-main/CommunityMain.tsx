@@ -59,7 +59,7 @@ export default function CommunityMain({
         <div className="flex-1 truncate pr-2 text-sm text-black">
           {description}
         </div>
-        <Link href={`/community/${id}`}>
+        <Link href={`/community/${id}`} prefetch>
           <ChevronRight size={20} />
         </Link>
       </div>
