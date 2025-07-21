@@ -44,6 +44,8 @@ export const ShopBanner = () => {
                 fill
                 src={ban.src}
                 alt={ban.alt}
+                priority={false}
+                sizes="(max-width: 768px) 100vw"
                 style={{ objectFit: 'cover', objectPosition: 'center' }}
               />
             </div>

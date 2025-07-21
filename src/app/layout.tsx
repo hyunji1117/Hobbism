@@ -1,11 +1,13 @@
 'use client';
 
-import AuthContext from '@/context/AuthContext';
+// import AuthContext from '@/context/AuthContext';
 import '@/styles/globals.css';
 import localFont from 'next/font/local';
 import { MobileFrame } from '@/components/layout/moblie-frame/MobileFrame';
 import TabBar from '@/components/layout/tabbar/Tabbar';
 import ModalProvider from '@/components/common/ModalProvider';
+import { SessionProvider } from 'next-auth/react';
+import TokenSync from '@/components/features/auth/TokenSync';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -22,11 +24,14 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${pretendard.variable}`}>
       <body className={`${pretendard.className}`}>
-        <MobileFrame>
-          {children}
-          <TabBar />
+        <SessionProvider>
+          <TokenSync />
+          <MobileFrame>
+            {children}
+            <TabBar />
+          </MobileFrame>
           <ModalProvider />
-        </MobileFrame>
+        </SessionProvider>
       </body>
     </html>
   );
