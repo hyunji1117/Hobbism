@@ -66,7 +66,7 @@ export default function ShopCategoryProducts() {
     loadingProducts(page); //page가 바뀔 때마다 해당 페이지 게시물 로드
   }, [page]);
 
-  /* ------------ 선택된 카테고리 상태 --------------- */
+  /* ================ 선택된 카테고리 상태 ================ */
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
   const filteredProducts =
@@ -76,7 +76,9 @@ export default function ShopCategoryProducts() {
           product.extra.category.includes(selectedCategory),
         );
 
+  /*---------- 선택된 카테고리의 상품이 나오는 페이지를 찾아서 렌더링 ------------*/
   const handleCategoryChange = async (newCategory: string) => {
+    // 로딩 상태 true, 상품 목록, 페이지 초기화
     setLoading(true);
     setProducts([]);
     setPageParams([]);
@@ -86,24 +88,26 @@ export default function ShopCategoryProducts() {
 
     if (newCategory !== 'ALL') {
       while (true) {
-        const data = await fetchProducts(targetPage);
-        if (data.length === 0) break;
+        // 데이터를 찾을 때까지 무한 루프
+        const data = await fetchProducts(targetPage); // targetPage에 해당하는 상품 데이터를 서버에서 가져옴
+        if (data.length === 0) break; // 끝까지 없으면 종료
 
         const filtered = data.filter(p =>
           p.extra.category.includes(newCategory),
         );
 
         if (filtered.length > 0) {
-          firstPageData = filtered;
-          break;
+          // 페이지에 카테고리에 해당하는 상품이 있으면
+          firstPageData = filtered; // 저장
+          break; // 종료
         }
 
-        targetPage++;
+        targetPage++; // 조건에 맞는 상품이 없었다면 다음 페이지로 넘어감
       }
     } else {
       const data = await fetchProducts(1);
       firstPageData = data;
-    }
+    } // 카테고리가 ALL이라면 필터링 없이 첫 페이지 그대로 렌더링
 
     setSelectedCategory(newCategory);
     setProducts(firstPageData);
