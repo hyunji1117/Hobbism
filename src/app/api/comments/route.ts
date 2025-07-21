@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
   try {
     const { _id, reply_id, content } = await request.json();
     const response = await fetch(

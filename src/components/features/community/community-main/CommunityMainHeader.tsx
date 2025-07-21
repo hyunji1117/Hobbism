@@ -21,7 +21,7 @@ export default function CommunityMainHeader() {
       </div>
 
       {/* 오른쪽 - 편집 아이콘 */}
-      <Link href="/community/write">
+      <Link href="/community/write" prefetch>
         <Pencil size={24} />
       </Link>
     </div>

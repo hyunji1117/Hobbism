@@ -36,7 +36,7 @@ export default function CommentInput({
     try {
       if (mode === 'edit' && replyId) {
         const response = await fetch('/api/comments', {
-          method: 'PUT',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },
