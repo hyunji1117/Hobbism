@@ -1,34 +1,15 @@
 'use client';
 
+import ShopLiveList from '@/app/shop/ShopLiveList';
 import { ShopAd } from '@/components/features/shop/ShopAd';
 import { ShopBanner } from '@/components/features/shop/ShopBanner';
 import { ShopCategory } from '@/components/features/shop/ShopCategory';
-import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
-import { fetchLiveProducts } from '@/data/functions/LiveProductFetch';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Product } from '@/types/interface/product';
 import { JSX, useEffect, useRef, useState } from 'react';
 
 export default function ShopCategoryProducts() {
-  // const notLiveData = data.filter(product => !product.extra.isLiveSpecial);
-  // const liveData = data.filter(product => product.extra.isLiveSpecial);
-
-  /* 라이브 특별 기획 상품 */
-  const [liveProducts, setLiveProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const liveDataList = async () => {
-      const liveData = await fetchLiveProducts();
-      const liveFiltered = liveData.filter(
-        product => product.extra.isLiveSpecial,
-      );
-      setLiveProducts(liveFiltered);
-    };
-
-    liveDataList();
-  }, []);
-
   /* ======================== 무한 스크롤 ======================== */
   /* ------------ 상태 변수 --------------- */
   const [products, setProducts] = useState<Product[]>([]); // 화면에 그려질 게시물 목록
@@ -166,10 +147,7 @@ export default function ShopCategoryProducts() {
       </section>
 
       {/* 라이브 특별 기획 상품 */}
-      <section className="ml-5">
-        <h2 className="py-4 text-lg font-semibold">라이브 특별 기획 상품</h2>
-        <ShopLiveProducts liveData={liveProducts} />
-      </section>
+      <ShopLiveList />
 
       {/* 전체(카테고리 별) 상품 */}
       <section>
