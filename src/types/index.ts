@@ -9,3 +9,5 @@ export * from './product';
 export * from './user';
 // 피드(게시물) 관련 타입 정의
 export * from './post';
+// 북마크 관련 타입 정의
+export * from './bookmark';

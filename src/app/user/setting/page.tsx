@@ -1,7 +1,10 @@
 'use client';
 import { BackButton } from '@/components/common/BackButton';
 import { HeaderNav } from '@/components/layout/header/Header';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { Address, useDaumPostcodePopup } from 'react-daum-postcode';
+import Postcode from 'react-daum-postcode';
 
 import {
   Bell,
@@ -16,8 +19,25 @@ import {
   UserRound,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function SettingPage() {
+  const [isAddressOpen, setIsAddressOpen] = useState(false);
+  // 배송지 수정 버튼 클릭
+  // const onAddressButtonClickHandler = () => {
+  //   open({ onComplete });
+  // };
+
+  const onAddressButtonClickHandler = () => {
+    setIsAddressOpen(prev => !prev);
+  };
+
+  const onComplete = (data: Address) => {
+    const { address } = data;
+  };
+
+  //          function: 다음 주소 검색 팝업 오픈 함수          //
+  const open = useDaumPostcodePopup();
   return (
     <div className="flex h-full flex-col">
       <HeaderNav>
@@ -26,7 +46,7 @@ export default function SettingPage() {
         </HeaderNav.LeftContent>
         <HeaderNav.Title>설정</HeaderNav.Title>
       </HeaderNav>
-      <main className="flex h-full flex-col gap-2 p-5">
+      <main className="flex h-full flex-col gap-2 overflow-scroll p-5">
         <section>
           <p>일반</p>
           <div className="flex flex-col gap-3 rounded-[8px] border">
@@ -40,10 +60,26 @@ export default function SettingPage() {
                 <Map />
                 <span className="flex-1">배송지 관리</span>
                 <ChevronRight />
+                <Button
+                  variant={'outline'}
+                  onClick={onAddressButtonClickHandler}
+                >
+                  수정
+                </Button>
               </li>
             </ul>
           </div>
         </section>
+        {/* 주소 검색 컴포넌트 */}
+        {isAddressOpen && (
+          <div className="mt-3 overflow-hidden rounded-md border">
+            <Postcode
+              onComplete={onComplete}
+              style={{ width: '100%', height: '400px' }}
+            />
+          </div>
+        )}
+
         <section>
           <p>일반</p>
           <div className="flex flex-col gap-3 rounded-[8px] border">

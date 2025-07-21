@@ -5,7 +5,17 @@ meta {
 }
 
 get {
-  url: {{url}/bookmark/user
-  body: none
+  url: {{url}}/bookmark/?type=user
+  body: json
   auth: inherit
+}
+
+params:query {
+  type: user
+}
+
+body:json {
+  {
+    "target_id": 2
+  }
 }

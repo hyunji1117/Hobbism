@@ -19,7 +19,7 @@ interface Props {
 export function UserProfileSection({ user, isMypage }: Props) {
   const imageUrl = user.image
     ? `https://fesp-api.koyeb.app/market/${user.image}`
-    : '/lelabo-01.webp';
+    : '/images/default-profile-image.webp';
   return (
     <div className="flex flex-col gap-4">
       {/* 프로필 상단 영역 */}
@@ -67,7 +67,7 @@ export function UserProfileSection({ user, isMypage }: Props) {
             <span>팔로우</span>
           </div>
           <div className="text-muted-foreground text-xs">
-            {user.bookmark.users ?? 0}
+            {user.bookmarkedBy.users ?? 0}
           </div>
         </Link>
 
@@ -82,8 +82,9 @@ export function UserProfileSection({ user, isMypage }: Props) {
             <Bookmark size={16} />
             <span>팔로잉</span>
           </div>
+
           <div className="text-muted-foreground text-xs">
-            {user.bookmarkedBy.users ?? 0}
+            {user.bookmark.users ?? 0}
           </div>
         </Link>
 

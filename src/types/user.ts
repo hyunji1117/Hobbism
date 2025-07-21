@@ -24,8 +24,6 @@ export interface User {
   postViews: number;
 }
 
-// export interface UserExtra {}
-
 export interface UserBookmark {
   products: number;
   users: number;
