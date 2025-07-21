@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useSwipeable } from 'react-swipeable';
 import Image from 'next/image';
 import { ChevronLeft, ShoppingCart } from 'lucide-react';
@@ -13,32 +12,49 @@ import {
   ProductQuantitySelector,
   TotalPrice,
 } from '@/components/features/shop/ProductDetail/ProductDetail';
+
 import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
 
 export default function ProductPage() {
   const [selectedOption, setSelectedOption] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const price = 158900;
-
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const router = useRouter();
-
+  const [isQuantitySelectorEnabled, setIsQuantitySelectorEnabled] =
+    useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const price = 158900;
   const swipeHandlers = useSwipeable({
     onSwipedDown: () => setIsBottomSheetOpen(false),
     trackMouse: true,
   });
 
+  // 뒤로가기 버튼 핸들러
+  function handleGoBack(): void {
+    if (window.history.length > 2) {
+      // 사용자가 URL을 직접 입력하여 접속 경우, 뒤로가기 버튼을 클릭하면 검색 엔진이나 서비스 외부 페이지로 이동하는 문제 해결 가능
+      // browser history stack이 2 이하일 때 내부경로로 이동하도록 설정 (history 1개로 설정 시 브라우저 첫 페이지가 이전 기록이 되어 문제 해결이 어렵기 때문)
+      window.history.back();
+    } else {
+      window.location.href = '/';
+    }
+  }
+
   return (
     <>
       <HeaderNav>
         <HeaderNav.LeftContent>
-          <button onClick={() => router.back()}>
+          <button onClick={handleGoBack}>
             <ChevronLeft />
           </button>
         </HeaderNav.LeftContent>
         <HeaderNav.Title>제품상세</HeaderNav.Title>
         <HeaderNav.RightContent>
           <ShoppingCart />
+          {cartCount > 0 && (
+            <span className="absolute -top-1 right-[15] flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+              {cartCount}
+            </span>
+          )}
         </HeaderNav.RightContent>
       </HeaderNav>
 
@@ -66,21 +82,29 @@ export default function ProductPage() {
 
       {/* 상품 액션 버튼 컴포넌트 */}
       <div className="bt-rounded-[8px] fixed bottom-[55px] z-30 w-full max-w-[600px] bg-white px-5 py-3">
-        <ProductActionButtons onCartClick={() => setIsBottomSheetOpen(true)} />
+        <ProductActionButtons
+          onCartClick={() => {
+            setIsBottomSheetOpen(true);
+            setIsQuantitySelectorEnabled(false);
+            setCartCount(cartCount + quantity);
+            setIsBottomSheetOpen(true);
+            setIsQuantitySelectorEnabled(false);
+          }}
+        />
       </div>
 
-      {/* {isBottomSheetOpen && (
-        <div
-          className="bg-opacity-50 fixed inset-0 z-10 bg-black"
-          onClick={() => setIsBottomSheetOpen(false)}
-        ></div>
-      )} */}
+      {/* 바텀시트 on 어두운 배경 */}
+      {isBottomSheetOpen && (
+        <div className="fixed inset-0 z-10 flex items-center justify-center">
+          <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
+        </div>
+      )}
 
       {/* 바텀시트 */}
       {isBottomSheetOpen && (
         <div
           {...swipeHandlers}
-          className="fixed bottom-[133px] z-20 w-full max-w-[600px] rounded-t-[16px] bg-white shadow-lg"
+          className="flexbox fixed bottom-[133px] z-20 w-full max-w-[600px] rounded-t-[16px] bg-white shadow-lg"
         >
           {/* 스와이프 핸들 디자인 */}
           <div className="flex justify-center">
@@ -92,25 +116,32 @@ export default function ProductPage() {
             <OptionSelector
               options={['S', 'M', 'L', 'XL']}
               selectedOption={selectedOption}
-              onSelect={option => setSelectedOption(option)}
+              onSelect={option => {
+                setSelectedOption(option);
+                setIsQuantitySelectorEnabled(true);
+              }}
             />
           </div>
 
-          {/* 상품 수량 선택 컴포넌트 */}
-          <div className="bg-white px-5 py-3">
-            <ProductQuantitySelector
-              selectedOption={selectedOption}
-              quantity={quantity}
-              onIncrease={() => setQuantity(quantity + 1)}
-              onDecrease={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
-              price={price}
-            />
-          </div>
+          {/* 상품 수량 선택 컴포넌트: 옵션이 선택된 경우에만 렌더링 */}
+          {isQuantitySelectorEnabled && (
+            <div className="bg-white px-5 py-3">
+              <ProductQuantitySelector
+                selectedOption={selectedOption}
+                quantity={quantity}
+                onIncrease={() => setQuantity(quantity + 1)}
+                onDecrease={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
+                price={price}
+              />
+            </div>
+          )}
 
-          <TotalPrice quantity={quantity} price={price} />
+          {/* 총 결제 금액 컴포넌트: 옵션이 선택된 경우에만 렌더링 */}
+          {isQuantitySelectorEnabled && (
+            <TotalPrice quantity={quantity} price={price} />
+          )}
         </div>
       )}
-
       <Tabbar />
     </>
   );
