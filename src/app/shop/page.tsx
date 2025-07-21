@@ -1,4 +1,6 @@
 import ShopList from '@/app/shop/ShopList';
+import ShopLiveList from '@/app/shop/ShopLiveList';
+import { ShopBanner } from '@/components/features/shop/ShopBanner';
 import TabBar from '@/components/layout/tabbar/Tabbar';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Metadata } from 'next';
@@ -15,6 +17,13 @@ export default async function ShopPage() {
 
   return (
     <>
+      {/* 메인 배너 */}
+      <section>
+        <ShopBanner />
+      </section>
+
+      {/* 라이브 특별 기획 상품 */}
+      <ShopLiveList />
       {/* 전체(카테고리 별) 상품 */}
       <ShopList initialData={initialData} />
       <TabBar />

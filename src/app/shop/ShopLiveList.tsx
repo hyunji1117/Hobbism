@@ -1,3 +1,5 @@
+'use client';
+
 import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';
 import { fetchLiveProducts } from '@/data/functions/LiveProductFetch';
 import { Product } from '@/types/interface/product';

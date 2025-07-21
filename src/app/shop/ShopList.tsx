@@ -1,8 +1,6 @@
 'use client';
 
-import ShopLiveList from '@/app/shop/ShopLiveList';
 import { ShopAd } from '@/components/features/shop/ShopAd';
-import { ShopBanner } from '@/components/features/shop/ShopBanner';
 import { ShopCategory } from '@/components/features/shop/ShopCategory';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
 import { fetchProducts } from '@/data/functions/ProductFetch';
@@ -146,14 +144,6 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
 
   return (
     <>
-      {/* 메인 배너 */}
-      <section>
-        <ShopBanner />
-      </section>
-
-      {/* 라이브 특별 기획 상품 */}
-      <ShopLiveList />
-
       {/* 전체(카테고리 별) 상품 */}
       <section>
         <div className="ml-5">
