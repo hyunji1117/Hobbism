@@ -1,27 +1,17 @@
-// components/features/community/community-create/FeedSubmitButton.tsx
-
 interface FeedSubmitButtonProps {
   text?: string;
   variant?: 'submitBtn' | 'CommentCancel';
-  onClick: () => void;
   disabled?: boolean;
 }
 
 export default function FeedSubmitButton({
   text = '작성완료',
   variant = 'submitBtn',
-  onClick,
   disabled = false,
 }: FeedSubmitButtonProps) {
-  const handleClick = () => {
-    if (onClick && !disabled) {
-      onClick();
-    }
-  };
-
   return (
     <button
-      onClick={handleClick}
+      type="submit"
       disabled={disabled}
       className={`h-14 w-[350px] rounded-lg text-xl font-bold ${
         disabled

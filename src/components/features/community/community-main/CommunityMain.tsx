@@ -3,6 +3,8 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Post } from '@/types/interface';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 interface CommunityMainProps {
   post: Post;
 }
@@ -10,13 +12,17 @@ interface CommunityMainProps {
 export default function CommunityMain({ post }: CommunityMainProps) {
   return (
     <div className="w-full">
-      {/* 상단 프로필 영역 (60px) */}
+      {/* 상단 프로필 영역 */}
       <div className="flex h-[60px] items-center px-5">
         <div className="flex items-center gap-2">
           {/* 프로필 이미지 */}
           <div className="h-8 w-8">
             <Image
-              src={post.user.image || '/images/inhwan/profile-default.png'}
+              src={
+                post.user.image
+                  ? `${API_URL}${post.user.image}`
+                  : '/images/inhwan/profile-default.png'
+              }
               alt={`${post.user.name} 프로필`}
               width={32}
               height={32}
@@ -34,10 +40,14 @@ export default function CommunityMain({ post }: CommunityMainProps) {
         </div>
       </div>
 
-      {/* 중간 - 피드 이미지 (반응형) */}
+      {/* 중간 - 피드 이미지 */}
       <div className="relative aspect-square w-full">
         <Image
-          src="/images/inhwan/barrier.webp" // 일단 기본 이미지 사용
+          src={
+            post.image?.[0] // 배열의 첫 번째 이미지
+              ? `${API_URL}/${post.image[0]}`
+              : '/images/inhwan/barrier.webp'
+          }
           alt="피드 이미지"
           fill
           className="object-cover"

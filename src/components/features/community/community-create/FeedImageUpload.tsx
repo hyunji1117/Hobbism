@@ -1,22 +1,17 @@
+'use client';
+
 import { Plus, X } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
-interface FeedImageUploadProps {
-  images?: string[];
-  onChange?: (images: string[]) => void;
-}
-
-export default function FeedImageUpload({
-  images = [],
-  onChange,
-}: FeedImageUploadProps) {
+export default function FeedImageUpload() {
+  const [images, setImages] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files || !onChange) return;
+    if (!files) return;
 
-    // 파일을 URL로 변환 (실제로는 서버 업로드 후 URL 받아야 함)
+    // 파일을 URL로 변환 (미리보기용)
     const newImages: string[] = [];
 
     Array.from(files).forEach(file => {
@@ -26,12 +21,7 @@ export default function FeedImageUpload({
       }
     });
 
-    onChange([...images, ...newImages]);
-
-    // input 초기화
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    setImages([...images, ...newImages]);
   };
 
   const handleAddImage = () => {
@@ -40,17 +30,17 @@ export default function FeedImageUpload({
   };
 
   const handleRemoveImage = (index: number) => {
-    if (!onChange) return;
     const newImages = images.filter((_, i) => i !== index);
-    onChange(newImages);
+    setImages(newImages);
   };
 
   return (
     <div className="w-full px-5">
-      {/* 숨겨진 파일 input */}
+      {/* 실제 파일 input - FormData에서 읽을 값 */}
       <input
         ref={fileInputRef}
         type="file"
+        name="images"
         accept="image/*"
         multiple
         onChange={handleFileSelect}
@@ -77,6 +67,7 @@ export default function FeedImageUpload({
             />
             {/* 삭제 버튼 */}
             <button
+              type="button"
               onClick={() => handleRemoveImage(index)}
               className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white"
             >
@@ -89,6 +80,7 @@ export default function FeedImageUpload({
         {Array.from({ length: 5 - images.length }, (_, index) => (
           <button
             key={`empty-${index}`}
+            type="button"
             onClick={handleAddImage}
             className="flex h-[100px] w-[100px] flex-shrink-0 items-center justify-center rounded-lg border border-dashed border-[#C3C3C3] hover:border-[#FE508B]"
           >

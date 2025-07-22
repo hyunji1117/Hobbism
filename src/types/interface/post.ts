@@ -19,6 +19,7 @@ export interface Post {
   type: string; // 게시판 타입 (community, notice 등)
   title: string; // 제목
   content: string; // 내용
+  image?: string; // 이미지
   user: Pick<User, '_id' | 'name' | 'image'>; // 작성자 (일부 정보만)
   views: number; // 조회수
   repliesCount: number; // 댓글 수
