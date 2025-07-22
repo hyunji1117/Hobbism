@@ -1,6 +1,4 @@
-import LiveOverlay from '@/app/live/LiveOverlay';
-import { LiveComment } from '@/components/features/live/LiveCommentBtn';
-import { LiveVideo } from '@/components/features/live/LiveVideo';
+import LiveDataUI from '@/app/live/LiveDataUI';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -13,17 +11,7 @@ export default function LivePage() {
     <>
       {/* // 라이브 전체 section */}
       <section className="relative h-screen overflow-hidden">
-        <LiveOverlay />
-        {/* 라이브 버튼 */}
-
-        {/* 라이브 비디오 */}
-        <div className="h-[60%]">
-          <LiveVideo />
-        </div>
-        {/* 라이브 댓글 */}
-        <div className="h-[48%]">
-          <LiveComment />
-        </div>
+        <LiveDataUI />
       </section>
     </>
   );
