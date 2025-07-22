@@ -1,24 +1,13 @@
 import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { Post } from '@/types/interface';
 
 interface CommunityMainProps {
-  id: number;
-  profileImage: string;
-  userName: string;
-  timeAgo: string;
-  description: string;
-  image: string;
+  post: Post;
 }
 
-export default function CommunityMain({
-  id,
-  userName = '오다구',
-  timeAgo = '2시간 전',
-  description = '드디어 완성된 결계 마왕의 졸개를 처리하느라 ...',
-  image = '/images/inhwan/barrier.webp',
-  profileImage = '/images/inhwan/profile-default.png',
-}: CommunityMainProps) {
+export default function CommunityMain({ post }: CommunityMainProps) {
   return (
     <div className="w-full">
       {/* 상단 프로필 영역 (60px) */}
@@ -27,8 +16,8 @@ export default function CommunityMain({
           {/* 프로필 이미지 */}
           <div className="h-8 w-8">
             <Image
-              src={profileImage}
-              alt={`${userName} 프로필`}
+              src={post.user.image || '/images/inhwan/profile-default.png'}
+              alt={`${post.user.name} 프로필`}
               width={32}
               height={32}
               className="rounded-full"
@@ -37,8 +26,10 @@ export default function CommunityMain({
 
           {/* 닉네임, 시간 */}
           <div className="flex flex-col">
-            <div className="text-sm font-bold text-black">{userName}</div>
-            <div className="text-xs font-normal text-[#4B5563]">{timeAgo}</div>
+            <div className="text-sm font-bold text-black">{post.user.name}</div>
+            <div className="text-xs font-normal text-[#4B5563]">
+              {post.createdAt}
+            </div>
           </div>
         </div>
       </div>
@@ -46,7 +37,7 @@ export default function CommunityMain({
       {/* 중간 - 피드 이미지 (반응형) */}
       <div className="relative aspect-square w-full">
         <Image
-          src={image}
+          src="/images/inhwan/barrier.webp" // 일단 기본 이미지 사용
           alt="피드 이미지"
           fill
           className="object-cover"
@@ -57,9 +48,9 @@ export default function CommunityMain({
       {/* 하단 - 게시글, 상세보기 버튼 */}
       <div className="flex h-[60px] items-center justify-between border-b border-[#EAEAEA] px-4">
         <div className="flex-1 truncate pr-2 text-sm text-black">
-          {description}
+          {post.content}
         </div>
-        <Link href={`/community/${id}`}>
+        <Link href={`/community/${post._id}`}>
           <ChevronRight size={20} />
         </Link>
       </div>
