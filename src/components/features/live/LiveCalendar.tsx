@@ -29,7 +29,7 @@ export const LiveCalendar = ({ liveData }: { liveData: LiveDataType[] }) => {
 
   return (
     <>
-      <div className="w-full rounded-b-3xl bg-white px-2.5 py-3">
+      <div className="w-full rounded-b-3xl bg-white px-2.5 pt-7 pb-3">
         <div className="flex w-full justify-center gap-3 px-2.5">
           {weekDays.map(day => {
             const dayOfWeek = day.day(); // 0: 일요일, 6: 토요일

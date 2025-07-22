@@ -7,7 +7,7 @@ export const LiveBuyBtn = () => {
         href={'/'}
         className="rounded-lg bg-[#FE508B] p-2 text-xl font-bold text-white"
       >
-        구매하기
+        제품보기
       </Link>
     </>
   );
