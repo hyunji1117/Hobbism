@@ -2,8 +2,9 @@
 
 import { Product, ProductListRes } from '@/types/interface/product';
 
-const API_URL = 'https://fesp-api.koyeb.app/market';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
+
 export async function fetchLiveProducts(): Promise<Product[]> {
   const res = await fetch(`${API_URL}/products`, {
     headers: {
