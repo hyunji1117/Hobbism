@@ -13,12 +13,22 @@ export interface LiveDataType {
 }
 
 export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
-  const [isDropdownOpen, setIsDropDownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropDownOpen] = useState(false); // 드롭다운 오픈 상태
+  const [isAnimation, setIsAnimation] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => {
-    setIsDropDownOpen(!isDropdownOpen);
+  const openDropdown = () => {
+    setIsDropDownOpen(true);
+    setTimeout(() => {
+      setIsAnimation(true);
+    }, 100);
+  };
+  const closeDropdown = () => {
+    setIsAnimation(false);
+    setTimeout(() => {
+      setIsDropDownOpen(false);
+    }, 200);
   };
 
   useEffect(() => {
@@ -38,7 +48,7 @@ export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
 
   return (
     <div>
-      <button onClick={toggleDropdown}>
+      <button onClick={openDropdown}>
         <CalendarFold stroke="white" />
       </button>
 
@@ -46,10 +56,12 @@ export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
         <>
           <div
             ref={dropdownRef}
-            onClick={() => setIsDropDownOpen(false)}
+            onClick={closeDropdown}
             className="absolute top-0 left-0 z-1 h-[100vh] w-full bg-black/50"
           ></div>
-          <div className="absolute top-0 z-2 w-full">
+          <div
+            className={`absolute z-2 w-full transition-all duration-200 ${isAnimation ? '-translate-y-10' : '-translate-y-[400px]'} `}
+          >
             <LiveCalendar liveData={liveData} />
           </div>
         </>
