@@ -9,16 +9,22 @@ import moment from 'moment';
 import { useState } from 'react';
 
 export default function LiveOverlay() {
-  // 라이브 링크 아이디
+  /**
+   *예시)
+   *src="https://www.youtube.com/embed/VSH2d0qUkpM?si=XQ5FXY5fQjEJp-UD"
+   *src="https://www.youtube.com/embed/<여기에 있는 코드가 livePath>"
+   *src="https://www.youtube.com/embed/<여기에 있는 코드가 liveId>?si=XQ5FXY5fQjEJp-UD"
+   */
+  // 라이브 링크 아이디(비디오 가져올 때)
   const livePath = 'hAX63N-mCxs?si=5ZoyVqA0d5n7j5bE';
-  // 라이브 아이디
+  // 라이브 아이디(댓글 가져올 때)
   const liveId = 'yf5NOyy1SXU'; // YouTube Live Video ID
 
   // 라이브 일정
   const liveData = [
     {
       id: 1,
-      start: moment('2025-07-22 02:00'),
+      start: moment('2025-07-22 12:00'),
       end: moment('2025-07-22 18:00'),
       title: '여름 신상 라이브 세일',
     },
@@ -62,7 +68,7 @@ export default function LiveOverlay() {
             <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-center text-white">
               <p className="text-xl">현재 방송 중인 Live가 없습니다.</p>
               <p className="font-light">
-                지난 방송을 다시 보려면 화면을 클릭하세요!
+                지난 방송이 궁금하다면 화면을 클릭해 보세요!
               </p>
             </div>
           </div>
