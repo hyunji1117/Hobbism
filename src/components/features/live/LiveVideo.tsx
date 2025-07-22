@@ -1,5 +1,4 @@
-export const LiveVideo = () => {
-  const livePath = 'hAX63N-mCxs?si=5ZoyVqA0d5n7j5bE';
+export const LiveVideo = ({ livePath }: { livePath: string }) => {
   return (
     <div className="mx-auto h-full w-full md:w-full">
       {/* 라이브 영상 */}
