@@ -58,11 +58,6 @@ export default function ProductDetailClient({ price }: { price: number }) {
 
   return (
     <>
-      {/* 네비게이션 바에 CartIcon 포함 */}
-      <div className="relative top-0 right-0 z-50 p-4">
-        <CartIcon />
-      </div>
-
       {/* 상품 액션 버튼 컴포넌트 */}
       <div className="bt-rounded-[8px] fixed bottom-[55px] z-30 w-full max-w-[600px] bg-white px-5 py-3">
         <ProductActionButtons
