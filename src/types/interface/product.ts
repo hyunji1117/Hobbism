@@ -46,3 +46,17 @@ export interface ProductListRes {
     totalPages: number;
   };
 }
+
+export interface ProductDetailInfoProps {
+  item: {
+    _id: number;
+    name: string;
+    price: number;
+    path: string;
+  };
+  discountRate: number;
+  discountedPrice: number;
+  extra: {
+    recommendedBy: string;
+  };
+}
