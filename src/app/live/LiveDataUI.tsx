@@ -24,20 +24,38 @@ export default function LiveOverlay() {
   const liveData = [
     {
       id: 1,
-      start: moment('2025-07-22 12:00'),
-      end: moment('2025-07-22 18:00'),
+      start: moment('2025-07-23 12:00'),
+      end: moment('2025-07-23 18:00'),
       title: '여름 신상 라이브 세일',
     },
     {
       id: 2,
       start: moment('2025-07-23 13:00'),
-      end: moment('2025-07-23 15:00'),
+      end: moment('2025-07-23 18:00'),
       title: '여름  라이브 세일',
     },
     {
       id: 3,
       start: moment('2025-07-24 14:00'),
       end: moment('2025-07-24 15:00'),
+      title: '여름  세일',
+    },
+    {
+      id: 4,
+      start: moment('2025-08-24 14:00'),
+      end: moment('2025-08-24 15:00'),
+      title: '여름  세일',
+    },
+    {
+      id: 5,
+      start: moment('2025-08-26 14:00'),
+      end: moment('2025-08-26 15:00'),
+      title: '여름  세일',
+    },
+    {
+      id: 6,
+      start: moment('2025-08-27 14:00'),
+      end: moment('2025-08-27 15:00'),
       title: '여름  세일',
     },
   ];
@@ -66,20 +84,31 @@ export default function LiveOverlay() {
             className="absolute top-0 left-0 z-5 h-[100vh] w-full bg-black/80"
           >
             <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-center text-white">
-              <p className="text-xl">현재 방송 중인 Live가 없습니다.</p>
-              <p className="font-light">
+              <p className="text-xl font-semibold">
+                현재 방송 중인 Live가 없습니다.
+              </p>
+              <p className="mt-1 text-xs font-light text-gray-200">
                 지난 방송이 궁금하다면 화면을 클릭해 보세요!
               </p>
             </div>
           </div>
         )
       )}
+
       {/* 라이브 캘린더 버튼 */}
       <div className="absolute z-10 w-full select-none">
         <LiveCalendarBtn liveData={liveData} />
       </div>
+
+      {/* 동시 라이브 알림
+        TODO 헤더 삽입 후 위치 수정
+      */}
+      <div className="absolute top-[5%] right-0 mr-2 w-fit rounded-lg bg-white p-1.5 text-xs font-extrabold text-[#FE508B] after:absolute after:-top-3 after:right-4 after:border-7 after:border-transparent after:border-b-white after:content-['']">
+        동시 ON
+      </div>
+
       {/* 상품 설명, 제품 보기 링크 */}
-      <div className="absolute top-[calc(43%)] z-1 flex w-full justify-between px-3.5 text-white md:top-[calc(49%)] lg:top-[calc(43%)]">
+      <div className="absolute top-[calc(43%)] z-1 flex w-full justify-between px-3.5 text-white">
         <span className="flex flex-col justify-end text-xs leading-loose text-[#6B7280]">
           <p>상품 제목 타이틀</p>
           <p>상품 설명 텍스트</p>
