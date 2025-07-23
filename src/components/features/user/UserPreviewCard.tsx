@@ -10,6 +10,7 @@ import { useAuthStore } from '@/store/auth.store';
 import { useFollowStore } from '@/store/follow.store';
 import { cn } from '@/lib/utils';
 
+//          interface: 유저 프리뷰 카드 컴포넌트 Properties          //
 interface Props {
   id: number;
   name: string;
@@ -20,8 +21,8 @@ interface Props {
   bookmarkId?: number | null;
   variant: 'horizontal' | 'vertical';
 }
-
-export function UserPreviewCard({
+//          component: 유저 프리뷰 카드 컴포넌트          //
+export default function UserPreviewCard({
   id,
   name,
   introduction,
@@ -31,17 +32,25 @@ export function UserPreviewCard({
   bookmarkId: initialBookmarkId,
   variant = 'vertical',
 }: Props) {
+  //          variable: variant에 따른 스타일 변수          //
+  const variantClass =
+    variant === 'vertical'
+      ? 'flex-col gap-2 w-[148px] bg-[#70737C14]'
+      : 'flex-row w-full';
+
+  //          state: 팔로우 상태          //
   const [isFollowing, setFollowing] = useState<boolean>(false);
+  //          state: 북마크 ID 상태          //
   const [bookmarkId, setBookmarkId] = useState<number | null>(null);
+  //          state: accessToken 상태          //\
   const accessToken = useAuthStore(state => state.accessToken);
+
+  //          function: 팔로우 수 증가 함수          //
   const increaseFollowing = useFollowStore(state => state.increaseFollowing);
+  //          function: 팔로우 수 감소 함수          //
   const decreaseFollowing = useFollowStore(state => state.decreaseFollowing);
 
-  useEffect(() => {
-    setFollowing(isFollowed ?? false);
-    setBookmarkId(initialBookmarkId ?? null);
-  }, [isFollowed, initialBookmarkId]);
-
+  //          event handler: 팔로우/언팔로우 버튼 클릭 이벤트 처리          //
   const handleFollow = async () => {
     if (isFollowing && bookmarkId) {
       if (!accessToken) return null;
@@ -62,11 +71,13 @@ export function UserPreviewCard({
     }
   };
 
-  const variantClass =
-    variant === 'vertical'
-      ? 'flex-col gap-2 w-[148px] bg-[#70737C14]'
-      : 'flex-row w-full';
+  //          effect: props로 전달된 팔로우 여부와 북마크 ID를 내부 상태로 반영          //
+  useEffect(() => {
+    setFollowing(isFollowed ?? false);
+    setBookmarkId(initialBookmarkId ?? null);
+  }, [isFollowed, initialBookmarkId]);
 
+  //          render: 유저 프리뷰 카드 컴포넌트 렌더링          //
   return (
     <div
       className={cn(
@@ -74,6 +85,7 @@ export function UserPreviewCard({
         variantClass,
       )}
     >
+      {/* 유저 정보 클릭 시 유저 상세 페이지로 이동 */}
       <Link
         href={`/user/${id}`}
         className={cn(
@@ -83,6 +95,7 @@ export function UserPreviewCard({
         draggable={false}
         prefetch={true}
       >
+        {/* 프로필 이미지 */}
         <Image
           src={image}
           alt="프로필 이미지"
@@ -95,6 +108,7 @@ export function UserPreviewCard({
           draggable={false}
         />
 
+        {/* 유저 이름 및 소개 */}
         <div
           className={cn(
             'w-full',
@@ -120,6 +134,8 @@ export function UserPreviewCard({
           </p>
         </div>
       </Link>
+
+      {/* 팔로우 버튼 or > 아이콘 */}
       {variant === 'vertical' ? (
         <Button
           variant="outline"
@@ -132,6 +148,7 @@ export function UserPreviewCard({
         <ChevronRight />
       )}
 
+      {/* 삭제 아이콘 (추천 유저 제거 버튼) */}
       {variant === 'vertical' && onRemove && (
         <X
           className="absolute top-2 right-2 cursor-pointer"

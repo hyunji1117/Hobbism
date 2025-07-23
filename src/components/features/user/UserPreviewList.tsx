@@ -2,26 +2,39 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useDraggable } from 'react-use-draggable-scroll';
-import { UserPreviewCard } from '@/components/features/user/UserPreviewCard';
+import UserPreviewCard from '@/components/features/user/UserPreviewCard';
 import { getBookmarkList } from '@/data/actions/bookmark';
 import { User } from '@/types';
 import { useAuthStore } from '@/store/auth.store';
 
+//          interface: 유저 프리뷰 리스트 컴포넌트 Properties          //
 interface Props {
   recommendedUser: User[];
 }
 
-type ExtendedUser = User & {
+//          interface: 유저 & 북마크 확장 Properties          //
+interface ExtendedUser extends User {
   isFollowed?: boolean;
   bookmarkId?: number | null;
-};
+}
 
+//          component: 유저 프리뷰 리스트 컴포넌트          //
 export default function UserPreviewList({ recommendedUser }: Props) {
+  //          state: 드래그 요소 참조 상태          //
   const ref = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
-  const { events } = useDraggable(ref);
+  //          state: 추천 유저 상태          //
   const [users, setUsers] = useState<ExtendedUser[]>([]);
+  //          state: accessToken 상태          //
   const accessToken = useAuthStore(state => state.accessToken);
+  //          function: 드래그 이벤트 처리 함수          //
+  const { events } = useDraggable(ref);
 
+  //          event handler: 유저 카드 제거 버튼 클릭 이벤트 처리          //
+  const handleRemove = (id: number) => {
+    setUsers(prev => prev.filter(user => user._id !== id));
+  };
+
+  //          effect: 북마크 정보를 기반으로 추천 유저를 업데이트          //
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
@@ -54,10 +67,7 @@ export default function UserPreviewList({ recommendedUser }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recommendedUser]);
 
-  const handleRemove = (id: number) => {
-    setUsers(prev => prev.filter(user => user._id !== id));
-  };
-
+  //         render: 유저 프리뷰 리스트 컴포넌트 렌더링          //
   return (
     <section className="mb-4 px-5">
       <p className="mb-4 font-semibold">

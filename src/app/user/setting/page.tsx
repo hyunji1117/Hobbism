@@ -1,5 +1,3 @@
-import { BackButton } from '@/components/common/BackButton';
-import { HeaderNav } from '@/components/layout/header/Header';
 import { Separator } from '@/components/ui/separator';
 
 import {
@@ -54,33 +52,51 @@ export default function SettingPage() {
           <p>공지</p>
           <div className="flex flex-col gap-3 rounded-[8px] border">
             <ul className="px-3">
-              <li className="flex items-center gap-2.5 py-4">
-                <Megaphone />
-                <span className="flex-1">공지사항</span>
-                <ChevronRight />
+              <li>
+                <Link
+                  href="/notice"
+                  prefetch={true}
+                  className="flex items-center gap-2.5 py-4"
+                >
+                  <Megaphone />
+                  <span className="flex-1">공지사항</span>
+                  <ChevronRight />
+                </Link>
               </li>
               <Separator />
-              <li className="flex items-center gap-2.5 py-4">
-                <Headset />
-                <span className="flex-1">고객센터</span>
-                <ChevronRight />
+              <li>
+                <Link
+                  href="/contact"
+                  prefetch={true}
+                  className="flex items-center gap-2.5 py-4"
+                >
+                  <Headset />
+                  <span className="flex-1">고객센터</span>
+                  <ChevronRight />
+                </Link>
               </li>
             </ul>
           </div>
         </section>
         <section>
-          <p>약관</p>
+          <p>약관 및 정책</p>
           <div className="flex flex-col gap-3 rounded-[7px] border">
             <ul className="px-3">
-              <li className="flex items-center gap-2.5 py-4">
-                <Scroll />
-                <span className="flex-1">서비스 이용약관</span>
-                <ChevronRight />
+              <li>
+                <Link
+                  href="/terms"
+                  prefetch={true}
+                  className="flex items-center gap-2.5 py-4"
+                >
+                  <Scroll />
+                  <span className="flex-1">서비스 이용약관</span>
+                  <ChevronRight />
+                </Link>
               </li>
               <Separator />
               <li>
                 <Link
-                  href="/"
+                  href="/policy"
                   prefetch={true}
                   className="flex items-center gap-2.5 py-4"
                 >

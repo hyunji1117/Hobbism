@@ -9,10 +9,10 @@ import { getUserAttribute, updateUserInfo } from '@/data/actions/user';
 import { useAuthStore } from '@/store/auth.store';
 import { useForm } from 'react-hook-form';
 
-type FormValues = {
+interface FormValues {
   address: string;
   detail: string;
-};
+}
 
 export default function AddressForm() {
   const [isOpen, setIsOpen] = useState(false);

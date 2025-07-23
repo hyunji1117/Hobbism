@@ -14,6 +14,7 @@ export interface User {
     refreshToken: string; // 리프레시 토큰
   };
   extra: {
+    nickname?: string;
     introduction?: string;
     deatil_address?: string;
   };

@@ -4,7 +4,7 @@ export interface Bookmark {
   type: 'user' | 'product' | 'post';
   user_id: number;
   target_id: number;
-  user: Pick<User, '_id' | 'name' | 'image' | 'email' | 'extra'>;
+  user: Pick<User, '_id' | 'name' | 'image' | 'email' | 'extra' | 'picture'>;
   _id: number;
   createdAt: string;
 }

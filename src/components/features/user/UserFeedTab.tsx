@@ -1,8 +1,16 @@
+'use client';
 import { PostList } from '@/types';
 import { FeedCard } from './FeedCard';
 import Image from 'next/image';
 
-export function UserFeedTab({ posts }: { posts: PostList[] }) {
+//          interface: 유저 피드 탭 컴포넌트 Properties          //
+interface Props {
+  posts: PostList[];
+}
+
+//          component: 유저 피드 탭 컴포넌트          //
+export function UserFeedTab({ posts }: Props) {
+  //          render: 유저 피드 탭 컴포넌트 렌더링(게시물 x)          //
   if (!posts || posts.length === 0) {
     return (
       <div className="text-muted-foreground flex w-full flex-col items-center text-lg">
@@ -18,6 +26,7 @@ export function UserFeedTab({ posts }: { posts: PostList[] }) {
     );
   }
 
+  //          render: 유저 피드 탭 컴포넌트 렌더링(게시물 o)          //
   return (
     <div className="grid grid-cols-3 gap-2 p-4">
       {posts.map(post => (

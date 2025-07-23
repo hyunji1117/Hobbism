@@ -40,7 +40,11 @@ export default function Header() {
   const isCommunityWritePage = pathname === '/community/write'; // 커뮤니티 작성 페이지
   const isSettingPage = pathname === '/user/setting'; // 설정 페이지
   const isEditPage = pathname === '/user/edit'; // 프로필 수정 페이지
-  const isCartpage = pathname === '/shop/cart'; // 장바구니 페이지
+  const isCartPage = pathname === '/shop/cart'; // 장바구니 페이지
+  const isTermsPage = pathname === '/terms'; // 약관 페이지
+  const isPolicyPage = pathname === '/policy'; // 개인정보 처리방침 페이지
+  const isNoticePage = pathname === '/notice'; // 공지사항 페이지
+  const isContactPage = pathname === '/contact'; // 고객센터 페이지
 
   //          state: 현재 페이지가 내 마이페이지인지 여부          //
   const isMypage = user && pathname === `/user/${user._id}`;
@@ -49,9 +53,13 @@ export default function Header() {
   const showLogo = isCommunityPage || isShopPage; // 로고 노출 여부
   const showBackButton =
     isSettingPage ||
-    isCartpage ||
+    isCartPage ||
     isFollowPage ||
     isProductPage ||
+    isTermsPage ||
+    isPolicyPage ||
+    isNoticePage ||
+    isContactPage ||
     (isUserPage && !isMypage) ||
     isBookmarkPage; // 일반 뒤로가기 버튼 노출 조건
   const showConfirmBackButton = isEditPage || isCommunityWritePage; // 뒤로가기 시 확인이 필요한 페이지
@@ -85,7 +93,7 @@ export default function Header() {
             {isCommunityWritePage && '피드등록'}
             {isSettingPage && '설정'}
             {isEditPage && '프로필 수정'}
-            {isCartpage && '장바구니'}
+            {isCartPage && '장바구니'}
             {isProductPage && '제품 상세'}
             {isBookmarkPage && '게시물 북마크'}
           </h3>

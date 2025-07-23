@@ -1,8 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-
+//TODO : 일괄 삭제함ㅠㅜ
 export function UserShopTab() {
   return (
     <div className="p-4">

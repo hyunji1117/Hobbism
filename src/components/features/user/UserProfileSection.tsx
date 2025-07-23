@@ -14,34 +14,37 @@ import {
   postBookmark,
 } from '@/data/actions/bookmark';
 
+//          interface: 유저 프로필 섹션 Properties          //
 interface Props {
   user: User;
   isMypage: boolean;
 }
-
+//          component: 유저 프로필 섹션 컴포넌트          //
 export function UserProfileSection({ user, isMypage }: Props) {
+  //          variable: 디폴트 이미지 변수          //
   let imageUrl = '/images/default-profile-image.webp';
-
   if (user.image) {
     imageUrl = `https://fesp-api.koyeb.app/market/${user.image}`;
   } else if (user.picture) {
     imageUrl = user.picture;
   }
-  const followingCount = useFollowStore(state => state.followingCount);
-  const setFollowingCount = useFollowStore(state => state.setFollowingCount);
+  //          state: 팔로잉 카운트 상태          //
+  const { followingCount, setFollowingCount } = useFollowStore();
+  //          state: accessToken 상태          //
   const accessToken = useAuthStore(state => state.accessToken);
+  //          state: 팔로우 상태          //
   const [isFollowed, setIsFollowed] = useState(false);
-  const [isFollowChecked, setIsFollowChecked] = useState(false);
+  //          state: 팔로우 여부 로딩 상태          //
+  const [isFollowLoaded, setFollowLoaded] = useState(false);
+  //          state: 북마크 ID 상태          //
   const [bookmarkId, setBookmarkId] = useState<number | null>(null);
 
+  //          event handler: 팔로우 토큰 버튼 클릭 이벤트 처리          //
   const handleToggleFollow = async () => {
     try {
       if (!accessToken) return;
 
-      console.log(bookmarkId);
-      console.log(isFollowed);
       if (isFollowed && bookmarkId) {
-        console.log('삭제 실행');
         // 팔로우 취소 → 북마크 삭제
         const res = await deleteBookmark(bookmarkId, accessToken);
         console.log('res', res);
@@ -62,13 +65,15 @@ export function UserProfileSection({ user, isMypage }: Props) {
     }
   };
 
+  //          effect: 유저의 팔로잉 수를 전역 상태로 설정          //
   useEffect(() => {
-    if (user.bookmark?.users != null) {
+    if (isMypage && user.bookmark?.users != null) {
       setFollowingCount(user.bookmark.users);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.bookmark?.users]);
+  }, [isMypage, user.bookmark?.users]);
 
+  //          effect: 현재 유저가 이 유저를 팔로우하고 있는지 확인          //
   useEffect(() => {
     if (!isMypage && accessToken) {
       (async () => {
@@ -81,12 +86,12 @@ export function UserProfileSection({ user, isMypage }: Props) {
         } catch (error) {
           console.error('팔로우 여부 확인 실패:', error);
         } finally {
-          setIsFollowChecked(true);
+          setFollowLoaded(true);
         }
       })();
     }
   }, [isMypage, user._id, accessToken]);
-
+  //          render: 유저 프로필 섹션 컴포넌트 렌더링          //
   return (
     <div className="flex flex-col gap-4">
       {/* 프로필 상단 영역 */}
@@ -102,7 +107,7 @@ export function UserProfileSection({ user, isMypage }: Props) {
         />
         {/* 이름과 소개 */}
         <div className="flex flex-col justify-between">
-          <span className="text-xl font-semibold">{user.name}</span>
+          <span className="text-xl font-semibold">{`${user.name} ${user.extra.nickname ? `(${user.extra.nickname})` : ''}`}</span>
           <span className="text-muted-foreground font-medium">
             {user.extra.introduction || '\u00A0'}
           </span>
@@ -116,7 +121,7 @@ export function UserProfileSection({ user, isMypage }: Props) {
             </Button>
           </Link>
         ) : (
-          isFollowChecked && (
+          isFollowLoaded && (
             <Button
               variant="outline"
               className="ml-auto font-normal"

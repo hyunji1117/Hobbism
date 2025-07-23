@@ -76,7 +76,7 @@ export async function updateUserInfo(
   try {
     const attach = formData.get('attach') as File;
     const accessToken = formData.get('accessToken');
-    const name = formData.get('name')?.toString();
+    const nickname = formData.get('nickname')?.toString();
     const introduction = formData.get('introduction')?.toString();
     const address = formData.get('address')?.toString();
     const detail = formData.get('detail')?.toString();
@@ -97,10 +97,9 @@ export async function updateUserInfo(
     }
     const body = {
       ...(address && { address }),
-      ...(name && { name }),
-      ...(address && { address }),
       extra: {
         ...prevExtra,
+        ...(nickname && { nickname }),
         ...(introduction && { introduction }),
         ...(detail && { detail_address: detail }),
       },
