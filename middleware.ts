@@ -1,6 +1,9 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
+const CLIENT_ID = process.env.CLIENT_ID;
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 // 미들웨어
 const protectedRoutes = ['/character', '/community', '/live', '/shop', '/user'];
 
@@ -12,17 +15,14 @@ async function verifyAccessToken(
   _id: number,
 ): Promise<boolean> {
   try {
-    const response = await fetch(
-      `https://fesp-api.koyeb.app/market/user/${_id}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-          'Client-Id': 'febc13-final01-emjf',
-        },
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/user/${_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+        'Client-Id': CLIENT_ID || '',
       },
-    );
+    });
 
     return response.ok;
   } catch (error) {
@@ -36,16 +36,13 @@ async function refreshAccessToken(
   refreshToken: string,
 ): Promise<string | null> {
   try {
-    const response = await fetch(
-      'https://fesp-api.koyeb.app/market/auth/refresh',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-          'Client-Id': 'febc13-final01-emjf',
-        },
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/refresh`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+        'Client-Id': CLIENT_ID || '',
       },
-    );
+    });
 
     if (response.ok) {
       const data = await response.json();

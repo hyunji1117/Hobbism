@@ -16,7 +16,7 @@ interface AuthState {
   // action 설정
   setAccessToken: (accessToken: string) => void;
   setLoginType: (loginType: string) => void;
-  setUser: (user: { _id?: number; name?: string; email?: string }) => void;
+  setUser: (user: User) => void;
   clearAuth: () => void;
   addPoints: (point: number) => void;
 }
