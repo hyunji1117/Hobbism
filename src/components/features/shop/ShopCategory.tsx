@@ -94,14 +94,6 @@ export const ShopCategory = ({
     setIsDragging(false);
   };
 
-  // // 클릭된 버튼 색상 바꾸기(클릭된 카테고리 이름 저장 > 스타일 적용)
-  // const [selectedBtn, setSelectedBtn] = useState('ALL');
-
-  // // 카테고리 버튼 클릭 시 클릭된 항목 이름 저장
-  // const selectedCategory = (cat: string) => {
-  //   setSelectedBtn(cat);
-  // };
-
   return (
     <>
       <div
