@@ -3,16 +3,37 @@ import Tabbar from '@/components/layout/tabbar/Tabbar';
 import { CartProvider } from '@/components/features/shop/ProductDetail/CartContext';
 import { HeaderNav } from '@/components/layout/header/Header';
 import { ProductDetailInfo } from '@/components/features/shop/ProductDetail/ProductDetail';
+import { fetchProductDetail } from '@/data/functions/ProductFetch';
 import ProductDetailClient, {
   CartIcon,
   GoBackButton,
 } from '@/components/features/shop/ProductDetail/ProductDetailClient';
 
-export default async function ProductPage() {
-  // 서버 product data Fetch 예정
-  const price = 158900;
-  const imageUrl =
-    'https://fesp-api.koyeb.app/market/files/febc13-final01-emjf/{data.content.path}';
+export default async function ProductPage({
+  params,
+}: {
+  params: { productId: string };
+}) {
+  console.log('Product ID:', params.productId);
+
+  if (!params?.productId) {
+    return <div>상품 데이터를 불러올 수 없습니다.</div>;
+  }
+
+  const res = await fetchProductDetail(params.productId);
+
+  // 배열에서 첫 번째 상품을 가져옴
+  const product = res.item;
+
+  const mainImage = product.mainImages[0];
+  const detailImage = product.content[0];
+
+  const mainImageUrl = mainImage
+    ? `https://fesp-api.koyeb.app/market/${mainImage.path}`
+    : '';
+  const detailImageUrl = detailImage
+    ? `https://fesp-api.koyeb.app/market/${detailImage.path}`
+    : '';
 
   return (
     <CartProvider>
@@ -31,12 +52,25 @@ export default async function ProductPage() {
         <Image
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
-          src={imageUrl}
-          alt="ankrouge"
+          src={mainImageUrl}
+          alt={mainImage?.name || '상품 이미지'}
           className="pointer-events-none"
         />
       </div>
-      <ProductDetailInfo />
+
+      <ProductDetailInfo
+        item={{
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          path: detailImage?.path ?? '',
+        }}
+        discountRate={product.extra.discountRate}
+        discountedPrice={product.extra.discountedPrice}
+        extra={{
+          recommendedBy: product.extra.recommendedBy,
+        }}
+      />
 
       <h2 className="p-5 text-[18px] font-semibold">상품정보</h2>
       <div className="relative mb-1 w-full">
@@ -44,14 +78,14 @@ export default async function ProductPage() {
           layout="intrinsic"
           width={1920}
           height={1080}
-          src="/images/hyunji/interior_02_01.webp"
-          alt="ankrouge"
+          src={detailImageUrl}
+          alt={detailImage?.name || '상품 상세'}
           className="pointer-events-none"
         />
       </div>
 
       {/* 하위 클라이언트 컴포넌트로 묶어서 이동 */}
-      <ProductDetailClient price={price} />
+      <ProductDetailClient price={product.price} />
 
       <Tabbar />
     </CartProvider>
