@@ -1,13 +1,36 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { getUserInfo } from '@/data/actions/user';
 import { UserEditForm } from '@/components/features/user/UserEditForm';
+import { useAuthStore } from '@/store/auth.store';
+import { User } from '@/types';
 
-export default async function UserEditPage() {
-  const user = await getUserInfo(1);
+export default function UserEditPage() {
+  const currentUser = useAuthStore(state => state.user);
+  const accessToken = useAuthStore(state => state.accessToken);
+  const [user, setUser] = useState<User | null>(null);
 
-  if (user.ok === 0 || !user) return null;
+  useEffect(() => {
+    if (!currentUser?._id) return;
+
+    const fetchUserInfo = async () => {
+      if (!accessToken) return null;
+      const res = await getUserInfo(currentUser._id);
+      if (res.ok === 1 && res.item) {
+        setUser(res.item);
+      }
+    };
+
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
+
+  if (!user) return null;
+
   return (
-    <div className="flex h-full flex-col">
-      <UserEditForm user={user.item} />
+    <div className="flex h-[calc(100%-48px)] flex-col">
+      <UserEditForm user={user} />
     </div>
   );
 }

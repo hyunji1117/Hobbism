@@ -5,15 +5,15 @@ interface AuthState {
   accessToken: string | null;
   loginType: string | null;
   user: {
-    _id?: number;
-    name?: string;
-    email?: string;
+    _id: number;
+    name: string;
+    email: string;
   } | null;
 
   // action 설정
   setAccessToken: (accessToken: string) => void;
   setLoginType: (loginType: string) => void;
-  setUser: (user: { _id?: number; name?: string; email?: string }) => void;
+  setUser: (user: { _id: number; name: string; email: string }) => void;
   clearAuth: () => void;
 }
 

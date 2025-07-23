@@ -6,9 +6,6 @@ export default function CommunityPage() {
   return (
     <div className="flex h-screen w-full flex-col bg-white">
       {/* 상단 헤더 - 고정 */}
-      <div className="sticky top-0 z-10 bg-white py-4">
-        <CommunityMainHeader />
-      </div>
 
       {/* 메인 컨텐츠 */}
       <div className="scrollbar-hide flex-1 overflow-y-auto">
@@ -39,9 +36,6 @@ export default function CommunityPage() {
       </div>
 
       {/* 하단 탭바 - 고정 */}
-      <div className="sticky bottom-0 z-10">
-        <TabBar />
-      </div>
     </div>
   );
 }

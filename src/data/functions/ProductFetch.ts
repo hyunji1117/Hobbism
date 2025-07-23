@@ -1,6 +1,6 @@
 'use server';
 
-import { Product, ProductListRes } from '@/types/interface/product';
+import { Product, ProductListRes } from '@/types';
 
 const API_URL = 'https://fesp-api.koyeb.app/market';
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';

@@ -16,14 +16,13 @@ export default async function UserPage({
 
   const postRes = await getUserPosts(userId, 'community');
   const posts = postRes.ok ? postRes.item : [];
-  console.log(id);
-  console.log(posts);
 
   const recommendedRes = await getOtherUserInfo(userId);
 
   if (!recommendedRes.ok || !recommendedRes.item) return null;
   const recommendedUser = recommendedRes.item;
   console.log(recommendedRes);
+
   return (
     <UserPageClient
       user={user}

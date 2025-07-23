@@ -1,20 +1,36 @@
 'use server';
 import { uploadFile } from '@/data/actions/file';
 import { ApiRes, ApiResPromise, User } from '@/types';
-import { redirect } from 'next/navigation';
+// import { redirect } from 'next/navigation';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
 
 export async function getUserInfo(_id: number): ApiResPromise<User> {
-  const accessToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjEsInR5cGUiOiJ1c2VyIiwibmFtZSI6IuyasOuvvCIsImVtYWlsIjoid29vbWluMDEzQGdtYWlsLmNvbSIsImltYWdlIjoiL2ZpbGVzL2ZlYmMxMy1maW5hbDAxLWVtamYvd29vbWluLXByb2ZpbGUuanBnIiwibG9naW5UeXBlIjoiZW1haWwiLCJpYXQiOjE3NTI4NDk1MDYsImV4cCI6MTc1MjkzNTkwNiwiaXNzIjoiRkVCQyJ9.zJvT6wacWOp-_oxSYRkBoLJLSchpXPJhyR2wKLP1Sgc';
-
   try {
     const res = await fetch(`${API_URL}/users/${_id}`, {
       headers: {
         'Client-Id': CLIENT_ID,
-        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: 'no-store',
+    });
+
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return {
+      ok: 0,
+      message:
+        '요청하신 작업 처리에 실패했습니다. 잠시 후 다시 이용해 주시기 바랍니다.',
+    };
+  }
+}
+
+export async function getUserAttribute(_id: number, attribute: string) {
+  try {
+    const res = await fetch(`${API_URL}/users/${_id}/${attribute}`, {
+      headers: {
+        'Client-Id': CLIENT_ID,
       },
       cache: 'no-store',
     });
@@ -59,10 +75,18 @@ export async function updateUserInfo(
 
   try {
     const attach = formData.get('attach') as File;
-    const accessToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjEsInR5cGUiOiJ1c2VyIiwibmFtZSI6IuyasOuvvCIsImVtYWlsIjoid29vbWluMDEzQGdtYWlsLmNvbSIsImltYWdlIjoiZmlsZXMvZmViYzEzLWZpbmFsMDEtZW1qZi9zcC1zUm8zRjguanBnIiwibG9naW5UeXBlIjoiZW1haWwiLCJpYXQiOjE3NTI5MzYyMDgsImV4cCI6MTc1MzAyMjYwOCwiaXNzIjoiRkVCQyJ9.bJUGIX-Yol1zjZwA0POmfuvDjXw5CS5xTeAZiPmx31o';
+    const accessToken = formData.get('accessToken');
+    const name = formData.get('name')?.toString();
+    const introduction = formData.get('introduction')?.toString();
+    const address = formData.get('address')?.toString();
+    const detail = formData.get('detail')?.toString();
+    const extraRes = await getUserAttribute(_id, 'extra');
+    const prevExtra = extraRes.ok ? extraRes.item.extra : {};
     let image;
-    if (attach.size > 0) {
+
+    console.log(attach);
+    console.log(accessToken);
+    if (attach instanceof File && attach.size > 0) {
       const fileRes = await uploadFile(formData);
       console.log(`fileRes`, fileRes);
       if (fileRes.ok) {
@@ -72,8 +96,14 @@ export async function updateUserInfo(
       }
     }
     const body = {
-      name: formData.get('name'),
-      introduction: formData.get('introduction'),
+      ...(address && { address }),
+      ...(name && { name }),
+      ...(address && { address }),
+      extra: {
+        ...prevExtra,
+        ...(introduction && { introduction }),
+        ...(detail && { detail_address: detail }),
+      },
       ...(image ? { image } : {}),
     };
 
@@ -101,7 +131,7 @@ export async function updateUserInfo(
   }
 
   if (data.ok) {
-    redirect(`/user/${_id}`);
+    // redirect(`/user/${_id}`);
   }
 
   return data;

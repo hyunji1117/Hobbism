@@ -26,10 +26,7 @@ export default function RootLayout({
       <body className={`${pretendard.className}`}>
         <SessionProvider>
           <TokenSync />
-          <MobileFrame>
-            {children}
-            <TabBar />
-          </MobileFrame>
+          <MobileFrame>{children}</MobileFrame>
           <ModalProvider />
         </SessionProvider>
       </body>

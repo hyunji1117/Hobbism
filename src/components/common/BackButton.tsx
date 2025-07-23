@@ -9,14 +9,13 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 interface BackButtonProps {
   onClickBack?: () => void;
   className?: string;
-  isWriting?: boolean;
   needConfirm?: boolean;
 }
 
 export const BackButton = ({
   onClickBack,
   className,
-  isWriting,
+
   needConfirm,
 }: BackButtonProps) => {
   const router = useRouter();
@@ -25,7 +24,7 @@ export const BackButton = ({
   const handleBackClick = () => {
     if (onClickBack) return onClickBack();
 
-    if (needConfirm && isWriting) {
+    if (needConfirm) {
       openModal(({ onClose }) => (
         <ConfirmModal onClose={onClose} onConfirm={() => router.back()} />
       ));

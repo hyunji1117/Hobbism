@@ -30,18 +30,6 @@ export default function ProductPage() {
 
   return (
     <>
-      <HeaderNav>
-        <HeaderNav.LeftContent>
-          <button onClick={() => router.back()}>
-            <ChevronLeft />
-          </button>
-        </HeaderNav.LeftContent>
-        <HeaderNav.Title>제품상세</HeaderNav.Title>
-        <HeaderNav.RightContent>
-          <ShoppingCart />
-        </HeaderNav.RightContent>
-      </HeaderNav>
-
       <div className={`relative mb-1 aspect-square w-full`}>
         <Image
           fill

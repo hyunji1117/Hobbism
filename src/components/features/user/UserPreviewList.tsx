@@ -5,6 +5,7 @@ import { useDraggable } from 'react-use-draggable-scroll';
 import { UserPreviewCard } from '@/components/features/user/UserPreviewCard';
 import { getBookmarkList } from '@/data/actions/bookmark';
 import { User } from '@/types';
+import { useAuthStore } from '@/store/auth.store';
 
 interface Props {
   recommendedUser: User[];
@@ -16,20 +17,22 @@ type ExtendedUser = User & {
 };
 
 export default function UserPreviewList({ recommendedUser }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
   const { events } = useDraggable(ref);
   const [users, setUsers] = useState<ExtendedUser[]>([]);
+  const accessToken = useAuthStore(state => state.accessToken);
 
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
-        const bookmarkRes = await getBookmarkList('user');
+        if (!accessToken) return null;
+        const bookmarkRes = await getBookmarkList('user', accessToken);
 
         // 북마크 맵: userId -> bookmarkId
         const bookmarkMap = new Map<number, number>();
         Object.values(bookmarkRes)
-          .filter((item: any) => item?.user?._id)
-          .forEach((item: any) => {
+          .filter(item => item?.user?._id)
+          .forEach(item => {
             bookmarkMap.set(item.user._id, item._id);
           });
 
@@ -48,6 +51,7 @@ export default function UserPreviewList({ recommendedUser }: Props) {
     };
 
     fetchBookmarks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recommendedUser]);
 
   const handleRemove = (id: number) => {
@@ -63,14 +67,15 @@ export default function UserPreviewList({ recommendedUser }: Props) {
       <div
         ref={ref}
         {...events}
-        className="scrollbar-hide flex cursor-grab gap-2 overflow-x-scroll select-none"
+        className="scrollbar-hide relative flex w-full cursor-grab gap-2 overflow-x-scroll select-none"
       >
         {users.map(user => (
           <UserPreviewCard
+            variant="vertical"
             key={user._id}
             id={user._id}
             name={user.name}
-            introduction={user.introduction}
+            introduction={user.extra?.introduction}
             image={
               user.image
                 ? `https://fesp-api.koyeb.app/market/${user.image}`

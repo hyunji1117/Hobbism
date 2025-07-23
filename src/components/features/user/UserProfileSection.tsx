@@ -1,25 +1,92 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Bookmark } from 'lucide-react';
+import { Bookmark, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { User } from '@/types';
+import { useFollowStore } from '@/store/follow.store';
+import { useEffect, useState } from 'react';
+import { useAuthStore } from '@/store/auth.store';
+import {
+  deleteBookmark,
+  getBookmark,
+  postBookmark,
+} from '@/data/actions/bookmark';
 
 interface Props {
   user: User;
   isMypage: boolean;
 }
 
-/**
- * 사용자 프로필 및 통계 정보를 표시하는 섹션 컴포넌트
- * - 프로필 이미지, 이름, 소개글
- * - 팔로우 / 팔로잉 / 스크랩 수치 표시
- * - 마이페이지일 경우 수정 버튼 및 스크랩 탭 표시
- */
 export function UserProfileSection({ user, isMypage }: Props) {
-  const imageUrl = user.image
-    ? `https://fesp-api.koyeb.app/market/${user.image}`
-    : '/images/default-profile-image.webp';
+  let imageUrl = '/images/default-profile-image.webp';
+
+  if (user.image) {
+    imageUrl = `https://fesp-api.koyeb.app/market/${user.image}`;
+  } else if (user.picture) {
+    imageUrl = user.picture;
+  }
+  const followingCount = useFollowStore(state => state.followingCount);
+  const setFollowingCount = useFollowStore(state => state.setFollowingCount);
+  const accessToken = useAuthStore(state => state.accessToken);
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [isFollowChecked, setIsFollowChecked] = useState(false);
+  const [bookmarkId, setBookmarkId] = useState<number | null>(null);
+
+  const handleToggleFollow = async () => {
+    try {
+      if (!accessToken) return;
+
+      console.log(bookmarkId);
+      console.log(isFollowed);
+      if (isFollowed && bookmarkId) {
+        console.log('삭제 실행');
+        // 팔로우 취소 → 북마크 삭제
+        const res = await deleteBookmark(bookmarkId, accessToken);
+        console.log('res', res);
+        if (res.ok === 1) {
+          console.log('삭제됨');
+          setIsFollowed(false);
+        }
+      } else {
+        // 팔로우 → 북마크 추가
+        const res = await postBookmark('user', user._id, accessToken);
+        if (res.ok === 1) {
+          setBookmarkId(res.item._id);
+          setIsFollowed(true);
+        }
+      }
+    } catch (err) {
+      console.error('팔로우 상태 변경 실패:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (user.bookmark?.users != null) {
+      setFollowingCount(user.bookmark.users);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.bookmark?.users]);
+
+  useEffect(() => {
+    if (!isMypage && accessToken) {
+      (async () => {
+        try {
+          const res = await getBookmark('user', user._id, accessToken);
+          if (res.ok === 1) {
+            setIsFollowed(res.ok === 1);
+            setBookmarkId(res.item._id);
+          }
+        } catch (error) {
+          console.error('팔로우 여부 확인 실패:', error);
+        } finally {
+          setIsFollowChecked(true);
+        }
+      })();
+    }
+  }, [isMypage, user._id, accessToken]);
+
   return (
     <div className="flex flex-col gap-4">
       {/* 프로필 상단 영역 */}
@@ -35,9 +102,9 @@ export function UserProfileSection({ user, isMypage }: Props) {
         />
         {/* 이름과 소개 */}
         <div className="flex flex-col justify-between">
-          <span className="text-2xl font-semibold">{user.name}</span>
+          <span className="text-xl font-semibold">{user.name}</span>
           <span className="text-muted-foreground font-medium">
-            {user.introduction}
+            {user.extra.introduction || '\u00A0'}
           </span>
         </div>
 
@@ -49,17 +116,23 @@ export function UserProfileSection({ user, isMypage }: Props) {
             </Button>
           </Link>
         ) : (
-          <Button variant="outline" className="ml-auto font-normal">
-            팔로우
-          </Button>
+          isFollowChecked && (
+            <Button
+              variant="outline"
+              className="ml-auto font-normal"
+              onClick={handleToggleFollow}
+            >
+              {isFollowed ? '팔로우취소' : '팔로우'}
+            </Button>
+          )
         )}
       </div>
 
       {/* 통계 정보 영역 (팔로우, 팔로잉, 스크랩) */}
-      <div className="flex h-20 w-full overflow-hidden rounded-lg border p-4 text-sm">
+      <div className="flex h-20 w-full overflow-hidden rounded-lg border bg-gray-50 p-4 text-base">
         {/* 팔로우 수 */}
         <Link
-          href="/following"
+          href={`${user._id}/follow?tab=follow`}
           className="flex flex-1 flex-col items-center justify-center"
         >
           <div className="flex items-center gap-1">
@@ -75,17 +148,15 @@ export function UserProfileSection({ user, isMypage }: Props) {
 
         {/* 팔로잉 수 */}
         <Link
-          href="/following"
+          href={`${user._id}/follow?tab=following`}
           className="flex flex-1 flex-col items-center justify-center"
         >
           <div className="flex items-center gap-1">
-            <Bookmark size={16} />
+            <Star size={16} />
             <span>팔로잉</span>
           </div>
 
-          <div className="text-muted-foreground text-xs">
-            {user.bookmark.users ?? 0}
-          </div>
+          <div className="text-muted-foreground text-xs">{followingCount}</div>
         </Link>
 
         {/* 마이페이지일 때만 스크랩 표시 */}
@@ -93,7 +164,7 @@ export function UserProfileSection({ user, isMypage }: Props) {
           <>
             <Separator orientation="vertical" />
             <Link
-              href="/scrap"
+              href={`${user._id}/bookmark`}
               className="flex flex-1 flex-col items-center justify-center"
             >
               <div className="flex items-center gap-1">
