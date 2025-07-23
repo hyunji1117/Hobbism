@@ -36,7 +36,9 @@ export function CartIcon() {
     <div className="relative">
       <ShoppingCart />
       {cartCount > 0 && (
-        <span className="absolute -top-1 right-[15] ...">{cartCount}</span>
+        <span className="absolute -top-0.5 right-[-7] rounded-full bg-red-300 px-1 text-xs font-semibold text-white">
+          {cartCount}
+        </span>
       )}
     </div>
   );
