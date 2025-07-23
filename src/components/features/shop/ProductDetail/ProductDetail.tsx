@@ -10,25 +10,29 @@ export const ProductDetailInfo = ({
   discountedPrice,
   extra,
 }: ProductDetailInfoProps) => {
-  // recommendedBy 값을 한글로 변환하는 함수
-  const getRecommendedByText = (recommendedBy: string) => {
-    const mapping: Record<string, string> = {
-      inhwan: '인환',
-      hyunji: '현지',
-      woomin: '우민',
-      youngchan: '영찬',
-      ayoung: '아영',
-    };
-    return mapping[recommendedBy] || '추천';
+  // MD PICK 한글 이름, 색상 매핑
+  const recommendData: Record<
+    string,
+    { name: string; color: string; textColor: string }
+  > = {
+    inhwan: { name: '인환', color: 'bg-[#FE508B]', textColor: 'text-white' },
+    hyunji: { name: '현지', color: 'bg-[#FAB91D]', textColor: 'text-black' },
+    woomin: { name: '우민', color: 'bg-[#51AAED]', textColor: 'text-white' },
+    youngchan: { name: '영찬', color: 'bg-[#D2E308]', textColor: 'text-black' },
+    ayoung: { name: '아영', color: 'bg-[#6E67DA]', textColor: 'text-white' },
   };
+
+  // recommendedBy 값 기반 추천 정보 가져오는 부분
+  const recommendInfo = extra?.recommendedBy
+    ? recommendData[extra.recommendedBy]
+    : { name: '추천', color: 'bg-[#C3C3C3]', textColor: 'text-black' };
 
   return (
     <section className="h-[145px] items-center justify-center px-5 py-4">
-      <span className="mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] bg-[#D2E308] text-[12px]">
-        {extra && extra.recommendedBy
-          ? getRecommendedByText(extra.recommendedBy)
-          : '추천'}{' '}
-        PICK
+      <span
+        className={`mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] text-[12px] ${recommendInfo.color} ${recommendInfo.textColor}`}
+      >
+        {recommendInfo.name} PICK
       </span>
       <h1 className="relative text-[24px] font-semibold text-black">
         {/* 아디다스 언더아머 2.0 윈터브레이크 */}
