@@ -5,6 +5,7 @@ import { LiveCalendarBtn } from '@/components/features/live/LiveCalendarBtn';
 import { LiveComment } from '@/components/features/live/LiveComment';
 import { LiveProgress } from '@/components/features/live/LiveProgress';
 import { LiveVideo } from '@/components/features/live/LiveVideo';
+import { GoBackButton } from '@/components/features/shop/ProductDetail/ProductDetailClient';
 import moment from 'moment';
 import { useState } from 'react';
 
@@ -96,10 +97,18 @@ export default function LiveOverlay() {
       )}
 
       {/* 라이브 캘린더 버튼 */}
-      <header className="absolute z-10 w-full select-none">
-        <div className="top-4 right-4">
-          <LiveCalendarBtn liveData={liveData} />
-        </div>
+      <header className="bg-amber-200select-none absolute z-10 w-full">
+        <ul>
+          <li className="absolute top-3.5 left-0 ml-3.5 bg-amber-50">
+            <GoBackButton />
+          </li>
+          <li className="absolute top-3.5 left-[50%] translate-x-[-50%] text-xl font-bold text-white">
+            라이브
+          </li>
+          <li>
+            <LiveCalendarBtn liveData={liveData} />
+          </li>
+        </ul>
       </header>
 
       {/* 상품 설명, 제품 보기 링크 */}
