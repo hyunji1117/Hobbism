@@ -12,41 +12,59 @@ import {
   Gamepad2,
 } from 'lucide-react';
 
-export const ShopCategory = () => {
+export const ShopCategory = ({
+  selectedCategory,
+  setSelectedCategory,
+}: {
+  selectedCategory: string;
+  setSelectedCategory: (cat: string) => void;
+}) => {
   // 상품 카테고리
   const categories = [
-    '전체',
-    '향수',
-    '러닝',
-    '홈카페',
-    '인테리어',
-    '인형',
-    '패션',
-    '굿즈',
-  ] as const; // as const: 문자열 리터럴 타입
+    'ALL',
+    'PERFUME',
+    'RUNNING',
+    'HOMECAFE',
+    'INTERIOR',
+    'DOLL',
+    'FASHION',
+    'GOODS',
+  ] as const; // as const: 문자열 리터럴 타입'
+
+  // 영어 한글 변환
+  const categoryLabels: { [key: string]: string } = {
+    ALL: '전체',
+    PERFUME: '향수',
+    RUNNING: '러닝',
+    HOMECAFE: '홈카페',
+    INTERIOR: '인테리어',
+    DOLL: '인형',
+    FASHION: '패션',
+    GOODS: '굿즈',
+  };
 
   // 카테고리 별 아이콘
   const categoryIcons = {
-    전체: Grid2x2,
-    향수: Flower2,
-    러닝: Footprints,
-    홈카페: Coffee,
-    인테리어: Lamp,
-    인형: Panda,
-    패션: Shirt,
-    굿즈: Gamepad2,
+    ALL: Grid2x2,
+    PERFUME: Flower2,
+    RUNNING: Footprints,
+    HOMECAFE: Coffee,
+    INTERIOR: Lamp,
+    DOLL: Panda,
+    FASHION: Shirt,
+    GOODS: Gamepad2,
   };
 
   // 카테고리 별 stroke 컬러
   const categoryColors = {
-    전체: 'stroke-[#4B5563]',
-    향수: 'stroke-[#6E67DA]',
-    러닝: 'stroke-[#D2E308]',
-    홈카페: 'stroke-[#FAB91D]',
-    인테리어: 'stroke-[#6E67DA]',
-    인형: 'stroke-[#FE508B]',
-    패션: 'stroke-[#51AAED]',
-    굿즈: 'stroke-[#D2E308]',
+    ALL: 'stroke-[#4B5563]',
+    PERFUME: 'stroke-[#6E67DA]',
+    RUNNING: 'stroke-[#D2E308]',
+    HOMECAFE: 'stroke-[#FAB91D]',
+    INTERIOR: 'stroke-[#6E67DA]',
+    DOLL: 'stroke-[#FE508B]',
+    FASHION: 'stroke-[#51AAED]',
+    GOODS: 'stroke-[#D2E308]',
   };
 
   // 드래그 상태
@@ -76,14 +94,6 @@ export const ShopCategory = () => {
     setIsDragging(false);
   };
 
-  // 클릭된 버튼 색상 바꾸기(클릭된 카테고리 이름 저장 > 스타일 적용)
-  const [selectedBtn, setSelectedBtn] = useState('전체');
-
-  // 카테고리 버튼 클릭 시 클릭된 항목 이름 저장
-  const changeColor = (cat: string) => {
-    setSelectedBtn(cat);
-  };
-
   return (
     <>
       <div
@@ -100,20 +110,22 @@ export const ShopCategory = () => {
             <button
               key={cat}
               className="flex w-fit flex-col items-center"
-              onClick={() => changeColor(cat)}
+              onClick={() => setSelectedCategory(cat)}
             >
               <div className="scrollbar-hide mb-0.5 aspect-square w-[48px] rounded-3xl bg-[#EAEAEA] p-2.5">
                 <Icon
-                  className={`btn-icon h-full w-full ${selectedBtn === cat ? categoryColors[cat] : 'stroke-[black]'}`}
+                  className={`btn-icon h-full w-full ${selectedCategory === cat ? categoryColors[cat] : 'stroke-[black]'}`}
                 />
               </div>
-              <p className="text-[12px] select-none">{cat}</p>
+              <p className="text-[12px] select-none">{categoryLabels[cat]}</p>
             </button>
           );
         })}
       </div>
 
-      <h2 className="pb-4 text-lg font-semibold">{selectedBtn}</h2>
+      <h2 className="pb-4 text-lg font-semibold">
+        {categoryLabels[selectedCategory]}
+      </h2>
     </>
   );
 };

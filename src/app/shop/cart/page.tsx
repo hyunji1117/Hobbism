@@ -1,6 +1,14 @@
 'use client';
 
 import CartItemCard from '@/components/features/shopping-cart/CartItemCard';
+import {
+  Banknote,
+  ChevronLeft,
+  CreditCard,
+  MapPin,
+  WalletCards,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -8,6 +16,7 @@ import { useState } from 'react';
 export function CartPage() {
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [ispaymentSheetOpen, setIsPaymentSheetOpen] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   // 임시로 넣어놓은 데이터
   const [cartItems, setCartItems] = useState([
@@ -16,47 +25,51 @@ export function CartPage() {
       productImg: '',
       name: '상품 제목을 입력해주세요.',
       price: 20000,
+      quantity: 1,
       isChecked: false,
     },
     {
       id: 2,
       productImg: '',
       name: '상품 제목을 입력해주세요.',
-      price: 20000,
+      price: 15000,
+      quantity: 1,
       isChecked: false,
     },
     {
       id: 3,
       productImg: '',
       name: '상품 제목을 입력해주세요.',
-      price: 20000,
+      price: 30000,
+      quantity: 1,
       isChecked: false,
     },
   ]);
 
   // 전체 상품 선택/해제
   const handleAllSelect = () => {
-    setIsAllChecked(!isAllChecked);
+    const newCheckedState = !isAllChecked;
+    setIsAllChecked(newCheckedState);
 
-    setCartItems(prev =>
-      prev.map(item => ({
-        ...item,
-        isChecked: !isAllChecked,
-      })),
-    );
+    const updatedItems = cartItems.map(item => ({
+      ...item,
+      isChecked: newCheckedState,
+    }));
+
+    setCartItems(updatedItems);
+    updateTotalPrice(updatedItems);
   };
 
   // 개별 상품 선택/해제
   const handleItemCheck = (id: number, checked: boolean) => {
-    setCartItems(prev => {
-      const updatedItems = prev.map(item =>
-        item.id === id ? { ...item, isChecked: checked } : item,
-      );
+    const updatedItems = cartItems.map(item =>
+      item.id === id ? { ...item, isChecked: checked } : item,
+    );
 
-      const allchecked = updatedItems.every(item => item.isChecked);
-      setIsAllChecked(allchecked);
-      return updatedItems;
-    });
+    const allChecked = updatedItems.every(item => item.isChecked);
+    setIsAllChecked(allChecked);
+    setCartItems(updatedItems);
+    updateTotalPrice(updatedItems);
   };
 
   // 선택된 상품을 선택삭제를 통해 제거
@@ -67,9 +80,38 @@ export function CartPage() {
       alert('삭제할 상품을 선택해주세요.');
       return;
     } else {
-      setCartItems(prev => prev.filter(item => !item.isChecked));
+      const updatedItems = cartItems.filter(item => !item.isChecked);
+      setCartItems(updatedItems);
       setIsAllChecked(false);
+      updateTotalPrice(updatedItems);
     }
+  };
+
+  // 개별 상품 삭제
+  const handleRemoveItem = (id: number) => {
+    const updatedItems = cartItems.filter(item => item.id !== id);
+    setCartItems(updatedItems);
+    updateTotalPrice(updatedItems);
+  };
+
+  // 상품 수량 변경
+  const handleQuantityChange = (id: number, quantity: number) => {
+    const updatedItems = cartItems.map(item =>
+      item.id === id ? { ...item, quantity } : item,
+    );
+    setCartItems(updatedItems);
+    updateTotalPrice(updatedItems);
+  };
+
+  // 총 상품금액 업데이트
+  const updateTotalPrice = (items: typeof cartItems) => {
+    const total = items.reduce((acc, item) => {
+      if (item.isChecked) {
+        return acc + item.price * item.quantity;
+      }
+      return acc;
+    }, 0);
+    setTotalPrice(total);
   };
 
   const handleOpenPaymentSheet = () => {
@@ -89,13 +131,8 @@ export function CartPage() {
     <div className="flex flex-col">
       {/* 상단 */}
       <div className="mt-10">
-        <Link href="/shop" className="relative top-7 left-4">
-          <Image
-            src="/back.svg"
-            alt="이전 페이지 이동 버튼"
-            width={24}
-            height={24}
-          />
+        <Link href="/shop" className="relative top-7 left-4" prefetch>
+          <ChevronLeft size={24} />
         </Link>
         <p className="text-center text-lg leading-6 font-semibold">장바구니</p>
       </div>
@@ -147,8 +184,11 @@ export function CartPage() {
             productImg={item.productImg}
             name={item.name}
             price={item.price}
+            quantity={item.quantity}
             isChecked={item.isChecked}
             onCheck={handleItemCheck}
+            onQuantityChange={handleQuantityChange}
+            onRemove={handleRemoveItem}
           />
         ))}
       </div>
@@ -157,16 +197,16 @@ export function CartPage() {
       <div className="my-6 ml-4 flex flex-col gap-y-4">
         <div>
           <span className="text-[#4B5563]">총 상품금액</span>
-          <span className="absolute right-4 font-medium">192,000원</span>
+          <span className="absolute right-4 font-medium">{totalPrice}원</span>
         </div>
         <div>
           <span className="text-[#4B5563]">배송비</span>
           <span className="absolute right-4">무료</span>
         </div>
         <div>
-          <span className="text-lg leading-6 font-semibold">총 걸제금액</span>
+          <span className="text-lg leading-6 font-semibold">총 결제금액</span>
           <span className="absolute right-4 text-lg leading-6 font-semibold text-[#6E67DA]">
-            192,000원
+            {totalPrice}원
           </span>
         </div>
       </div>
@@ -188,7 +228,7 @@ export function CartPage() {
             <div className="flex items-center justify-between rounded-t-2xl border-t-2 px-6 py-6">
               <h2 className="text-lg leading-6 font-semibold">결제하기</h2>
               <button onClick={handleClosePaymentSheet} className="p-1">
-                <Image src="/delete.svg" alt="닫기" width={18} height={18} />
+                <X size={18} />
               </button>
             </div>
             <hr />
@@ -200,12 +240,7 @@ export function CartPage() {
                   배송지
                 </h3>
                 <div className="flex items-start">
-                  <Image
-                    src="/location.svg"
-                    alt="delivery location icon"
-                    width={24}
-                    height={24}
-                  />
+                  <MapPin />
                   <div className="flex-1">
                     <p className="pl-2.5 font-semibold">홍길동</p>
                     <p className="mt-1 pl-2.5 text-sm text-[#4B5563]">
@@ -232,12 +267,7 @@ export function CartPage() {
                       defaultChecked
                     />
                     <div className="flex items-center">
-                      <Image
-                        src="/credit-card.svg"
-                        alt="credit-card icon"
-                        width={24}
-                        height={24}
-                      />
+                      <CreditCard />
                       <span className="pl-2.5">신용카드</span>
                     </div>
                   </label>
@@ -250,12 +280,7 @@ export function CartPage() {
                       className="mr-3 h-5 w-5"
                     />
                     <div className="flex items-center">
-                      <Image
-                        src="/cash.svg"
-                        alt="cash icon"
-                        width={24}
-                        height={24}
-                      />
+                      <Banknote />
                       <span className="pl-2.5">무통장입금</span>
                     </div>
                   </label>
@@ -268,12 +293,7 @@ export function CartPage() {
                       className="mr-3 h-5 w-5"
                     />
                     <div className="flex items-center">
-                      <Image
-                        src="/wallet-cards.svg"
-                        alt="simple payment icon"
-                        width={24}
-                        height={24}
-                      />
+                      <WalletCards />
                       <span className="pl-2.5">간편결제</span>
                     </div>
                   </label>

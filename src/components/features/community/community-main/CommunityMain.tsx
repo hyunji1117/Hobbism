@@ -1,7 +1,9 @@
 import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface CommunityMainProps {
+  id: number;
   profileImage: string;
   userName: string;
   timeAgo: string;
@@ -10,6 +12,7 @@ interface CommunityMainProps {
 }
 
 export default function CommunityMain({
+  id,
   userName = '오다구',
   timeAgo = '2시간 전',
   description = '드디어 완성된 결계 마왕의 졸개를 처리하느라 ...',
@@ -56,9 +59,9 @@ export default function CommunityMain({
         <div className="flex-1 truncate pr-2 text-sm text-black">
           {description}
         </div>
-        <div className="text-black">
+        <Link href={`/community/${id}`} prefetch>
           <ChevronRight size={20} />
-        </div>
+        </Link>
       </div>
     </div>
   );
