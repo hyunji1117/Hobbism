@@ -21,6 +21,7 @@ export default async function ShopPage() {
 
   const products = data.map(product => (
     <ShopProduct
+      _id={product._id}
       price={product.price}
       name={product.name}
       mainImageSrc={product.mainImages[0]?.path}
