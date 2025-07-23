@@ -3,7 +3,6 @@
 import { RecommendProducts } from '@/components/features/shop/RecommendProducts';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-// import { useEffect, useState } from 'react';
 
 export const hobbyData = [
   {
@@ -30,8 +29,8 @@ export const hobbyData = [
     src: '/images/ayoung/hobby/hobby-03.webp',
     comment1: '오늘은 내가 집바리스타! ☕ ',
     comment2: '얼음 가득 콜드브루? 달콤 폼라떼? 맘대로 믹스!',
-    comment3: '내 취향 레시피로 한 잔 내려보자.',
-    comment4: '얼커피향과 함께하는 오늘 하루!',
+    comment3: '내 취향 레시피로 한 잔 내려볼까?',
+    comment4: '커피향과 함께하는 오늘 하루!',
   },
   {
     category: 'INTERIOR',
@@ -77,17 +76,11 @@ export const RandomHobbyContent = () => {
   const randomHobby = hobbyData.find(item => item.category === hobby);
 
   if (!hobby) return <div>취미 정보가 없습니다</div>;
-  // const [randomHobby, setRandomHobby] = useState(hobbyData[0]);
-
-  // useEffect(() => {
-  //   const index = Math.floor(Math.random() * hobbyData.length);
-  //   setRandomHobby(hobbyData[index]);
-  // }, []);
 
   return (
     <>
       <div className="flex w-full flex-col items-center rounded-2xl p-4">
-        <h2 className="text-xl font-bold">
+        <h2 className="border-b border-gray-200 pb-4 text-xl font-bold">
           🎉 오늘의 취미는... {randomHobby?.categoryKr}! 🎉
         </h2>
 
@@ -100,7 +93,7 @@ export const RandomHobbyContent = () => {
             sizes="100vw, (max-width: 1200px) 50vw, 33vw"
             priority={false}
             style={{ objectFit: 'cover', objectPosition: 'center' }}
-            // className="rounded-xl border-4 border-pink-300"
+            className="rounded-xl shadow-md"
           />
         </div>
 
@@ -114,7 +107,7 @@ export const RandomHobbyContent = () => {
         <p className="mt-5">오늘 뽑힌 취미로 하루를 반짝 업그레이드하자! ✨</p>
       </div>
 
-      <hr className="mt-15" />
+      <hr className="mt-5" />
 
       <section className="pl-3.5">
         <h3 className="my-5 text-xl font-bold">
