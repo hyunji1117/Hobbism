@@ -96,16 +96,11 @@ export default function LiveOverlay() {
       )}
 
       {/* 라이브 캘린더 버튼 */}
-      <div className="absolute z-10 w-full select-none">
-        <LiveCalendarBtn liveData={liveData} />
-      </div>
-
-      {/* 동시 라이브 알림
-        TODO 헤더 삽입 후 위치 수정
-      */}
-      <div className="absolute top-[5%] right-0 mr-2 w-fit rounded-lg bg-white p-1.5 text-xs font-extrabold text-[#FE508B] after:absolute after:-top-3 after:right-4 after:border-7 after:border-transparent after:border-b-white after:content-['']">
-        동시 ON
-      </div>
+      <header className="absolute z-10 w-full select-none">
+        <div className="top-4 right-4">
+          <LiveCalendarBtn liveData={liveData} />
+        </div>
+      </header>
 
       {/* 상품 설명, 제품 보기 링크 */}
       <div className="absolute top-[calc(43%)] z-1 flex w-full justify-between px-3.5 text-white">
