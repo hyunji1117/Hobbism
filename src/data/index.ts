@@ -1,3 +1,0 @@
-// export data
-
-export {};

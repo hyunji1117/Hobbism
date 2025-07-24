@@ -1,5 +1,7 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
+@import 'tailwind-scrollbar-hide/v4';
+@import './variable.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -114,7 +116,83 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* 스크롤바 숨기기 유틸리티 */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  @media (min-width: 600px) {
+    .frame-guideline::before,
+    .frame-guideline::after {
+      content: '';
+      display: block;
+      position: fixed;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      background-color: #eaeaea;
+      z-index: 9999;
+    }
+    .frame-guideline::before {
+      left: 50%;
+      transform: translateX(-300px);
+    }
+
+    .frame-guideline::after {
+      right: 50%;
+      transform: translateX(300px);
+    }
+  }
+
+  .custom-toggle {
+    appearance: none;
+    position: relative;
+    border: max(2px, 0.1em) solid gray;
+    border-radius: 1.25em;
+    width: 2.25em;
+    height: 1.25em;
+  }
+  .custom-toggle::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    transform: scale(0.8);
+    background-color: gray;
+    transition: left 250ms linear;
+  }
+
+  .custom-toggle:checked {
+    background-color: gray;
+    border-color: gray;
+  }
+
+  .custom-toggle:checked::before {
+    background-color: white;
+    left: 1em;
+  }
+}
+
+.spin-slow {
+  animation: spin 3s linear infinite;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
   }
 }

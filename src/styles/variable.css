@@ -1,1 +1,152 @@
 /* 스타일 변수 등록 */
+/* Hobbism Design System Variables */
+:root {
+  /* === 폰트 패밀리 === */
+  --font-family-pretendard: 'Pretendard', sans-serif;
+
+  /* === 색상 팔레트 === */
+  --color-hobbism-black: #000000;
+  --color-hobbism-white: #ffffff;
+  --color-hobbism-tmi-gray01: #4B5563;
+  --color-hobbism-tmi-gray02: #C3C3C3;
+  --color-hobbism-line-gray: #EAEAEA;
+  --color-hobbism-white-gray: #F3F4F6;
+  --color-hobbism-red: #FE508B;
+  --color-hobbism-yellow: #FAB91D;
+  --color-hobbism-blue: #51AAED;
+  --color-hobbism-lime: #D2E308;
+  --color-hobbism-purple: #6E87DA;
+
+  /* === 테마별 색상 === */
+  --color-text-primary: var(--color-hobbism-black);
+  --color-text-secondary: var(--color-hobbism-tmi-gray01);
+  --color-border: var(--color-hobbism-line-gray);
+  --color-background: var(--color-hobbism-white);
+  --color-background-gray: var(--color-hobbism-white-gray);
+
+  /* === 타이포그래피 === */
+  /* 상세설명제목 - bold 24px */
+  --text-detail-title-size: 24px;
+  --text-detail-title-weight: 700;
+  --text-detail-title-color: var(--color-hobbism-black);
+
+  /* 제목 - bold 20px */
+  --text-title-size: 20px;
+  --text-title-weight: 700;
+  --text-title-color: var(--color-hobbism-black);
+
+  /* 서브타이틀 - semibold 18px */
+  --text-subtitle-size: 18px;
+  --text-subtitle-weight: 600;
+  --text-subtitle-color: var(--color-hobbism-black);
+
+  /* 본문 - regular 16px */
+  --text-body-size: 16px;
+  --text-body-weight: 400;
+  --text-body-color: var(--color-hobbism-black);
+
+  /* 상품제목 - regular 14px */
+  --text-product-title-size: 14px;
+  --text-product-title-weight: 400;
+  --text-product-title-color: var(--color-hobbism-black);
+
+  /* 설명 - regular 12px */
+  --text-description-size: 12px;
+  --text-description-weight: 400;
+  --text-description-color: var(--color-hobbism-tmi-gray01);
+
+  /* === 레이아웃 === */
+  --border-width: 1px;
+  --border-color: var(--color-hobbism-line-gray);
+  --border-style: solid;
+  --border: var(--border-width) var(--border-style) var(--border-color);
+
+  /* 여백 */
+  --spacing-edge: 20px; /* 최우 여백 */
+  --spacing-icon-base: 13px; /* 아이콘 13 기준 */
+
+  /* 프레임 크기 */
+  --frame-width: 390px;
+  --frame-height: 844px;
+
+  /* === 라운드 클래스용 변수 === */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+/* === 유틸리티 클래스들 === */
+.font-pretendard {
+  font-family: var(--font-family-pretendard);
+}
+
+/* 텍스트 스타일 클래스들 */
+.text-detail-title {
+  font-family: var(--font-family-pretendard);
+  font-size: var(--text-detail-title-size);
+  font-weight: var(--text-detail-title-weight);
+  color: var(--text-detail-title-color);
+}
+
+.text-title {
+  font-family: var(--font-family-pretendard);
+  font-size: var(--text-title-size);
+  font-weight: var(--text-title-weight);
+  color: var(--text-title-color);
+}
+
+.text-subtitle {
+  font-family: var(--font-family-pretendard);
+  font-size: var(--text-subtitle-size);
+  font-weight: var(--text-subtitle-weight);
+  color: var(--text-subtitle-color);
+}
+
+.text-body {
+  font-family: var(--font-family-pretendard);
+  font-size: var(--text-body-size);
+  font-weight: var(--text-body-weight);
+  color: var(--text-body-color);
+}
+
+.text-product-title {
+  font-family: var(--font-family-pretendard);
+  font-size: var(--text-product-title-size);
+  font-weight: var(--text-product-title-weight);
+  color: var(--text-product-title-color);
+}
+
+.text-description {
+  font-family: var(--font-family-pretendard);
+  font-size: var(--text-description-size);
+  font-weight: var(--text-description-weight);
+  color: var(--text-description-color);
+}
+
+/* 색상 유틸리티 클래스들 */
+.text-hobbism-black { color: var(--color-hobbism-black); }
+.text-hobbism-white { color: var(--color-hobbism-white); }
+.text-hobbism-tmi-gray01 { color: var(--color-hobbism-tmi-gray01); }
+.text-hobbism-tmi-gray02 { color: var(--color-hobbism-tmi-gray02); }
+.text-hobbism-red { color: var(--color-hobbism-red); }
+.text-hobbism-yellow { color: var(--color-hobbism-yellow); }
+.text-hobbism-blue { color: var(--color-hobbism-blue); }
+.text-hobbism-lime { color: var(--color-hobbism-lime); }
+.text-hobbism-purple { color: var(--color-hobbism-purple); }
+
+.bg-hobbism-black { background-color: var(--color-hobbism-black); }
+.bg-hobbism-white { background-color: var(--color-hobbism-white); }
+.bg-hobbism-tmi-gray01 { background-color: var(--color-hobbism-tmi-gray01); }
+.bg-hobbism-tmi-gray02 { background-color: var(--color-hobbism-tmi-gray02); }
+.bg-hobbism-line-gray { background-color: var(--color-hobbism-line-gray); }
+.bg-hobbism-white-gray { background-color: var(--color-hobbism-white-gray); }
+.bg-hobbism-red { background-color: var(--color-hobbism-red); }
+.bg-hobbism-yellow { background-color: var(--color-hobbism-yellow); }
+.bg-hobbism-blue { background-color: var(--color-hobbism-blue); }
+.bg-hobbism-lime { background-color: var(--color-hobbism-lime); }
+.bg-hobbism-purple { background-color: var(--color-hobbism-purple); }
+
+/* 보더 유틸리티 */
+.border-hobbism { border: var(--border); }
+.border-hobbism-line-gray { border-color: var(--color-hobbism-line-gray); }
