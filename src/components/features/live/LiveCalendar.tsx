@@ -1,6 +1,6 @@
 'use client';
 
-import { liveDummyData } from '@/app/live/LiveDataUI';
+import { liveDummyData } from '@/app/live/LiveData';
 import moment from 'moment';
 import 'moment/locale/ko';
 import { useEffect, useState } from 'react';

@@ -1,17 +1,17 @@
 'use client';
 
-import { currentLive } from '@/app/live/LiveDataUI';
+import { currentLive } from '@/app/live/LiveData';
 import { LiveCalendar } from '@/components/features/live/LiveCalendar';
 import { CalendarFold } from 'lucide-react';
-import moment from 'moment';
+// import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 
-export interface LiveDataType {
-  id: string;
-  start: moment.Moment;
-  end: moment.Moment;
-  title: string;
-}
+// export interface LiveDataType {
+//   id: string;
+//   start: moment.Moment;
+//   end: moment.Moment;
+//   title: string;
+// }
 
 export const LiveCalendarBtn = () => {
   const [isDropdownOpen, setIsDropDownOpen] = useState(false); // 드롭다운 오픈 상태
