@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { CircleArrowUp } from 'lucide-react';
 import { useActionState } from 'react';
 import { createReply } from '@/data/actions/post';
+import { useSession } from 'next-auth/react';
 
 interface CommentInputProps {
   profileImage: string;
@@ -15,14 +16,18 @@ export default function CommentInput({
   postId,
 }: CommentInputProps) {
   const [state, formAction, isLoading] = useActionState(createReply, null);
+  const { data: session } = useSession();
 
   return (
     <div className="px-4 py-3">
       <form action={formAction}>
         <input type="hidden" name="_id" value={postId} />
-
+        <input
+          type="hidden"
+          name="accessToken"
+          value={session?.accessToken || ''}
+        />{' '}
         <div className="flex items-center gap-3">
-          {/* 프로필 이미지 32x32 */}
           <div className="h-8 w-8 flex-shrink-0">
             <Image
               src={profileImage}
@@ -46,7 +51,6 @@ export default function CommentInput({
             <CircleArrowUp size={24} className="text-hobbism-black" />
           </button>
         </div>
-
         {state?.ok === 0 && (
           <p className="mt-2 text-sm text-red-500">
             {state.errors?.content?.msg || state.message}

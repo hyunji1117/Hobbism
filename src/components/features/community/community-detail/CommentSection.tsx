@@ -1,5 +1,4 @@
 import CommentItem from './CommentItem';
-import CommentInput from './CommentInput';
 import { fetchReplies } from '@/data/functions/CommunityFetch';
 
 export default async function CommentSection({ postId }: { postId: number }) {
@@ -27,7 +26,6 @@ export default async function CommentSection({ postId }: { postId: number }) {
                 comment={comment.content || ''}
                 postId={postId}
                 replyId={comment._id.toString()}
-                // 함수 props 제거
               />
             ))
           ) : (
@@ -39,11 +37,6 @@ export default async function CommentSection({ postId }: { postId: number }) {
           <div className="p-5 text-center text-gray-500">{res.message}</div>
         )}
       </div>
-
-      <CommentInput
-        postId={postId}
-        profileImage="/images/inhwan/profile-default.png"
-      />
     </div>
   );
 }
