@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
-const CLIENT_ID = process.env.CLIENT_ID;
+const NEXT_PUBLIC_CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // 미들웨어
@@ -20,7 +20,7 @@ async function verifyAccessToken(
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
-        'Client-Id': CLIENT_ID || '',
+        'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
       },
     });
 
@@ -40,7 +40,7 @@ async function refreshAccessToken(
       method: 'GET',
       headers: {
         Authorization: `Bearer ${refreshToken}`,
-        'Client-Id': CLIENT_ID || '',
+        'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
       },
     });
 

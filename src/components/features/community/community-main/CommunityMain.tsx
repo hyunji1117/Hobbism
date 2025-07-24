@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { Post } from '@/types/interface';
+import { Post } from '@/types';
+import { getUserImageUrl } from '@/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -18,11 +19,7 @@ export default function CommunityMain({ post }: CommunityMainProps) {
           {/* 프로필 이미지 */}
           <div className="h-8 w-8">
             <Image
-              src={
-                post.user.image
-                  ? `${API_URL}${post.user.image}`
-                  : '/images/inhwan/profile-default.png'
-              }
+              src={getUserImageUrl(post.user.image)}
               alt={`${post.user.name} 프로필`}
               width={32}
               height={32}
@@ -45,7 +42,7 @@ export default function CommunityMain({ post }: CommunityMainProps) {
         <Image
           src={
             post.image?.[0] // 배열의 첫 번째 이미지
-              ? `${API_URL}/${post.image[0]}`
+              ? `https://fesp-api.koyeb.app/market/${post.image[0]}`
               : '/images/inhwan/barrier.webp'
           }
           alt="피드 이미지"
@@ -62,7 +59,6 @@ export default function CommunityMain({ post }: CommunityMainProps) {
         </div>
 
         <Link href={`/community/${post._id}`}>
-
           <ChevronRight size={20} />
         </Link>
       </div>

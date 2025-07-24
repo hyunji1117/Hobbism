@@ -1,4 +1,4 @@
-import { ApiResPromise, Post, PostReply } from '@/types/interface';
+import { ApiResPromise, Post, PostReply } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
@@ -14,11 +14,12 @@ export async function fetchPosts(boardType: string): ApiResPromise<Post[]> {
       headers: {
         'Client-Id': CLIENT_ID,
       },
-      cache: 'force-cache',
+      cache: 'no-store',
       next: {
         tags: [`posts?type=${boardType}`],
       },
     });
+
     return res.json();
   } catch (error) {
     console.error(error);
@@ -37,7 +38,7 @@ export async function fetchPost(_id: number): ApiResPromise<Post> {
       headers: {
         'Client-Id': CLIENT_ID,
       },
-      cache: 'force-cache',
+      cache: 'no-store',
       next: {
         tags: [`posts/${_id}`],
       },
@@ -60,9 +61,9 @@ export async function fetchReplies(_id: number): ApiResPromise<PostReply[]> {
       headers: {
         'Client-Id': CLIENT_ID,
       },
-      cache: 'force-cache',
+      cache: 'no-store',
       next: {
-        tags: [`posts/${_id}/replies`], 
+        tags: [`posts/${_id}/replies`],
       },
     });
     return res.json();

@@ -1,7 +1,7 @@
 'use client';
 
 import { Minus, Plus } from 'lucide-react';
-import { ProductDetailInfoProps } from '@/types/interface/product';
+import { ProductDetailInfoProps } from '@/types';
 
 // 상품 상세 정보 컴포넌트
 export const ProductDetailInfo = ({

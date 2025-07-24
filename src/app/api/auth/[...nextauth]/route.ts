@@ -4,7 +4,7 @@ import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 import { cookies } from 'next/headers';
 
-const CLIENT_ID = process.env.CLIENT_ID;
+const NEXT_PUBLIC_CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 declare module 'next-auth/jwt' {
@@ -58,6 +58,7 @@ const handler = NextAuth({
         if (!token.extra) {
           token.extra = {};
         }
+        console.log('token', token);
         token.extra.providerAccountId = account.providerAccountId;
         token.loginType = account.provider;
         token.type = 'user';
@@ -74,11 +75,11 @@ const handler = NextAuth({
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Client-Id': CLIENT_ID || '',
+              'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
             },
             body: JSON.stringify(token),
           });
-          console.log(CLIENT_ID);
+          console.log(NEXT_PUBLIC_CLIENT_ID);
 
           // 회원가입 성공 시 자동 로그인
           if (signupRes.ok || signupRes.status === 409) {
@@ -106,7 +107,7 @@ const handler = NextAuth({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Client-Id': CLIENT_ID || '',
+                'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
               },
               body: JSON.stringify(loginData),
             });

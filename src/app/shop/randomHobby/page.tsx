@@ -1,11 +1,12 @@
 import { RandomHobbyContent } from '@/components/features/shop/RandomHobby/RandomHobbyContent';
-import TabBar from '@/components/layout/tabbar/Tabbar';
+import { Suspense } from 'react';
 
 export default function RandomHobby() {
   return (
     <>
-      <RandomHobbyContent />
-      <TabBar />
+      <Suspense>
+        <RandomHobbyContent />
+      </Suspense>
     </>
   );
 }

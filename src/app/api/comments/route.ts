@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const CLIENT_ID = process.env.CLIENT_ID;
+const NEXT_PUBLIC_CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // 댓글 조회
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     if (!postId) {
       return NextResponse.json(
         { error: 'postId가 필요합니다.' },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const response = await fetch(
@@ -20,14 +20,14 @@ export async function GET(request: NextRequest) {
         headers: {
           'Client-Id': 'febc13-final01-emjf',
         },
-      }
+      },
     );
     return NextResponse.json(await response.json());
   } catch (error) {
     console.log('댓글 조회 실패', error);
     return NextResponse.json(
       { error: '댓글을 불러올 수 없습니다.' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Client-Id': CLIENT_ID || '',
+          'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
         },
         body: JSON.stringify({ _id, content }),
       },
@@ -63,7 +63,7 @@ export async function PATCH(request: NextRequest) {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Client-Id': CLIENT_ID || '',
+          'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
         },
         body: JSON.stringify({ content }),
       },
@@ -85,7 +85,7 @@ export async function DELETE(request: NextRequest) {
       {
         method: 'DELETE',
         headers: {
-          'Client-Id': CLIENT_ID || '',
+          'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
         },
       },
     );

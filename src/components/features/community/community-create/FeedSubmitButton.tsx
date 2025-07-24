@@ -2,6 +2,7 @@ interface FeedSubmitButtonProps {
   text?: string;
   variant?: 'submitBtn' | 'CommentCancel';
   disabled?: boolean;
+  onClick?: () => void;
 }
 
 export default function FeedSubmitButton({

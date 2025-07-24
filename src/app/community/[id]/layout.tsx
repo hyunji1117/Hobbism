@@ -1,4 +1,4 @@
-export function CommunityInfoPage({ children }: { children: React.ReactNode }) {
+function CommunityInfoPage({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
