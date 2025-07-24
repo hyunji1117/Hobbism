@@ -1,105 +1,78 @@
-'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSwipeable } from 'react-swipeable';
 import Image from 'next/image';
-import { ChevronLeft, ShoppingCart } from 'lucide-react';
-import { HeaderNav } from '@/components/layout/header/Header';
 import Tabbar from '@/components/layout/tabbar/Tabbar';
-import {
-  ProductActionButtons,
-  ProductDetailInfo,
-  ProductQuantitySelector,
-  TotalPrice,
-} from '@/components/features/shop/ProductDetail/ProductDetail';
-import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
+import { CartProvider } from '@/components/features/shop/ProductDetail/CartContext';
+import { ProductDetailInfo } from '@/components/features/shop/ProductDetail/ProductDetail';
+import { fetchProductDetail } from '@/data/functions/ProductFetch';
+import ProductDetailClient from '@/components/features/shop/ProductDetail/ProductDetailClient';
 
-export default function ProductPage() {
-  const [selectedOption, setSelectedOption] = useState('');
-  const [quantity, setQuantity] = useState(1);
-  const price = 158900;
+export default async function ProductPage({
+  params,
+}: {
+  params: { productId: string };
+}) {
+  console.log('Product ID:', params.productId);
 
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const router = useRouter();
+  if (!params?.productId) {
+    return <div>상품 데이터를 불러올 수 없습니다.</div>;
+  }
 
-  const swipeHandlers = useSwipeable({
-    onSwipedDown: () => setIsBottomSheetOpen(false),
-    trackMouse: true,
-  });
+  const res = await fetchProductDetail(params.productId);
+
+  // 배열에서 첫 번째 상품을 가져옴
+  const product = res.item;
+
+  const mainImage = product.mainImages[0];
+  const detailImage = product.content[0];
+
+  const mainImageUrl = mainImage
+    ? `https://fesp-api.koyeb.app/market/${mainImage.path}`
+    : '';
+  const detailImageUrl = detailImage
+    ? `https://fesp-api.koyeb.app/market/${detailImage.path}`
+    : '';
 
   return (
-    <>
+    <CartProvider>
       <div className={`relative mb-1 aspect-square w-full`}>
         <Image
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
-          src="/images/hyunji/interior_02.webp"
-          alt="ankrouge"
+          src={mainImageUrl}
+          alt={mainImage?.name || '상품 이미지'}
           className="pointer-events-none"
         />
       </div>
-      <ProductDetailInfo />
+
+      <ProductDetailInfo
+        item={{
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          path: detailImage?.path ?? '',
+        }}
+        discountRate={product.extra.discountRate}
+        discountedPrice={product.extra.discountedPrice}
+        extra={{
+          recommendedBy: product.extra.recommendedBy,
+        }}
+      />
+
       <h2 className="p-5 text-[18px] font-semibold">상품정보</h2>
       <div className="relative mb-1 w-full">
         <Image
           layout="intrinsic"
           width={1920}
           height={1080}
-          src="/images/hyunji/interior_02_01.webp"
-          alt="ankrouge"
+          src={detailImageUrl}
+          alt={detailImage?.name || '상품 상세'}
           className="pointer-events-none"
         />
       </div>
 
-      {/* 상품 액션 버튼 컴포넌트 */}
-      <div className="bt-rounded-[8px] fixed bottom-[55px] z-30 w-full max-w-[600px] bg-white px-5 py-3">
-        <ProductActionButtons onCartClick={() => setIsBottomSheetOpen(true)} />
-      </div>
-
-      {/* {isBottomSheetOpen && (
-        <div
-          className="bg-opacity-50 fixed inset-0 z-10 bg-black"
-          onClick={() => setIsBottomSheetOpen(false)}
-        ></div>
-      )} */}
-
-      {/* 바텀시트 */}
-      {isBottomSheetOpen && (
-        <div
-          {...swipeHandlers}
-          className="fixed bottom-[133px] z-20 w-full max-w-[600px] rounded-t-[16px] bg-white shadow-lg"
-        >
-          {/* 스와이프 핸들 디자인 */}
-          <div className="flex justify-center">
-            <div className="mt-2.5 h-[4px] w-[109px] rounded-full bg-[#3D3D3D]"></div>
-          </div>
-
-          {/* 옵션 선택 컴포넌트 */}
-          <div className="bg-white px-5 pt-3.5">
-            <OptionSelector
-              options={['S', 'M', 'L', 'XL']}
-              selectedOption={selectedOption}
-              onSelect={option => setSelectedOption(option)}
-            />
-          </div>
-
-          {/* 상품 수량 선택 컴포넌트 */}
-          <div className="bg-white px-5 py-3">
-            <ProductQuantitySelector
-              selectedOption={selectedOption}
-              quantity={quantity}
-              onIncrease={() => setQuantity(quantity + 1)}
-              onDecrease={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
-              price={price}
-            />
-          </div>
-
-          <TotalPrice quantity={quantity} price={price} />
-        </div>
-      )}
+      {/* 하위 클라이언트 컴포넌트로 묶어서 이동 */}
+      <ProductDetailClient price={product.price} />
 
       <Tabbar />
-    </>
+    </CartProvider>
   );
 }

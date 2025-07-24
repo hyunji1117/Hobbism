@@ -11,6 +11,7 @@ export default function CommunityPage() {
       <div className="scrollbar-hide flex-1 overflow-y-auto">
         {/* 피드 아이템 */}
         <CommunityMain
+          id={1}
           userName="닉네임"
           timeAgo="2시간 전"
           description="드디어 완성된 결계 마왕의 졸개를 처리하느라 ..."
@@ -19,6 +20,7 @@ export default function CommunityPage() {
         />
 
         <CommunityMain
+          id={2}
           userName="닉네임"
           timeAgo="2시간 전"
           description="드디어 완성된 결계 마왕의 졸개를 처리하느라 ..."
@@ -27,6 +29,7 @@ export default function CommunityPage() {
         />
 
         <CommunityMain
+          id={3}
           userName="닉네임"
           timeAgo="2시간 전"
           description="드디어 완성된 결계 마왕의 졸개를 처리하느라 ..."

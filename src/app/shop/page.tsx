@@ -1,8 +1,9 @@
 import ShopList from '@/app/shop/ShopList';
+import { RandomHobbyBtn } from '@/components/features/shop/RandomHobby/RandomHobbyBtn';
 import { ShopBanner } from '@/components/features/shop/ShopBanner';
 import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';
 import TabBar from '@/components/layout/tabbar/Tabbar';
-import { fetchLiveProducts } from '@/data/functions/LiveProductFetch';
+import { fetchLiveProducts } from '@/data/functions/AllProductFetch';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Metadata } from 'next';
 
@@ -32,6 +33,9 @@ export default async function ShopPage() {
         <h2 className="py-4 text-lg font-semibold">라이브 특별 기획 상품</h2>
         <ShopLiveProducts liveData={initialLiveFiltered} />
       </section>
+
+      {/* 오늘의 취미 랜덤 뽑기 */}
+      <RandomHobbyBtn />
 
       {/* 전체(카테고리 별) 상품 */}
       <ShopList initialData={initialData} />

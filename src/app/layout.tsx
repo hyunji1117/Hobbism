@@ -7,6 +7,7 @@ import { MobileFrame } from '@/components/layout/moblie-frame/MobileFrame';
 import ModalProvider from '@/components/common/ModalProvider';
 import { SessionProvider } from 'next-auth/react';
 import TokenSync from '@/components/features/auth/TokenSync';
+import Script from 'next/script';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -22,6 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${pretendard.variable}`}>
+      <head>
+        <Script
+          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body className={`${pretendard.className}`}>
         <SessionProvider>
           <TokenSync />

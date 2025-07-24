@@ -187,3 +187,12 @@
     left: 1em;
   }
 }
+
+.spin-slow {
+  animation: spin 3s linear infinite;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { EllipsisVertical } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import CommentOptionsModal from './CommentOptionsModal';
 
 interface CommentItemProps {
@@ -9,6 +9,10 @@ interface CommentItemProps {
   userName: string;
   timeAgo: string;
   comment: string;
+  postId: number;
+  replyId: string;
+  onEditClick: (replyId: string, content: string) => void;
+  onAfterDelete: () => void;
 }
 
 export default function CommentItem({
@@ -16,29 +20,39 @@ export default function CommentItem({
   timeAgo = '1시간 전',
   comment = '정말 날씨가 좋네요 저도 싸우러 갈게요!',
   profileImage = '/images/inhwan/profile-default.png',
+  postId,
+  replyId,
+  onEditClick,
+  onAfterDelete,
 }: CommentItemProps) {
   const [isOptionModal, setIsOptionModal] = useState(false);
+
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleCommentOption = () => {
     setIsOptionModal(!isOptionModal);
   };
 
-  // 빈 화면 클릭 시 해제
-  useEffect(() => {
-    const handleClickOutside = (e: PointerEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        setIsOptionModal(false);
-      }
-    };
-    if (isOptionModal) {
-      document.addEventListener('pointerdown', handleClickOutside);
-    }
+  const closeModal = () => setIsOptionModal(false);
 
-    return () => {
-      document.removeEventListener('pointerdown', handleClickOutside);
-    };
-  }, [isOptionModal]);
+  const handleEdit = () => {
+    onEditClick(replyId, comment);
+    setIsOptionModal(false);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await fetch('/api/comments', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ _id: postId, reply_id: replyId }),
+      });
+      onAfterDelete();
+    } catch (error) {
+      console.log('댓글 삭제 실패', error);
+    }
+    setIsOptionModal(false);
+  };
 
   return (
     <div className="w-full">
@@ -82,10 +96,16 @@ export default function CommentItem({
             className="relative bottom-3 flex-shrink-0"
             onClick={handleCommentOption}
           >
-            <EllipsisVertical size={18} className="text-black" />
+            <EllipsisVertical size={18} />
           </button>
         </div>
-        {isOptionModal && <CommentOptionsModal />}
+        {isOptionModal && (
+          <CommentOptionsModal
+            onClose={closeModal}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )}
       </div>
 
       {/* 하단 보더 (1px) */}
