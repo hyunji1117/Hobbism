@@ -92,7 +92,7 @@ export async function createReply(
   };
 
   const _id = formData.get('_id');
-  const accessToken = formData.get('accessToken'); // accessToken 유지!
+  const accessToken = formData.get('accessToken');
 
   let data: ApiRes<PostReply>;
 
@@ -102,7 +102,7 @@ export async function createReply(
       headers: {
         'Content-Type': 'application/json',
         'Client-Id': CLIENT_ID,
-        'Authorization': `Bearer ${accessToken}`, // 인증 헤더 추가!
+        'Authorization': `Bearer ${accessToken}`,
       },
       body: JSON.stringify(body),
     });
