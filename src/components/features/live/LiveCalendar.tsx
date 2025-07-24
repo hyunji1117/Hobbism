@@ -1,11 +1,11 @@
 'use client';
 
-import { LiveDataType } from '@/components/features/live/LiveCalendarBtn';
+import { liveDummyData } from '@/app/live/LiveDataUI';
 import moment from 'moment';
 import 'moment/locale/ko';
 import { useEffect, useState } from 'react';
 
-export const LiveCalendar = ({ liveData }: { liveData: LiveDataType[] }) => {
+export const LiveCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(moment());
 
   // moment 로케일을 한국어로 설정
@@ -23,7 +23,7 @@ export const LiveCalendar = ({ liveData }: { liveData: LiveDataType[] }) => {
     setSelectedDate(date);
   };
 
-  const weeklyLives = liveData.filter(live =>
+  const weeklyLives = liveDummyData.filter(live =>
     weekDays.some(day => live.start.isSame(day, 'day')),
   );
 
@@ -42,7 +42,7 @@ export const LiveCalendar = ({ liveData }: { liveData: LiveDataType[] }) => {
                 ? 'text-[#FE508B]'
                 : 'text-black';
 
-            const hasLive = liveData.some(live =>
+            const hasLive = liveDummyData.some(live =>
               live.start.isSame(day, 'day'),
             );
             return (
@@ -66,18 +66,21 @@ export const LiveCalendar = ({ liveData }: { liveData: LiveDataType[] }) => {
           })}
         </div>
         <div className="px-2.5">
-          <h2 className="mt-4 border-b-2 pb-1 text-lg font-semibold">
+          <h2 className="mt-4 mb-1 border-b-2 pb-1 text-lg font-semibold">
             예정된 라이브 방송
           </h2>
 
-          <ul className="">
+          <ul>
             {weeklyLives.length === 0 ? (
               <li className="py-3 text-sm text-[#4B5563]">
                 이번 주 라이브 일정이 없습니다.
               </li>
             ) : (
               weeklyLives.map(live => (
-                <li key={live.id} className="flex py-2">
+                <li
+                  key={live.id}
+                  className={`mb-1 flex rounded-sm px-2 py-2 ${moment().isBetween(moment(live.start), moment(live.end)) ? 'bg-[#ffe8f0]' : 'bg-white'}`}
+                >
                   <h3>
                     {live.start.format('M월 D일')}
                     <small className="block text-[#4B5563]">
