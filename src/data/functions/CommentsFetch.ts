@@ -1,10 +1,13 @@
 // 댓글 조회
+const CLIENT_ID = process.env.CLIENT_ID;
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export async function fetchComments(_id: number) {
   try {
     const response = await fetch(
-      `https://fesp-api.koyeb.app/market/posts/${_id}/replies`,
+      `${NEXT_PUBLIC_API_URL}/posts/${_id}/replies`,
       {
-        headers: { 'Client-Id': 'febc13-final01-emjf' },
+        headers: { 'Client-Id': CLIENT_ID || '' },
       },
     );
     if (!response.ok) throw new Error('댓글 조회 실패');

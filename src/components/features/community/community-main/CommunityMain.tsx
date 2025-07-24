@@ -60,7 +60,9 @@ export default function CommunityMain({ post }: CommunityMainProps) {
         <div className="flex-1 truncate pr-2 text-sm text-black">
           {post.content}
         </div>
+
         <Link href={`/community/${post._id}`}>
+
           <ChevronRight size={20} />
         </Link>
       </div>

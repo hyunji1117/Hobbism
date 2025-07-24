@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 interface ShopProductProps {
+  _id: string;
   price: number;
   name: string;
   mainImageSrc: string;
@@ -15,6 +16,7 @@ interface ShopProductProps {
 }
 
 export const ShopProduct = ({
+  _id,
   price,
   name,
   mainImageSrc,
@@ -42,10 +44,7 @@ export const ShopProduct = ({
   const recommendColor = recommendColorCode[recommendedBy];
 
   return (
-    <Link
-      href={'/shop/productId'}
-      className={`mb-2 flex w-full flex-col gap-1`}
-    >
+    <Link href={`/shop/${_id}`} className={`mb-2 flex w-full flex-col gap-1`}>
       <div className={`relative mb-1 aspect-square w-full`}>
         <Image
           fill

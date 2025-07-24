@@ -1,22 +1,52 @@
+'use client';
+
 import { Minus, Plus } from 'lucide-react';
+import { ProductDetailInfoProps } from '@/types/interface/product';
 
 // 상품 상세 정보 컴포넌트
-export const ProductDetailInfo = () => {
+export const ProductDetailInfo = ({
+  item,
+  discountRate,
+  discountedPrice,
+  extra,
+}: ProductDetailInfoProps) => {
+  // recommendedBy 값을 한글로 변환하는 함수
+  const getRecommendedByText = (recommendedBy: string) => {
+    const mapping: Record<string, string> = {
+      inhwan: '인환',
+      hyunji: '현지',
+      woomin: '우민',
+      youngchan: '영찬',
+      ayoung: '아영',
+    };
+    return mapping[recommendedBy] || '추천';
+  };
+
   return (
-    <section className="h-[160px] items-center justify-center p-5">
-      <h1 className="text-[24px] font-semibold text-black">
-        아디다스 언더아머 2.0 윈터브레이크
+    <section className="h-[145px] items-center justify-center px-5 py-4">
+      <span className="mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] bg-[#D2E308] text-[12px]">
+        {extra && extra.recommendedBy
+          ? getRecommendedByText(extra.recommendedBy)
+          : '추천'}{' '}
+        PICK
+      </span>
+      <h1 className="relative text-[24px] font-semibold text-black">
+        {/* 아디다스 언더아머 2.0 윈터브레이크 */}
+        {item.name}
       </h1>
-      <p className="text-[14px] text-[#4B5563]">정보를 적어주세요.</p>
       <span className="flex flex-col pt-2 text-[12px] text-[#C3C3C3]">
-        167,000원
+        {/* 167,000원 */}
+        {item.price.toLocaleString()}원
       </span>
       <div className="mt-1 flex items-center">
-        <span className="pr-2 text-[24px] font-semibold text-[#EF4444]">
-          30%
-        </span>
+        {discountRate > 0 && (
+          <span className="pr-2 text-[24px] font-semibold text-[#EF4444]">
+            {discountRate.toLocaleString()}%
+          </span>
+        )}
         <span className="justify-self-center text-[24px] font-semibold text-black">
-          139,000원
+          {/* 139,000원 */}
+          {discountedPrice.toLocaleString()}원
         </span>
         <span className="ml-auto flex h-[28px] w-[76px] items-center justify-center rounded-[4px] bg-[#F3F4F6] text-[14px] text-black">
           무료배송

@@ -4,6 +4,9 @@ import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 import { cookies } from 'next/headers';
 
+const CLIENT_ID = process.env.CLIENT_ID;
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 declare module 'next-auth/jwt' {
   interface JWT {
     extra?: {
@@ -26,6 +29,10 @@ declare module 'next-auth' {
       _id?: number;
       name?: string;
       email?: string;
+      image?: string;
+      points?: number;
+      address?: string;
+      phone?: string;
     };
   }
 }
@@ -54,18 +61,24 @@ const handler = NextAuth({
         token.extra.providerAccountId = account.providerAccountId;
         token.loginType = account.provider;
         token.type = 'user';
+        token.image = token.picture;
+        delete token.picture;
+        token.points = 0;
+        token.address = null;
+        token.phone = '01000000000';
 
         try {
           // 회원가입 시도
-          const signupUrl = `https://fesp-api.koyeb.app/market/users/signup/oauth`;
+          const signupUrl = `${NEXT_PUBLIC_API_URL}/users/signup/oauth`;
           const signupRes = await fetch(signupUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Client-Id': 'febc13-final01-emjf',
+              'Client-Id': CLIENT_ID || '',
             },
             body: JSON.stringify(token),
           });
+          console.log(CLIENT_ID);
 
           // 회원가입 성공 시 자동 로그인
           if (signupRes.ok || signupRes.status === 409) {
@@ -83,7 +96,7 @@ const handler = NextAuth({
               token.loginType === 'google' ||
               token.loginType === 'naver'
             ) {
-              loginUrl = `https://fesp-api.koyeb.app/market/users/login/with`;
+              loginUrl = `${NEXT_PUBLIC_API_URL}/users/login/with`;
               loginData = {
                 providerAccountId: token.extra?.providerAccountId,
               };
@@ -93,7 +106,7 @@ const handler = NextAuth({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Client-Id': 'febc13-final01-emjf',
+                'Client-Id': CLIENT_ID || '',
               },
               body: JSON.stringify(loginData),
             });
@@ -108,6 +121,7 @@ const handler = NextAuth({
                 token._id = userData.item._id;
                 token.name = userData.item.name;
                 token.email = userData.item.email || token.email;
+                token.image = userData.item.image;
 
                 if (userData.item.token.refreshToken) {
                   const cookieStore = await cookies();
@@ -149,6 +163,14 @@ const handler = NextAuth({
         session.user._id = token._id;
         session.user.name = token.name;
         session.user.email = token.email;
+        session.user.image =
+          typeof token.image === 'string' ? token.image : undefined;
+        session.user.points =
+          typeof token.points === 'number' ? token.points : undefined;
+        session.user.address =
+          typeof token.address === 'string' ? token.address : undefined;
+        session.user.phone =
+          typeof token.phone === 'string' ? token.phone : undefined;
       }
 
       return session;
