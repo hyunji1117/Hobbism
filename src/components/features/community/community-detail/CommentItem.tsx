@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { MoreVertical } from 'lucide-react';
 
 interface CommentItemProps {
   profileImage: string;
@@ -19,7 +20,7 @@ export default function CommentItem({
 }: CommentItemProps) {
   return (
     <div className="w-full">
-      <div className="flex min-h-[70px] justify-between px-5 py-4">
+      <div className="flex min-h-[70px] items-start justify-between px-5 py-4">
         <div className="flex flex-1 gap-3">
           <div className="h-8 w-8 flex-shrink-0">
             <Image
@@ -46,6 +47,10 @@ export default function CommentItem({
             </div>
           </div>
         </div>
+
+        <button type="button" className="flex-shrink-0">
+          <MoreVertical size={18} className="text-hobbism-black" />
+        </button>
       </div>
 
       <div className="border-b border-[#EAEAEA]"></div>
