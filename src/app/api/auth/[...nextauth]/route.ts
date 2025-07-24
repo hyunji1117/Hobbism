@@ -51,6 +51,7 @@ const handler = NextAuth({
         if (!token.extra) {
           token.extra = {};
         }
+        console.log('token', token);
         token.extra.providerAccountId = account.providerAccountId;
         token.loginType = account.provider;
         token.type = 'user';

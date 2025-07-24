@@ -1,6 +1,7 @@
 'use client';
 
 import { BackButton } from '@/components/common/BackButton';
+import SearchHeader from '@/components/common/SearchHeader';
 import { SettingButton } from '@/components/common/SettingButton';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth.store';
@@ -32,6 +33,10 @@ export default function Header() {
     () => /^\/shop\/\d+/.test(pathname),
     [pathname],
   ); // 제품 상세 페이지
+  const isFeedPage = useMemo(
+    () => /^\/community\/\d+/.test(pathname),
+    [pathname],
+  ); // 제품 상세 페이지
 
   //          state: 고정 경로 페이지 상태          //
   const isLoginPage = pathname === '/login'; // 로그인 페이지
@@ -45,6 +50,7 @@ export default function Header() {
   const isPolicyPage = pathname === '/policy'; // 개인정보 처리방침 페이지
   const isNoticePage = pathname === '/notice'; // 공지사항 페이지
   const isContactPage = pathname === '/contact'; // 고객센터 페이지
+  const isSearchPage = pathname.startsWith('/search');
 
   //          state: 현재 페이지가 내 마이페이지인지 여부          //
   const isMypage = user && pathname === `/user/${user._id}`;
@@ -61,6 +67,7 @@ export default function Header() {
     isNoticePage ||
     isContactPage ||
     (isUserPage && !isMypage) ||
+    isFeedPage ||
     isBookmarkPage; // 일반 뒤로가기 버튼 노출 조건
   const showConfirmBackButton = isEditPage || isCommunityWritePage; // 뒤로가기 시 확인이 필요한 페이지
   const showCartIcon = isShopPage || isProductPage; // 쇼핑카트 아이콘 노출 조건
@@ -100,6 +107,7 @@ export default function Header() {
 
           {/* 오른쪽 아이콘 영역 */}
           <div className="absolute right-4 flex gap-6">
+            {(isShopPage || isSearchPage) && <SearchHeader />}
             {showCartIcon && (
               <Link href="/shop/cart">
                 <ShoppingCart />

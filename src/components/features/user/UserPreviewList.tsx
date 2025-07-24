@@ -6,6 +6,7 @@ import UserPreviewCard from '@/components/features/user/UserPreviewCard';
 import { getBookmarkList } from '@/data/actions/bookmark';
 import { User } from '@/types';
 import { useAuthStore } from '@/store/auth.store';
+import { getUserImageUrl } from '@/utils';
 
 //          interface: 유저 프리뷰 리스트 컴포넌트 Properties          //
 interface Props {
@@ -86,11 +87,7 @@ export default function UserPreviewList({ recommendedUser }: Props) {
             id={user._id}
             name={user.name}
             introduction={user.extra?.introduction}
-            image={
-              user.image
-                ? `https://fesp-api.koyeb.app/market/${user.image}`
-                : '/images/default-profile-image.webp'
-            }
+            image={getUserImageUrl(user.image)}
             isFollowed={user.isFollowed}
             bookmarkId={user.bookmarkId}
             onRemove={handleRemove}

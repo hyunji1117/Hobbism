@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { updateUserInfo } from '@/data/actions/user';
 import { User } from '@/types/';
 import { useEffect, useRef, useState } from 'react';
-import { converUrlToFile } from '@/utils';
+import { converUrlToFile, getUserImageUrl } from '@/utils';
 import { useAuthStore } from '@/store/auth.store';
 import { useRouter } from 'next/navigation';
 import { useModalStore } from '@/store/modal.store';
@@ -32,7 +32,9 @@ export function UserEditForm({ user }: Props) {
   //          state: 액세스토큰 상태          //
   const accessToken = useAuthStore(state => state.accessToken); // Zustand에서 accessToken 가져옴
   //          state: 프로필 이미지 미리보기 상태          //
-  const [preview, setPreview] = useState(user.picture); // 프로필 이미지 미리보기
+  const [preview, setPreview] = useState<string>(
+    '/images/default-profile-image.webp',
+  ); // 프로필 이미지 미리보기
 
   //          state: react-hook-form(닉네임, 소개, 이미지, accessToken)          //
   const { register, handleSubmit, setValue } = useForm<FormValues>({
@@ -90,14 +92,8 @@ export function UserEditForm({ user }: Props) {
   //          effect: 이미지 변경 시 실행할 함수          //
   useEffect(() => {
     const convertImageToFile = async () => {
-      let preview = '';
-      if (user.image) {
-        preview = `https://fesp-api.koyeb.app/market/${user.image}`;
-      } else if (user.picture) {
-        preview = user.picture;
-      } else {
-        return;
-      }
+      const preview = getUserImageUrl(user.image);
+      if (!preview) return;
       setPreview(preview);
       const file = await converUrlToFile(preview);
       setValue('attach', file);
@@ -120,7 +116,7 @@ export function UserEditForm({ user }: Props) {
       {/* 프로필 이미지 영역 */}
       <div className="relative mx-auto mb-6 flex w-[100px] items-center justify-center">
         <Image
-          src={preview ? preview : '/images/default-profile-image.webp'}
+          src={preview}
           alt="프로필 이미지"
           width={100}
           height={100}
@@ -179,7 +175,7 @@ export function UserEditForm({ user }: Props) {
         </div>
 
         {/* 제출 버튼 */}
-        <button className="mb-6 w-full rounded-lg bg-[#14243E] py-3 text-sm text-white">
+        <button className="mb-6 w-full cursor-pointer rounded-lg bg-[#14243E] py-3 text-sm text-white">
           수정하기
         </button>
       </form>

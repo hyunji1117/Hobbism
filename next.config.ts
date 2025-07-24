@@ -24,13 +24,23 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'http',
-        hostname: 'img1.kakaocdn.net', // ✅ 수정됨
-        pathname: '/**', // ✅ 모든 경로 허용
+        hostname: 'img1.kakaocdn.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'k.kakaocdn.net',
+        pathname: '/**',
       },
       {
         protocol: 'http',
         hostname: 't1.kakaocdn.net',
-        pathname: '/**', // ✅ '**' 앞에 '/' 추가
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ssl.pstatic.net',
+        pathname: '/**',
       },
     ],
   },

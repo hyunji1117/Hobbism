@@ -6,7 +6,7 @@ export interface User {
   address?: string; // 주소
   type: 'user' | 'seller' | 'admin'; // 사용자 유형
   loginType: 'email' | 'kakao' | 'google' | 'github'; // 로그인 방식
-  image?: string; // 프로필 이미지
+  image: string; // 프로필 이미지
   picture?: string; // 프로필 이미지
   token?: {
     // 인증 토큰

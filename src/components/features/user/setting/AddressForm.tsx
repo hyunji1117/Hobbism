@@ -9,14 +9,19 @@ import { getUserAttribute, updateUserInfo } from '@/data/actions/user';
 import { useAuthStore } from '@/store/auth.store';
 import { useForm } from 'react-hook-form';
 
+//          interface: 주소 폼 입력 타입 정의          //
 interface FormValues {
   address: string;
   detail: string;
 }
 
+//          component: 주소 폼 컴포넌트          //
 export default function AddressForm() {
+  //          state: 주소 입력 폼 오픈 상태          //
   const [isOpen, setIsOpen] = useState(false);
+  //          state: 로그인 유저 상태          //
   const currentUser = useAuthStore(state => state.user);
+  //          state: accessToken 상태          //
   const accessToken = useAuthStore(state => state.accessToken);
 
   const { register, setValue, handleSubmit } = useForm<FormValues>({
@@ -66,10 +71,8 @@ export default function AddressForm() {
 
     const res = await updateUserInfo(currentUser._id, formData);
     if (res.ok) {
-      alert('주소가 성공적으로 저장되었습니다.');
     } else {
       console.error(res);
-      alert('주소 저장에 실패했습니다.');
     }
   };
 
@@ -95,7 +98,11 @@ export default function AddressForm() {
           <div>
             <div className="mb-2 flex items-center justify-between">
               <span className="text-sm">주소</span>
-              <Button type="submit" variant="outline">
+              <Button
+                type="submit"
+                variant="outline"
+                className="cursor-pointer"
+              >
                 저장
               </Button>
             </div>

@@ -13,6 +13,7 @@ import {
   getBookmark,
   postBookmark,
 } from '@/data/actions/bookmark';
+import { getUserImageUrl } from '@/utils';
 
 //          interface: 유저 프로필 섹션 Properties          //
 interface Props {
@@ -22,12 +23,9 @@ interface Props {
 //          component: 유저 프로필 섹션 컴포넌트          //
 export function UserProfileSection({ user, isMypage }: Props) {
   //          variable: 디폴트 이미지 변수          //
-  let imageUrl = '/images/default-profile-image.webp';
-  if (user.image) {
-    imageUrl = `https://fesp-api.koyeb.app/market/${user.image}`;
-  } else if (user.picture) {
-    imageUrl = user.picture;
-  }
+  console.log('user.image', user.image);
+  const imageUrl = getUserImageUrl(user.image);
+  console.log('imageUrl', imageUrl);
   //          state: 팔로잉 카운트 상태          //
   const { followingCount, setFollowingCount } = useFollowStore();
   //          state: accessToken 상태          //
@@ -100,7 +98,7 @@ export function UserProfileSection({ user, isMypage }: Props) {
         <Image
           src={imageUrl}
           alt="프로필 이미지"
-          className="rounded-full object-cover"
+          className="size-16 rounded-full object-cover"
           width={64}
           height={64}
           priority

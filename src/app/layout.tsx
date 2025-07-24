@@ -4,7 +4,6 @@
 import '@/styles/globals.css';
 import localFont from 'next/font/local';
 import { MobileFrame } from '@/components/layout/moblie-frame/MobileFrame';
-import TabBar from '@/components/layout/tabbar/Tabbar';
 import ModalProvider from '@/components/common/ModalProvider';
 import { SessionProvider } from 'next-auth/react';
 import TokenSync from '@/components/features/auth/TokenSync';

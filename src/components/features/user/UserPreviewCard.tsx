@@ -96,22 +96,26 @@ export default function UserPreviewCard({
         prefetch={true}
       >
         {/* 프로필 이미지 */}
-        <Image
-          src={image}
-          alt="프로필 이미지"
+        <div
           className={cn(
-            'pointer-events-none rounded-full select-none',
-            variant === 'vertical' ? 'mb-3 size-14' : 'size-10',
+            'relative aspect-square overflow-hidden rounded-full',
+            variant === 'vertical' ? 'mb-3 w-14' : 'w-10',
           )}
-          width={variant === 'vertical' ? 56 : 40}
-          height={variant === 'vertical' ? 56 : 40}
-          draggable={false}
-        />
+        >
+          <Image
+            src={image}
+            alt="프로필 이미지"
+            fill
+            className="pointer-events-none object-cover object-center select-none"
+            sizes={variant === 'vertical' ? '56px' : '40px'}
+            draggable={false}
+          />
+        </div>
 
         {/* 유저 이름 및 소개 */}
         <div
           className={cn(
-            'w-full',
+            'flex-1',
             variant === 'horizontal' &&
               'flex flex-col items-start justify-center',
           )}
@@ -147,7 +151,6 @@ export default function UserPreviewCard({
       ) : (
         <ChevronRight />
       )}
-
       {/* 삭제 아이콘 (추천 유저 제거 버튼) */}
       {variant === 'vertical' && onRemove && (
         <X

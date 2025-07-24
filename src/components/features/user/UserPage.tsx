@@ -47,7 +47,7 @@ export function UserPageClient({ user, posts, recommenedUser }: Props) {
           <TabsList className="h-14 w-full rounded-none border-b bg-white px-5 py-0">
             <TabsTrigger
               value="feed"
-              className="rounded-none border-none !shadow-none data-[state=active]:bg-gray-200"
+              className="cursor-pointer rounded-none border-none !shadow-none data-[state=active]:bg-gray-200"
             >
               {isMypage ? '내 피드' : '피드'}
             </TabsTrigger>
@@ -56,7 +56,7 @@ export function UserPageClient({ user, posts, recommenedUser }: Props) {
             {isMypage && (
               <TabsTrigger
                 value="shop"
-                className="rounded-none border-none !shadow-none data-[state=active]:bg-gray-200"
+                className="cursor-pointer rounded-none border-none !shadow-none data-[state=active]:bg-gray-200"
               >
                 쇼핑 내역
               </TabsTrigger>

@@ -18,3 +18,18 @@ export const convertUrlsToFile = async (urls: string[]) => {
   }
   return files;
 };
+
+export function getUserImageUrl(image?: string): string {
+  console.log('image', image);
+  if (!image) return '/images/default-profile-image.webp';
+
+  if (image.startsWith('http://') || image.startsWith('https://')) {
+    return image;
+  }
+
+  if (image.startsWith('files')) {
+    return `https://fesp-api.koyeb.app/market/${image}`;
+  }
+
+  return '/images/default-profile-image.webp';
+}
