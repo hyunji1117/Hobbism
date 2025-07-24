@@ -5,7 +5,10 @@ interface User {
   _id?: number;
   name?: string;
   email?: string;
+  image?: string;
   points?: number;
+  address?: string;
+  phone?: string;
 }
 
 interface AuthState {
@@ -19,6 +22,8 @@ interface AuthState {
   setUser: (user: User) => void;
   clearAuth: () => void;
   addPoints: (point: number) => void;
+  updateAddress: (address: string) => void;
+  updatePhone: (phone: string) => void;
 }
 
 // store 생성
@@ -47,6 +52,14 @@ export const useAuthStore = create<AuthState>()(
                 },
               }
             : state,
+        ),
+
+      updatePhone: phone =>
+        set(state => (state.user ? { user: { ...state.user, phone } } : state)),
+
+      updateAddress: address =>
+        set(state =>
+          state.user ? { user: { ...state.user, address } } : state,
         ),
     }),
     {

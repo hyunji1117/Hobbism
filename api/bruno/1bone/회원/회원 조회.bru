@@ -1,0 +1,25 @@
+meta {
+  name: 회원 조회
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}/users/signup/oauth
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "영찬",
+    "email": "wooych@naver.com",
+    "sub": "4351593709",
+    "extra": { "providerAccountId": "4351593709" },
+    "loginType": "kakao",
+    "type": "user",
+    "image": "http://k.kakaocdn.net/dn/bhlqPt/btsOCMR96o7/ufFq0k2tFkacmQNyKFthr1/img_640x640.jpg",
+    "address": null,
+    "phone": "01000000000"
+  }
+}
