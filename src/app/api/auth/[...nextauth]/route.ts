@@ -4,6 +4,9 @@ import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 import { cookies } from 'next/headers';
 
+const CLIENT_ID = process.env.CLIENT_ID;
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 declare module 'next-auth/jwt' {
   interface JWT {
     extra?: {
@@ -57,12 +60,12 @@ const handler = NextAuth({
 
         try {
           // 회원가입 시도
-          const signupUrl = `https://fesp-api.koyeb.app/market/users/signup/oauth`;
+          const signupUrl = `${NEXT_PUBLIC_API_URL}/users/signup/oauth`;
           const signupRes = await fetch(signupUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Client-Id': 'febc13-final01-emjf',
+              'Client-Id': CLIENT_ID || '',
             },
             body: JSON.stringify(token),
           });
@@ -83,7 +86,7 @@ const handler = NextAuth({
               token.loginType === 'google' ||
               token.loginType === 'naver'
             ) {
-              loginUrl = `https://fesp-api.koyeb.app/market/users/login/with`;
+              loginUrl = `${NEXT_PUBLIC_API_URL}/users/login/with`;
               loginData = {
                 providerAccountId: token.extra?.providerAccountId,
               };
@@ -93,7 +96,7 @@ const handler = NextAuth({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Client-Id': 'febc13-final01-emjf',
+                'Client-Id': CLIENT_ID || '',
               },
               body: JSON.stringify(loginData),
             });
