@@ -27,6 +27,7 @@ export interface Product {
     discountRate: number;
     discountedPrice: number;
   };
+  options?: { name: string; value: string }[];
 }
 
 // API 서버의 상품 상세조회 응답
@@ -59,4 +60,10 @@ export interface ProductDetailInfoProps {
   extra: {
     recommendedBy: string;
   };
+  options: string[];
+}
+
+export interface CartActionsProps {
+  price: number;
+  options: string[];
 }

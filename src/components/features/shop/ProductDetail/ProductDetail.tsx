@@ -22,7 +22,7 @@ export const ProductDetailInfo = ({
     ayoung: { name: '아영', color: 'bg-[#6E67DA]', textColor: 'text-white' },
   };
 
-  // recommendedBy 값 기반 추천 정보 가져오는 부분
+  // MD PICK 정보 가져오기
   const recommendInfo = extra?.recommendedBy
     ? recommendData[extra.recommendedBy]
     : { name: '추천', color: 'bg-[#C3C3C3]', textColor: 'text-black' };

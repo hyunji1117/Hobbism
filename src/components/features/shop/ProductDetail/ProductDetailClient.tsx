@@ -10,9 +10,10 @@ import {
 } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
+import { CartActionsProps } from '@/types/interface/product';
 
 // 뒤로가기 버튼 핸들러 분리해서 export: 서버 컴포넌트에서 사용
-export function GoBackButton() {
+export function GoBackButton({ stroke }: { stroke: string }) {
   function handleGoBack(): void {
     if (window.history.length > 2) {
       // 사용자가 URL을 직접 입력하여 접속 경우, 뒤로가기 버튼을 클릭하면 검색 엔진이나 서비스 외부 페이지로 이동하는 문제 해결 가능
@@ -25,7 +26,7 @@ export function GoBackButton() {
 
   return (
     <button onClick={handleGoBack}>
-      <ChevronLeft />
+      <ChevronLeft className={stroke} />
     </button>
   );
 }
@@ -45,18 +46,23 @@ export function CartIcon() {
 }
 
 // 상품 상세 하위 로직
-export default function ProductDetailClient({ price }: { price: number }) {
+export default function CartActions({ price, options }: CartActionsProps) {
   const [selectedOption, setSelectedOption] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const [isQuantitySelectorEnabled, setIsQuantitySelectorEnabled] =
-    useState(false);
   const { cartCount, setCartCount } = useCart();
+
+  const hasOptions = Array.isArray(options) && options.length > 0;
 
   const swipeHandlers = useSwipeable({
     onSwipedDown: () => setIsBottomSheetOpen(false),
     trackMouse: true,
   });
+
+  // 옵션이 없으면 수량 선택 UI는 항상 보이도록 처리
+  // 옵션이 있으면 옵션 선택 후 수량 UI가 활성화됨
+  const isQuantitySelectorEnabled =
+    !hasOptions || (hasOptions && selectedOption !== '');
 
   return (
     <>
@@ -66,18 +72,25 @@ export default function ProductDetailClient({ price }: { price: number }) {
           onCartClick={() => {
             if (!isBottomSheetOpen) {
               setIsBottomSheetOpen(true);
-              setIsQuantitySelectorEnabled(false);
+              // 옵션이 없으면 수량 선택 UI 활성화
+              if (!hasOptions) {
+                setSelectedOption('');
+              } else {
+                setSelectedOption('');
+              }
+              setQuantity(1);
               return;
             }
-            // 바텀시트가 열려 있는 상태에서 장바구니 담기 처리
+            // 바텀시트가 열려 있을 때 장바구니에 반영
+            setCartCount(cartCount + quantity);
+            setIsBottomSheetOpen(false);
             setSelectedOption('');
             setQuantity(1);
-            setCartCount(cartCount + quantity);
           }}
         />
       </div>
 
-      {/* 바텀시트 on 어두운 배경 */}
+      {/* 바텀시트 어두운 배경 */}
       {isBottomSheetOpen && (
         <div className="fixed inset-0 z-10 flex items-center justify-center">
           <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
@@ -88,21 +101,22 @@ export default function ProductDetailClient({ price }: { price: number }) {
       {isBottomSheetOpen && (
         <div
           {...swipeHandlers}
-          className="flexbox fixed bottom-[133px] z-20 w-full max-w-[600px] rounded-t-[16px] bg-white shadow-lg"
+          className="fixed bottom-[133px] z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg"
         >
           <div className="flex justify-center">
             <div className="mt-2.5 h-[4px] w-[109px] rounded-full bg-[#3D3D3D]" />
           </div>
-          <div className="bg-white px-5 pt-3.5">
-            <OptionSelector
-              options={['S', 'M', 'L', 'XL']}
-              selectedOption={selectedOption}
-              onSelect={option => {
-                setSelectedOption(option);
-                setIsQuantitySelectorEnabled(true);
-              }}
-            />
-          </div>
+
+          {hasOptions && (
+            <div className="bg-white px-5 pt-3.5">
+              <OptionSelector
+                options={options}
+                selectedOption={selectedOption}
+                onSelect={option => setSelectedOption(option)}
+              />
+            </div>
+          )}
+
           {isQuantitySelectorEnabled && (
             <div className="bg-white px-5 py-3">
               <ProductQuantitySelector
@@ -114,6 +128,7 @@ export default function ProductDetailClient({ price }: { price: number }) {
               />
             </div>
           )}
+
           {isQuantitySelectorEnabled && (
             <TotalPrice quantity={quantity} price={price} />
           )}
@@ -124,5 +139,5 @@ export default function ProductDetailClient({ price }: { price: number }) {
 }
 
 // NavBar에서 사용할 수 있게 내보내기
-ProductDetailClient.GoBackButton = GoBackButton;
-ProductDetailClient.CartIcon = CartIcon;
+CartActions.GoBackButton = GoBackButton;
+CartActions.CartIcon = CartIcon;
