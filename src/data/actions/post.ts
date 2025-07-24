@@ -71,8 +71,9 @@ export async function createPost(
 
   // redirect를 try 밖으로 이동
   if (data.ok) {
-    revalidatePath(`/${body.type}`);
-    redirect(`/${body.type}`);
+    revalidatePath(`/${body.type}`); // 목록 페이지 캐시 갱신
+    revalidatePath(`/${body.type}/${data.item._id}`); // 상세페이지 캐시 갱신
+    redirect(`/${body.type}/${data.item._id}`); // 게시글 상세페이지로 이동
   } else {
     return data;
   }

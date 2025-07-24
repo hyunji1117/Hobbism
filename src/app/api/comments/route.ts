@@ -1,7 +1,40 @@
-// 댓글 등록, 수정, 삭제 기능
+
 
 import { NextRequest, NextResponse } from 'next/server';
 
+// 댓글 조회
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const postId = searchParams.get('postId');
+
+    if (!postId) {
+      return NextResponse.json(
+        { error: 'postId가 필요합니다.' },
+        { status: 400 }
+      );
+    }
+
+    const response = await fetch(
+      `https://fesp-api.koyeb.app/market/posts/${postId}/replies`,
+      {
+        headers: {
+          'Client-Id': 'febc13-final01-emjf',
+        },
+      }
+    );
+
+    return NextResponse.json(await response.json());
+  } catch (error) {
+    console.log('댓글 조회 실패', error);
+    return NextResponse.json(
+      { error: '댓글을 불러올 수 없습니다.' },
+      { status: 500 }
+    );
+  }
+}
+
+// 댓글 등록
 export async function POST(request: NextRequest) {
   try {
     const { _id, content } = await request.json();
@@ -22,6 +55,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// 댓글 수정
 export async function PUT(request: NextRequest) {
   try {
     const { _id, reply_id, content } = await request.json();
@@ -42,6 +76,7 @@ export async function PUT(request: NextRequest) {
   }
 }
 
+// 댓글 삭제
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
