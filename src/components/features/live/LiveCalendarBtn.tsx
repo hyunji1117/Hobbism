@@ -1,20 +1,16 @@
 'use client';
 
 import { LiveCalendar } from '@/components/features/live/LiveCalendar';
+import { useLiveStore } from '@/store/live.store';
 import { CalendarFold } from 'lucide-react';
-import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 
-export interface LiveDataType {
-  id: number;
-  start: moment.Moment;
-  end: moment.Moment;
-  title: string;
-}
+export const LiveCalendarBtn = () => {
+  const currentLive = useLiveStore(state => state.currentLive);
 
-export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
   const [isDropdownOpen, setIsDropDownOpen] = useState(false); // 드롭다운 오픈 상태
   const [isAnimation, setIsAnimation] = useState(false);
+  const [isBtnClicked, setIsBtnClicked] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +19,7 @@ export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
     setTimeout(() => {
       setIsAnimation(true);
     }, 100);
+    setIsBtnClicked(true);
   };
   const closeDropdown = () => {
     setIsAnimation(false);
@@ -46,23 +43,40 @@ export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
     };
   }, [dropdownRef]);
 
+  const [isSameTimeLives, setIsSameTimeLives] = useState(false);
+  useEffect(() => {
+    setIsSameTimeLives((currentLive?.length ?? 0) >= 2);
+  }, [currentLive]);
+
   return (
     <div>
-      <button onClick={openDropdown}>
+      <button
+        onClick={openDropdown}
+        className="absolute top-3.5 right-0 pr-3.5"
+      >
         <CalendarFold stroke="white" />
       </button>
+
+      {/* 동시간 라이브 */}
+      {isSameTimeLives && (
+        <div
+          className={`absolute top-12.5 right-0 mr-2 rounded-sm bg-white p-1 text-xs font-extrabold text-[#FE508B] transition-all duration-200 after:absolute after:-top-3 after:right-4 after:border-7 after:border-transparent after:border-b-white after:content-[''] ${isBtnClicked ? 'opacity-0' : 'animate-pulse'}`}
+        >
+          동시LIVE!
+        </div>
+      )}
 
       {isDropdownOpen && (
         <>
           <div
             ref={dropdownRef}
             onClick={closeDropdown}
-            className="absolute top-0 left-0 z-1 h-[100vh] w-full bg-black/50"
+            className="absolute top-0 left-0 z-1 h-[100vh] w-[100vw] max-w-[600px] bg-black/50"
           ></div>
           <div
-            className={`absolute z-2 w-full transition-all duration-200 ${isAnimation ? '-translate-y-10' : '-translate-y-[400px]'} `}
+            className={`relative z-2 w-[100vw] max-w-[600px] transition-all duration-200 ${isAnimation ? '-translate-y-0' : '-translate-y-[400px]'} `}
           >
-            <LiveCalendar liveData={liveData} />
+            <LiveCalendar />
           </div>
         </>
       )}
