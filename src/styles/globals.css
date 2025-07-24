@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import 'tailwind-scrollbar-hide/v4';
+@import './variable.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -153,6 +155,36 @@
       right: 50%;
       transform: translateX(300px);
     }
+  }
+
+  .custom-toggle {
+    appearance: none;
+    position: relative;
+    border: max(2px, 0.1em) solid gray;
+    border-radius: 1.25em;
+    width: 2.25em;
+    height: 1.25em;
+  }
+  .custom-toggle::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    transform: scale(0.8);
+    background-color: gray;
+    transition: left 250ms linear;
+  }
+
+  .custom-toggle:checked {
+    background-color: gray;
+    border-color: gray;
+  }
+
+  .custom-toggle:checked::before {
+    background-color: white;
+    left: 1em;
   }
 }
 

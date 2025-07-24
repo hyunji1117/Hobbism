@@ -23,6 +23,10 @@ export default function TokenSync() {
           _id: session.user._id,
           name: session.user.name,
           email: session.user.email,
+          image: session.user.image,
+          points: session.user.points,
+          address: session.user.address,
+          phone: session.user.phone,
         });
       }
     } else {

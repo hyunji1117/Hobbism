@@ -9,6 +9,7 @@ interface CardItemCardProps {
   productImg: string;
   name: string;
   price: number;
+  quantity: number;
   isChecked?: boolean;
   onQuantityChange?: (id: number, quantity: number) => void;
   onRemove?: (id: number) => void;

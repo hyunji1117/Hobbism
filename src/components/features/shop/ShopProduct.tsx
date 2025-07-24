@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 interface ShopProductProps {
-  _id: string;
+  _id: number;
   price: number;
   name: string;
   mainImageSrc: string;

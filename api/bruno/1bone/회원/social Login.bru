@@ -1,0 +1,15 @@
+meta {
+  name: social Login
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/users/login/with
+  body: json
+  auth: inherit
+}
+
+body:json {
+  { "providerAccountId": "4351593709" }
+}

@@ -4,7 +4,7 @@ import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 import { cookies } from 'next/headers';
 
-const CLIENT_ID = process.env.CLIENT_ID;
+const NEXT_PUBLIC_CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 declare module 'next-auth/jwt' {
@@ -29,6 +29,10 @@ declare module 'next-auth' {
       _id?: number;
       name?: string;
       email?: string;
+      image?: string;
+      points?: number;
+      address?: string;
+      phone?: string;
     };
   }
 }
@@ -48,15 +52,22 @@ const handler = NextAuth({
       clientSecret: process.env.NAVER_CLIENT_SECRET || '',
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
         if (!token.extra) {
           token.extra = {};
         }
+        console.log('token', token);
         token.extra.providerAccountId = account.providerAccountId;
         token.loginType = account.provider;
         token.type = 'user';
+        token.image = token.picture;
+        delete token.picture;
+        token.points = 0;
+        token.address = null;
+        token.phone = '01000000000';
 
         try {
           // 회원가입 시도
@@ -65,10 +76,11 @@ const handler = NextAuth({
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Client-Id': CLIENT_ID || '',
+              'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
             },
             body: JSON.stringify(token),
           });
+          console.log(NEXT_PUBLIC_CLIENT_ID);
 
           // 회원가입 성공 시 자동 로그인
           if (signupRes.ok || signupRes.status === 409) {
@@ -96,7 +108,7 @@ const handler = NextAuth({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Client-Id': CLIENT_ID || '',
+                'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
               },
               body: JSON.stringify(loginData),
             });
@@ -111,6 +123,7 @@ const handler = NextAuth({
                 token._id = userData.item._id;
                 token.name = userData.item.name;
                 token.email = userData.item.email || token.email;
+                token.image = userData.item.image;
 
                 if (userData.item.token.refreshToken) {
                   const cookieStore = await cookies();
@@ -152,6 +165,14 @@ const handler = NextAuth({
         session.user._id = token._id;
         session.user.name = token.name;
         session.user.email = token.email;
+        session.user.image =
+          typeof token.image === 'string' ? token.image : undefined;
+        session.user.points =
+          typeof token.points === 'number' ? token.points : undefined;
+        session.user.address =
+          typeof token.address === 'string' ? token.address : undefined;
+        session.user.phone =
+          typeof token.phone === 'string' ? token.phone : undefined;
       }
 
       return session;

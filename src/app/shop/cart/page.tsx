@@ -13,7 +13,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
-export function CartPage() {
+function CartPage() {
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [ispaymentSheetOpen, setIsPaymentSheetOpen] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -130,13 +130,13 @@ export function CartPage() {
   return (
     <div className="flex flex-col">
       {/* 상단 */}
-      <div className="mt-10">
+      {/* <div className="mt-10">
         <Link href="/shop" className="relative top-7 left-4" prefetch>
           <ChevronLeft size={24} />
         </Link>
         <p className="text-center text-lg leading-6 font-semibold">장바구니</p>
       </div>
-      <hr className="mt-10" />
+      <hr className="mt-10" /> */}
 
       {/* 전체 선택 */}
       <div className="relative flex">

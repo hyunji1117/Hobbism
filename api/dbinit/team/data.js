@@ -13,23 +13,6 @@ export const initData = async (clientId, nextSeq) => {
     user: [
       {
         _id: await nextSeq('user'),
-        email: 'woomin013@gmail.com',
-        password:
-          '$2a$12$FL98DlYb1JjMI9YBx72N7ekXp9bOg2oxjtWWcKCC0k1TPfkzcy3jy',
-        name: '우민',
-        phone: '01011112222',
-        address: '서울시 강남구 역삼동 123',
-        type: 'user',
-        loginType: 'email',
-        image: `files/${clientId}/woomin-profile.jpg`,
-        createdAt: getTime(-100, -60 * 60 * 3),
-        updatedAt: getTime(-100, -60 * 60 * 3),
-        extra: {
-          introduction: '우민입니다',
-        },
-      },
-      {
-        _id: await nextSeq('user'),
         email: 'admin@market.com',
         password:
           '$2b$10$S.8GNMDyvUF0xzujPtHBu.j5gtS19.OhRmYbpJBnCHg2S83WLx1T2',
@@ -1565,80 +1548,6 @@ export const initData = async (clientId, nextSeq) => {
     ],
 
     // QnA, 공지사항 등의 게시판
-    post: [
-      {
-        _id: await nextSeq('post'),
-        type: 'community',
-        views: 23,
-        image: [
-          `files/${clientId}/user-muzi.png`,
-          `files/${clientId}/user-neo.png`,
-        ],
-        user: {
-          _id: 3,
-          name: '네오',
-          image: `/files/${clientId}/user-neo.png`,
-        },
-        title: '회원 가입했어요.',
-        content: '잘 부탁드려요.',
-        createdAt: getTime(-1, -60 * 60 * 14),
-        updatedAt: getTime(-1, -60 * 60 * 2),
-      },
-      {
-        _id: await nextSeq('post'),
-        type: 'community',
-        views: 33,
-        image: [
-          `files/${clientId}/user-neo.png`,
-          `files/${clientId}/user-muzi.png`,
-        ],
-        user: {
-          _id: 1,
-          name: 'woomin',
-          image: `/files/${clientId}/user-neo.png`,
-        },
-        title: '게시글 작성 테스트',
-        content: '게시글 작성 테스트입니다',
-        createdAt: getTime(-1, -60 * 60 * 14),
-        updatedAt: getTime(-1, -60 * 60 * 2),
-      },
-      {
-        _id: await nextSeq('post'),
-        type: 'community',
-        views: 33,
-        image: [
-          `files/${clientId}/user-neo.png`,
-          `files/${clientId}/user-muzi.png`,
-        ],
-        user: {
-          _id: 1,
-          name: 'woomin',
-          image: `/files/${clientId}/user-neo.png`,
-        },
-        title: '게시글 작성 테스트',
-        content: '게시글 작성 테스트입니다',
-        createdAt: getTime(-1, -60 * 60 * 14),
-        updatedAt: getTime(-1, -60 * 60 * 2),
-      },
-      {
-        _id: await nextSeq('post'),
-        type: 'community',
-        views: 33,
-        image: [
-          `files/${clientId}/user-neo.png`,
-          `files/${clientId}/user-muzi.png`,
-        ],
-        user: {
-          _id: 1,
-          name: 'woomin',
-          image: `/files/${clientId}/user-neo.png`,
-        },
-        title: '게시글 작성 테스트',
-        content: '게시글 작성 테스트입니다',
-        createdAt: getTime(-1, -60 * 60 * 14),
-        updatedAt: getTime(-1, -60 * 60 * 2),
-      },
-    ],
 
     // 코드
     code: [],
