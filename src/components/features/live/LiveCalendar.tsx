@@ -90,7 +90,7 @@ export const LiveCalendar = ({ liveData }: { liveData: LiveDataType[] }) => {
             )}
           </ul>
         </div>
-        <div className="absolute left-[50%] h-1 w-[33%] -translate-x-1/2 rounded-full bg-[#4B5563]"></div>
+        <div className="absolute left-[50%] h-1 w-[26%] -translate-x-1/2 rounded-full bg-[#4B5563]"></div>
       </div>
     </>
   );
