@@ -62,7 +62,7 @@ export async function fetchReplies(_id: number): ApiResPromise<PostReply[]> {
       },
       cache: 'force-cache',
       next: {
-        tags: [`posts/${_id}/replies`],
+        tags: [`posts/${_id}/replies`], 
       },
     });
     return res.json();

@@ -3,6 +3,7 @@
 import { ApiRes, ApiResPromise, Post, PostReply } from '@/types/interface';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { revalidateTag } from 'next/cache';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
@@ -86,16 +87,22 @@ export async function createReply(
   state: ApiRes<PostReply> | null,
   formData: FormData,
 ): ApiResPromise<PostReply> {
-  const body = Object.fromEntries(formData.entries());
+  const body = {
+    content: formData.get('content'),
+  };
+
+  const _id = formData.get('_id');
+  const accessToken = formData.get('accessToken'); // accessToken 유지!
 
   let data: ApiRes<PostReply>;
 
   try {
-    const res = await fetch(`${API_URL}/posts/${body._id}/replies`, {
+    const res = await fetch(`${API_URL}/posts/${_id}/replies`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Client-Id': CLIENT_ID,
+        'Authorization': `Bearer ${accessToken}`, // 인증 헤더 추가!
       },
       body: JSON.stringify(body),
     });
@@ -107,7 +114,8 @@ export async function createReply(
   }
 
   if (data.ok) {
-    revalidatePath(`/${body.type}/${body._id}/replies`);
+    revalidateTag(`posts/${_id}/replies`); // 댓글 목록 캐시 무효화
+    revalidateTag(`posts/${_id}`); // 게시글 상세 캐시 무효화
   }
 
   return data;
