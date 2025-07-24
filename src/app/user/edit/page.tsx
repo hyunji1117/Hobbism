@@ -12,10 +12,10 @@ export default function UserEditPage() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    if (!currentUser?._id) return;
-
     const fetchUserInfo = async () => {
       if (!accessToken) return null;
+
+      if (!currentUser?._id) return;
       const res = await getUserInfo(currentUser._id);
       if (res.ok === 1 && res.item) {
         setUser(res.item);

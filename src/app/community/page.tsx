@@ -2,7 +2,7 @@ import TabBar from '@/components/layout/tabbar/Tabbar';
 import CommunityMainHeader from '@/components/features/community/community-main/CommunityMainHeader';
 import CommunityMain from '@/components/features/community/community-main/CommunityMain';
 import { fetchPosts } from '@/data/functions/CommunityFetch';
-import { Post } from '@/types/interface';
+import { Post } from '@/types/';
 
 export default async function CommunityPage() {
   // 서버에서 커뮤니티 게시물 목록 가져오기

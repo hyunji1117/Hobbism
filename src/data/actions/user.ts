@@ -119,6 +119,8 @@ export async function updateUserInfo(
     });
 
     data = await res.json();
+
+    console.log('data patch', data);
   } catch (error) {
     // 네트워크 오류 처리
     console.error(error);

@@ -1,7 +1,7 @@
 'use client';
 
 import { BackButton } from '@/components/common/BackButton';
-import SearchHeader from '@/components/common/SearchHeader';
+import SearchButton from '@/components/common/SearchHeader';
 import { SettingButton } from '@/components/common/SettingButton';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth.store';
@@ -9,7 +9,7 @@ import { Pencil, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 
 //          component: 헤더 컴포넌트          //
 export default function Header() {
@@ -50,13 +50,15 @@ export default function Header() {
   const isPolicyPage = pathname === '/policy'; // 개인정보 처리방침 페이지
   const isNoticePage = pathname === '/notice'; // 공지사항 페이지
   const isContactPage = pathname === '/contact'; // 고객센터 페이지
+  const isCharacterPage = pathname === '/character'; // 고객센터 페이지
   const isSearchPage = pathname.startsWith('/search');
+  const isLivePage = pathname === '/live';
 
   //          state: 현재 페이지가 내 마이페이지인지 여부          //
   const isMypage = user && pathname === `/user/${user._id}`;
 
   //          logic: 헤더 조건 처리 (렌더링 조건)          //
-  const showLogo = isCommunityPage || isShopPage; // 로고 노출 여부
+  const showLogo = isCommunityPage || isShopPage || isCharacterPage; // 로고 노출 여부
   const showBackButton =
     isSettingPage ||
     isCartPage ||
@@ -68,6 +70,7 @@ export default function Header() {
     isContactPage ||
     (isUserPage && !isMypage) ||
     isFeedPage ||
+    isLivePage ||
     isBookmarkPage; // 일반 뒤로가기 버튼 노출 조건
   const showConfirmBackButton = isEditPage || isCommunityWritePage; // 뒤로가기 시 확인이 필요한 페이지
   const showCartIcon = isShopPage || isProductPage; // 쇼핑카트 아이콘 노출 조건
@@ -103,11 +106,18 @@ export default function Header() {
             {isCartPage && '장바구니'}
             {isProductPage && '제품 상세'}
             {isBookmarkPage && '게시물 북마크'}
+            {isFeedPage && '피드보기'}
+            {isCharacterPage && '나의 캐릭터'}
+            {isLivePage && '라이브'}
           </h3>
 
           {/* 오른쪽 아이콘 영역 */}
           <div className="absolute right-4 flex gap-6">
-            {(isShopPage || isSearchPage) && <SearchHeader />}
+            {(isShopPage || isSearchPage) && (
+              <Suspense>
+                <SearchButton />
+              </Suspense>
+            )}
             {showCartIcon && (
               <Link href="/shop/cart">
                 <ShoppingCart />

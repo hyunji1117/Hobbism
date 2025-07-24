@@ -1,8 +1,8 @@
 import { fetchPost } from '@/data/functions/CommunityFetch';
 import BookmarkFeedCard from '@/components/features/community/community-bookmark/BookmarkFeedCard';
-import CommunityHeader from '@/components/features/community/community-common/CommunityHeader';
 import CommentSection from '@/components/features/community/community-detail/CommentSection';
 import CommentInput from '@/components/features/community/community-detail/CommentInput';
+import { getUserImageUrl } from '@/utils';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -22,21 +22,11 @@ export default async function FeedDetailPage({ params }: FeedDetailPageProps) {
 
   return (
     <div className="flex h-screen flex-col bg-white">
-      {/* 헤더 고정 */}
-      <div className="pt-5">
-        <CommunityHeader title="피드보기" />
-        <hr className="mt-2" />
-      </div>
-
       {/* 스크롤 영역 (피드 + 댓글 목록만) */}
       <div className="scrollbar-hide flex-1 overflow-y-auto">
         <BookmarkFeedCard
           postId={res.item._id}
-          profileImage={
-            res.item.user.image
-              ? `${API_URL}${res.item.user.image}`
-              : '/images/inhwan/profile-default.png'
-          }
+          profileImage={getUserImageUrl(res.item.user.image)}
           userName={res.item.user.name}
           timeAgo={res.item.createdAt}
           description={res.item.content}

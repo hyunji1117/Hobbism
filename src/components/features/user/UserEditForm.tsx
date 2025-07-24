@@ -39,8 +39,8 @@ export function UserEditForm({ user }: Props) {
   //          state: react-hook-form(닉네임, 소개, 이미지, accessToken)          //
   const { register, handleSubmit, setValue } = useForm<FormValues>({
     defaultValues: {
-      nickname: user.extra.nickname ?? '',
-      introduction: user.extra.introduction ?? '',
+      nickname: user.extra?.nickname ?? '',
+      introduction: user.extra?.introduction ?? '',
       attach: null,
       accessToken: '',
     },
@@ -100,8 +100,7 @@ export function UserEditForm({ user }: Props) {
     };
 
     convertImageToFile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.picture, setValue]);
+  }, [user.image, setValue]);
 
   //          effect: accessToken 변경 시 실행할 함수          //
   useEffect(() => {

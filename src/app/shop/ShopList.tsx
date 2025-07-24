@@ -4,7 +4,7 @@ import { ShopAd } from '@/components/features/shop/ShopAd';
 import { ShopCategory } from '@/components/features/shop/ShopCategory';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
 import { fetchProducts } from '@/data/functions/ProductFetch';
-import { Product } from '@/types/interface/product';
+import { Product } from '@/types';
 import { JSX, useEffect, useRef, useState } from 'react';
 
 export default function ShopList({ initialData }: { initialData: Product[] }) {
@@ -125,6 +125,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
 
       acc.push(
         <ShopProduct
+          _id={product._id}
           price={product.price}
           name={product.name}
           mainImageSrc={product.mainImages[0]?.path}

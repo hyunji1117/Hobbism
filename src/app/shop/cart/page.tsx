@@ -13,7 +13,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
-export function CartPage() {
+function CartPage() {
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [ispaymentSheetOpen, setIsPaymentSheetOpen] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);

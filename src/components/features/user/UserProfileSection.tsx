@@ -105,9 +105,9 @@ export function UserProfileSection({ user, isMypage }: Props) {
         />
         {/* 이름과 소개 */}
         <div className="flex flex-col justify-between">
-          <span className="text-xl font-semibold">{`${user.name} ${user.extra.nickname ? `(${user.extra.nickname})` : ''}`}</span>
+          <span className="text-xl font-semibold">{`${user.name} ${user.extra?.nickname ? `(${user.extra.nickname})` : ''}`}</span>
           <span className="text-muted-foreground font-medium">
-            {user.extra.introduction || '\u00A0'}
+            {user.extra?.introduction || '\u00A0'}
           </span>
         </div>
 
@@ -143,7 +143,7 @@ export function UserProfileSection({ user, isMypage }: Props) {
             <span>팔로우</span>
           </div>
           <div className="text-muted-foreground text-xs">
-            {user.bookmarkedBy.users ?? 0}
+            {user.bookmarkedBy?.users ?? 0}
           </div>
         </Link>
 
@@ -175,7 +175,7 @@ export function UserProfileSection({ user, isMypage }: Props) {
                 <span>스크랩</span>
               </div>
               <div className="text-muted-foreground text-xs">
-                {user.bookmark.posts ?? 0}
+                {user.bookmark?.posts ?? 0}
               </div>
             </Link>
           </>

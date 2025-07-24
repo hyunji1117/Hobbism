@@ -24,6 +24,7 @@ export type UserListResponse = {
 };
 
 export interface User {
+  _id: number;
   email: string; // SNS에서 가져온 이메일
   name: string; // SNS에서 가져온 이름
   phone?: string; // 전화번호 (선택사항)
@@ -40,6 +41,15 @@ export interface User {
     nickname?: string;
     introduction?: string;
     deatil_address?: string;
+  };
+  post?: number;
+  bookmark?: {
+    products?: number;
+    users?: number;
+    posts?: number;
+  };
+  bookmarkedBy?: {
+    users?: number;
   };
   createdAt?: string; // 가입일
   updatedAt?: string; // 수정일

@@ -8,15 +8,16 @@ import ProductDetailClient from '@/components/features/shop/ProductDetail/Produc
 export default async function ProductPage({
   params,
 }: {
-  params: { productId: string };
+  params: Promise<{ productId: string }>;
 }) {
-  console.log('Product ID:', params.productId);
+  const { productId } = await params;
+  console.log('Product ID:', productId);
 
-  if (!params?.productId) {
+  if (!productId) {
     return <div>상품 데이터를 불러올 수 없습니다.</div>;
   }
 
-  const res = await fetchProductDetail(params.productId);
+  const res = await fetchProductDetail(productId);
 
   // 배열에서 첫 번째 상품을 가져옴
   const product = res.item;
@@ -71,8 +72,6 @@ export default async function ProductPage({
 
       {/* 하위 클라이언트 컴포넌트로 묶어서 이동 */}
       <ProductDetailClient price={product.price} />
-
-      <Tabbar />
     </CartProvider>
   );
 }

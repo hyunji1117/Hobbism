@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 
 //          component: 검색 버튼 컴포넌트          //
-export default function SearchHeader() {
+export default function SearchButton() {
   //          state: 검색 버튼 상태          //
   const inputRef = useRef<HTMLInputElement>(null);
   //          state: 검색 버튼 상태          //

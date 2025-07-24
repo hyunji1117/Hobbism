@@ -41,6 +41,7 @@ export default function AddressForm() {
     if (!currentUser) return;
 
     const fetchAddress = async () => {
+      if (!currentUser?._id) return;
       const addressRes = await getUserAttribute(currentUser._id, 'address');
       const addressDetailRes = await getUserAttribute(
         currentUser._id,
@@ -68,7 +69,7 @@ export default function AddressForm() {
     formData.append('accessToken', accessToken);
     formData.append('address', data.address);
     formData.append('detail', data.detail);
-
+    if (!currentUser?._id) return;
     const res = await updateUserInfo(currentUser._id, formData);
     if (res.ok) {
     } else {

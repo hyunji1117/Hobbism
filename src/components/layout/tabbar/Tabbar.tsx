@@ -1,7 +1,6 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { LOGIN_PATH, USER_PAGE_PATH, USER_PATH } from '@/constant/index';
 import { useAuthStore } from '@/store/auth.store';
 import Link from 'next/link';
 import { motion } from 'motion/react';
@@ -34,6 +33,7 @@ export default function TabBar() {
       '/login',
       '/community/write',
       '/shop/cart',
+      '/live',
     ];
     const shouldHide = hidden.some(path => pathname.startsWith(path));
     const shopDetailPath = pathname.match(/^\/shop\/\d+/);
