@@ -54,7 +54,9 @@ export default function LiveData() {
   return (
     <>
       {liveToShow.map(live => (
-        <LiveOverlay key={live.id} live={live} />
+        <div key={live.id} className="snap-start">
+          <LiveOverlay live={live} />
+        </div>
       ))}
     </>
   );

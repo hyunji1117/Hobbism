@@ -12,7 +12,7 @@ export default function LivePage() {
   return (
     <>
       {/* // 라이브 전체 section */}
-      <section className="relative h-screen">
+      <section className="scrollbar-hide relative h-screen touch-pan-y snap-y snap-mandatory overflow-y-auto">
         {/* 라이브 캘린더 버튼 */}
         <header className="bg-amber-200select-none fixed z-10 w-full max-w-[600px]">
           <ul>
