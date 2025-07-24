@@ -1,20 +1,22 @@
 'use client';
 
+import { currentLive } from '@/app/live/LiveDataUI';
 import { LiveCalendar } from '@/components/features/live/LiveCalendar';
 import { CalendarFold } from 'lucide-react';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 
 export interface LiveDataType {
-  id: number;
+  id: string;
   start: moment.Moment;
   end: moment.Moment;
   title: string;
 }
 
-export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
+export const LiveCalendarBtn = () => {
   const [isDropdownOpen, setIsDropDownOpen] = useState(false); // 드롭다운 오픈 상태
   const [isAnimation, setIsAnimation] = useState(false);
+  const [isBtnClicked, setIsBtnClicked] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +25,7 @@ export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
     setTimeout(() => {
       setIsAnimation(true);
     }, 100);
+    setIsBtnClicked(true);
   };
   const closeDropdown = () => {
     setIsAnimation(false);
@@ -46,6 +49,11 @@ export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
     };
   }, [dropdownRef]);
 
+  const [isSameTimeLives, setIsSameTimeLives] = useState(false);
+  useEffect(() => {
+    setIsSameTimeLives((currentLive?.length ?? 0) >= 2);
+  }, [currentLive]);
+
   return (
     <div>
       <button
@@ -54,6 +62,15 @@ export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
       >
         <CalendarFold stroke="white" />
       </button>
+
+      {/* 동시간 라이브 */}
+      {isSameTimeLives && (
+        <div
+          className={`absolute top-12.5 right-0 mr-2 rounded-sm bg-white p-1 text-xs font-extrabold text-[#FE508B] transition-all duration-200 after:absolute after:-top-3 after:right-4 after:border-7 after:border-transparent after:border-b-white after:content-[''] ${isBtnClicked ? 'opacity-0' : 'animate-pulse'}`}
+        >
+          동시LIVE!
+        </div>
+      )}
 
       {isDropdownOpen && (
         <>
@@ -65,7 +82,7 @@ export const LiveCalendarBtn = ({ liveData }: { liveData: LiveDataType[] }) => {
           <div
             className={`relative z-2 w-[100vw] max-w-[600px] transition-all duration-200 ${isAnimation ? '-translate-y-0' : '-translate-y-[400px]'} `}
           >
-            <LiveCalendar liveData={liveData} />
+            <LiveCalendar />
           </div>
         </>
       )}
