@@ -44,6 +44,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb', // 업로드 용량 증가(1MB → 10MB)
+    },
+  },
 };
 
 export default nextConfig;

@@ -1,4 +1,10 @@
+'use client';
+
+import { useState } from 'react';
+
 export default function FeedCategorySelect() {
+  const [selectedCategory, setSelectedCategory] = useState('');
+
   // 7개 카테고리 목록
   const categories = [
     '항수',
@@ -10,8 +16,15 @@ export default function FeedCategorySelect() {
     '굿즈',
   ];
 
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+  };
+
   return (
     <div className="w-full pl-5">
+      {/* 숨겨진 input - FormData에서 읽을 값 */}
+      <input type="hidden" name="category" value={selectedCategory} />
+
       {/* 제목 텍스트 */}
       <div className="mb-3">
         <span className="text-sm font-bold text-black">카테고리 설정</span>
@@ -22,7 +35,13 @@ export default function FeedCategorySelect() {
         {categories.map((category, index) => (
           <button
             key={index}
-            className="h-10 w-[82px] rounded-3xl bg-[#F3F4F6] text-sm text-[#4B5563]"
+            type="button"
+            onClick={() => handleCategoryClick(category)}
+            className={`h-10 w-[82px] rounded-3xl text-sm ${
+              selectedCategory === category
+                ? 'bg-[#FE508B] text-white' // 선택된 상태
+                : 'bg-[#F3F4F6] text-[#4B5563]' // 기본 상태
+            }`}
           >
             {category}
           </button>

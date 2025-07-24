@@ -1,34 +1,3 @@
-export interface User {
-  _id: number; // 사용자 고유 ID
-  email: string; // 이메일 주소
-  name: string; // 사용자 이름
-  phone?: string; // 전화번호
-  address?: string; // 주소
-  type: 'user' | 'seller' | 'admin'; // 사용자 유형
-  loginType: 'email' | 'kakao' | 'google' | 'github'; // 로그인 방식
-  image: string; // 프로필 이미지
-  picture?: string; // 프로필 이미지
-  token?: {
-    // 인증 토큰
-    accessToken: string; // 액세스 토큰
-    refreshToken: string; // 리프레시 토큰
-  };
-  extra: {
-    nickname?: string;
-    introduction?: string;
-    deatil_address?: string;
-  };
-  createdAt: string; // 생성일
-  updatedAt: string; // 수정일
-  // extra: {};
-  posts: number;
-  bookmark: UserBookmark;
-  bookmarkedBy: {
-    users: number;
-  };
-  postViews: number;
-}
-
 export interface UserBookmark {
   products: number;
   users: number;
@@ -53,3 +22,32 @@ export type UserListResponse = {
   item: User[];
   pagination: Pagination;
 };
+
+export interface User {
+  email: string; // SNS에서 가져온 이메일
+  name: string; // SNS에서 가져온 이름
+  phone?: string; // 전화번호 (선택사항)
+  address?: string; // 주소 (선택사항)
+  type: 'user' | 'seller' | 'admin'; // 사용자 권한
+  loginType?: 'google' | 'kakao' | 'naver'; // 로그인 방식
+  image?: string; // SNS 프로필 이미지
+  token?: {
+    // 로그인 후 받는 토큰
+    accessToken: string;
+    refreshToken: string;
+  };
+  extra?: {
+    nickname?: string;
+    introduction?: string;
+    deatil_address?: string;
+  };
+  createdAt?: string; // 가입일
+  updatedAt?: string; // 수정일
+}
+
+export interface UserState {
+  // Zustand 스토어용
+  user: User | null; // 현재 로그인된 사용자 (없으면 null)
+  setUser: (user: User) => void; // 로그인시 사용자 저장
+  resetUser: () => void; // 로그아웃시 사용자 초기화
+}
