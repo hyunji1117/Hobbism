@@ -1,31 +1,31 @@
 'use client';
 
-import { currentLive } from '@/app/live/LiveData';
+import { LiveCalendarBtn } from '@/components/features/live/LiveCalendarBtn';
 import { LiveComment } from '@/components/features/live/LiveComment';
 import { LiveProgress } from '@/components/features/live/LiveProgress';
 import { LiveVideo } from '@/components/features/live/LiveVideo';
+import { GoBackButton } from '@/components/features/shop/ProductDetail/ProductDetailClient';
+import { LiveProduct, useLiveStore } from '@/store/live.store';
+import moment from 'moment';
 import { useState } from 'react';
 
-interface LiveType {
-  id: string;
-  start: moment.Moment;
-  end: moment.Moment;
-  title: string;
-  livePath: string;
-  liveId: string;
-}
+export default function LiveOverlay({ live }: { live: LiveProduct }) {
+  const currentLive = useLiveStore(state => state.currentLive);
 
-export default function LiveOverlay({ live }: { live: LiveType }) {
   // 오버레이 토글
   const [showOverlay, setShowOverlay] = useState(true);
   const handleClickOverlay = () => {
     setShowOverlay(false);
   };
 
+  const isLiveNow = moment().isBetween(moment(live.start), moment(live.end));
+
+  console.log('🔍 currentLive in LiveOverlay:', currentLive);
+
   return (
     <>
-      {currentLive ? (
-        <div className="absolute top-[5%]">
+      {isLiveNow ? (
+        <div className="absolute top-[5%] z-5">
           <LiveProgress />
         </div>
       ) : (
@@ -46,14 +46,34 @@ export default function LiveOverlay({ live }: { live: LiveType }) {
         )
       )}
 
+      {/* 라이브 캘린더 버튼 */}
+      <header className="bg-amber-200select-none fixed z-10 w-full max-w-[600px]">
+        <ul>
+          <li className="absolute top-3.5 left-0 ml-3.5">
+            <GoBackButton stroke={'stroke-white'} />
+          </li>
+          <li className="fixed top-3.5 left-[50%] translate-x-[-50%] text-xl font-bold text-white">
+            라이브
+          </li>
+          <li>
+            <LiveCalendarBtn />
+          </li>
+        </ul>
+      </header>
+
       {/* 라이브 비디오 */}
-      <div className="h-screen">
+      <div key={live._id} className="h-screen">
         <div className="h-[60%]">
-          <LiveVideo livePath={live.livePath} id={live.id} />
+          <LiveVideo
+            livePath={live.extra?.live.livePath}
+            _id={live._id}
+            name={live.name}
+            rate={live.extra?.discountRate}
+          />
         </div>
         {/* 라이브 댓글 */}
         <div className="h-[48%]">
-          <LiveComment liveId={live.liveId} />
+          <LiveComment liveId={live.extra?.live.liveId} />
         </div>
       </div>
     </>

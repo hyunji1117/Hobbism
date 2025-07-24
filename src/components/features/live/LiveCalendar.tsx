@@ -1,11 +1,13 @@
 'use client';
 
-import { liveDummyData } from '@/app/live/LiveData';
+import { useLiveStore } from '@/store/live.store';
 import moment from 'moment';
 import 'moment/locale/ko';
 import { useEffect, useState } from 'react';
 
 export const LiveCalendar = () => {
+  const liveCastData = useLiveStore(state => state.liveCastData);
+
   const [selectedDate, setSelectedDate] = useState(moment());
 
   // moment 로케일을 한국어로 설정
@@ -23,7 +25,7 @@ export const LiveCalendar = () => {
     setSelectedDate(date);
   };
 
-  const weeklyLives = liveDummyData.filter(live =>
+  const weeklyLives = liveCastData.filter(live =>
     weekDays.some(day => live.start.isSame(day, 'day')),
   );
 
@@ -42,7 +44,7 @@ export const LiveCalendar = () => {
                 ? 'text-[#FE508B]'
                 : 'text-black';
 
-            const hasLive = liveDummyData.some(live =>
+            const hasLive = liveCastData.some(live =>
               live.start.isSame(day, 'day'),
             );
             return (
@@ -78,7 +80,7 @@ export const LiveCalendar = () => {
             ) : (
               weeklyLives.map(live => (
                 <li
-                  key={live.id}
+                  key={live._id}
                   className={`mb-1 flex rounded-sm px-2 py-2 ${moment().isBetween(moment(live.start), moment(live.end)) ? 'bg-[#ffe8f0]' : 'bg-white'}`}
                 >
                   <h3>
@@ -87,7 +89,7 @@ export const LiveCalendar = () => {
                       {live.start.format('HH:mm')}
                     </small>
                   </h3>
-                  <p className="mt-1 ml-7 text-sm">{live.title}</p>
+                  <p className="mt-1 ml-7 text-sm">{live.extra?.live.title}</p>
                 </li>
               ))
             )}

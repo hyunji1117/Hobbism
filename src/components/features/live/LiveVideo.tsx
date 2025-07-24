@@ -1,22 +1,28 @@
+'use client';
+
 import { LiveBuyBtn } from '@/components/features/live/LiveBuyBtn';
 
 export const LiveVideo = ({
   livePath,
-  id,
+  _id,
+  name,
+  rate,
 }: {
   livePath: string;
-  id: string;
+  _id: number;
+  name: string;
+  rate: number;
 }) => {
   return (
     <div className="relative mx-auto h-full w-full md:w-full">
       {/* 상품 설명, 제품 보기 링크 */}
       <div className="absolute top-[calc(70%)] z-1 flex w-full justify-between px-3.5 text-white">
         <span className="flex flex-col justify-end text-xs leading-loose text-[#6B7280]">
-          <p>1</p>
+          <p>{name}</p>
         </span>
         <span>
-          <p className="text-[40px] font-semibold text-[#FE508B]">1%</p>
-          <LiveBuyBtn id={id} />
+          <p className="text-[40px] font-semibold text-[#FE508B]">{rate}%</p>
+          <LiveBuyBtn _id={_id} />
         </span>
       </div>
       {/* 라이브 영상 */}

@@ -1,3 +1,5 @@
+'use client';
+
 export const LiveComment = ({ liveId }: { liveId: string }) => {
   const embedDomain = process.env.NEXT_PUBLIC_EMBED_DOMAIN;
 
