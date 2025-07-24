@@ -52,6 +52,7 @@ const handler = NextAuth({
       clientSecret: process.env.NAVER_CLIENT_SECRET || '',
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
