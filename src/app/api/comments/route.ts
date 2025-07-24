@@ -2,16 +2,19 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
+const CLIENT_ID = process.env.CLIENT_ID;
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export async function POST(request: NextRequest) {
   try {
     const { _id, content } = await request.json();
     const response = await fetch(
-      `https://fesp-api.koyeb.app/market/posts/${_id}/replies`,
+      `${NEXT_PUBLIC_API_URL}/posts/${_id}/replies`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Client-Id': 'febc13-final01-emjf',
+          'Client-Id': CLIENT_ID || '',
         },
         body: JSON.stringify({ _id, content }),
       },
@@ -26,12 +29,12 @@ export async function PATCH(request: NextRequest) {
   try {
     const { _id, reply_id, content } = await request.json();
     const response = await fetch(
-      `https://fesp-api.koyeb.app/market/posts/${_id}/replies/${reply_id}`,
+      `${NEXT_PUBLIC_API_URL}/posts/${_id}/replies/${reply_id}`,
       {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Client-Id': 'febc13-final01-emjf',
+          'Client-Id': CLIENT_ID || '',
         },
         body: JSON.stringify({ content }),
       },
@@ -49,11 +52,11 @@ export async function DELETE(request: NextRequest) {
     const reply_id = searchParams.get('reply_id');
 
     const response = await fetch(
-      `https://fesp-api.koyeb.app/market/posts/${_id}/replies/${reply_id}`,
+      `${NEXT_PUBLIC_API_URL}/${_id}/replies/${reply_id}`,
       {
         method: 'DELETE',
         headers: {
-          'Client-Id': 'febc13-final01-emjf',
+          'Client-Id': CLIENT_ID || '',
         },
       },
     );
