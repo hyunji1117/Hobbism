@@ -9,6 +9,33 @@ import { GoBackButton } from '@/components/features/shop/ProductDetail/ProductDe
 import moment from 'moment';
 import { useState } from 'react';
 
+export const liveDummyData = [
+  {
+    id: '1',
+    start: moment('2025-07-24 00:00'),
+    end: moment('2025-07-24 18:00'),
+    title: '여름 신상 라이브 세일',
+  },
+  {
+    id: '2',
+    start: moment('2025-07-24 00:00'),
+    end: moment('2025-07-24 18:00'),
+    title: '여름  라이브 세일',
+  },
+  {
+    id: '3',
+    start: moment('2025-07-25 14:00'),
+    end: moment('2025-07-25 15:00'),
+    title: '여름  세일',
+  },
+];
+
+// 지금 방송 중인 라이브
+export const now = moment();
+export const currentLive = liveDummyData.filter(live =>
+  now.isBetween(live.start, live.end),
+);
+
 export default function LiveOverlay() {
   /**
    *예시)
@@ -22,50 +49,6 @@ export default function LiveOverlay() {
   const liveId = 'yf5NOyy1SXU'; // YouTube Live Video ID
 
   // 라이브 일정
-  const liveData = [
-    {
-      id: 1,
-      start: moment('2025-07-23 12:00'),
-      end: moment('2025-07-23 18:00'),
-      title: '여름 신상 라이브 세일',
-    },
-    {
-      id: 2,
-      start: moment('2025-07-23 13:00'),
-      end: moment('2025-07-23 18:00'),
-      title: '여름  라이브 세일',
-    },
-    {
-      id: 3,
-      start: moment('2025-07-24 14:00'),
-      end: moment('2025-07-24 15:00'),
-      title: '여름  세일',
-    },
-    {
-      id: 4,
-      start: moment('2025-08-24 14:00'),
-      end: moment('2025-08-24 15:00'),
-      title: '여름  세일',
-    },
-    {
-      id: 5,
-      start: moment('2025-08-26 14:00'),
-      end: moment('2025-08-26 15:00'),
-      title: '여름  세일',
-    },
-    {
-      id: 6,
-      start: moment('2025-08-27 14:00'),
-      end: moment('2025-08-27 15:00'),
-      title: '여름  세일',
-    },
-  ];
-
-  // 지금 방송 중인 라이브
-  const now = moment();
-  const currentLive = liveData.find(live =>
-    now.isBetween(live.start, live.end),
-  );
 
   // 오버레이 토글
   const [showOverlay, setShowOverlay] = useState(true);
@@ -106,7 +89,7 @@ export default function LiveOverlay() {
             라이브
           </li>
           <li>
-            <LiveCalendarBtn liveData={liveData} />
+            <LiveCalendarBtn />
           </li>
         </ul>
       </header>
