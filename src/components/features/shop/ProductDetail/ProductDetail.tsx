@@ -4,7 +4,7 @@ import { Minus, Plus } from 'lucide-react';
 import {
   ProductDetailInfoProps,
   ProductQuantitySelectorProps,
-} from '@/types/interface/product';
+} from '@/types/product';
 
 // 상품 상세 정보 컴포넌트
 export const ProductDetailInfo = ({
@@ -64,8 +64,6 @@ export const ProductDetailInfo = ({
 };
 
 // 상품 수량 선택 컴포넌트
-// ...existing code...
-
 export function ProductQuantitySelector({
   selectedOption,
   quantity,
