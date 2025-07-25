@@ -1,7 +1,11 @@
 'use client';
 
+import { LiveProgress } from '@/components/features/live/LiveProgress';
+import { useLiveStore } from '@/store/live.store';
+import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 interface ShopProductProps {
   _id: number;
@@ -13,6 +17,9 @@ interface ShopProductProps {
   discountPrice: number;
   recommendedBy: string;
   textPrice: string;
+  liveTitle: string;
+  liveRate: number;
+  livePrice: number;
 }
 
 export const ShopProduct = ({
@@ -24,6 +31,9 @@ export const ShopProduct = ({
   recommendedBy,
   discountPrice,
   textPrice,
+  liveTitle,
+  liveRate,
+  livePrice,
 }: ShopProductProps) => {
   const recommendKr: Record<string, string> = {
     inhwan: '인환',
@@ -43,8 +53,35 @@ export const ShopProduct = ({
   };
   const recommendColor = recommendColorCode[recommendedBy];
 
+  // fetchLive 호출
+  const fetchLive = useLiveStore(state => state.fetchLive);
+  useEffect(() => {
+    fetchLive();
+  }, []);
+
+  const currentLive = useLiveStore(state => state.currentLive);
+
+  const now = moment();
+
+  const isLive = currentLive.some(product => {
+    if (product._id !== _id) return false;
+
+    const start = moment(product.start);
+    const end = moment(product.end);
+
+    return now.isBetween(start, end);
+  });
+
   return (
-    <Link href={`/shop/${_id}`} className={`mb-2 flex w-full flex-col gap-1`}>
+    <Link
+      href={isLive ? '/live' : `/shop/${_id}`}
+      className={`mb-2 flex w-full flex-col gap-1`}
+    >
+      {isLive && (
+        <div className="absolute top-2 -left-2 z-5">
+          <LiveProgress />
+        </div>
+      )}
       <div className={`relative mb-1 aspect-square w-full`}>
         <Image
           fill
@@ -73,10 +110,10 @@ export const ShopProduct = ({
       <p className={`${textPrice} font-semibold`}>
         {discountRate && (
           <span className="sale pointer-events-none mr-1 text-[#FE508B]">
-            {discountRate}%
+            {isLive ? liveRate : discountRate}%
           </span>
         )}
-        {discountPrice ? discountPrice : price}원
+        {isLive ? livePrice : discountPrice ? discountPrice : price}원
       </p>
     </Link>
   );
