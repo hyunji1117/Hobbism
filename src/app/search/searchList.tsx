@@ -3,6 +3,7 @@
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Product } from '@/types';
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
@@ -23,7 +24,7 @@ export default function SearchList({ allData }: { allData: Product[] }) {
 
   /* ============ 게시물 로딩 함수 ============ */
   const loadingProducts = async (page: number) => {
-    if (pageParams.includes(page)) return; // 이미 요청했던 page라면 중복 호출 차단
+    if (loading || pageParams.includes(page)) return; // 이미 요청했던 page라면 중복 호출 차단
     setLoading(true);
 
     const data = await fetchProducts(page); // 서버에서 (page)번 페이지 게시물 받아옴
@@ -71,10 +72,20 @@ export default function SearchList({ allData }: { allData: Product[] }) {
     loadingProducts(page); //page가 바뀔 때마다 해당 페이지 게시물 로드
   }, [page]);
 
+  /* ================= 검색어 바뀔 시 상태 초기화 ========== */
+  useEffect(() => {
+    if (!word) return;
+
+    setProducts([]);
+    setPage(1);
+    setPageParams([]);
+    setHasNextPage(true);
+  }, [word]);
+
   console.log('searchProducts', searchProducts);
   return (
     <section className="mx-3.5">
-      <h2>
+      <h2 className="my-2">
         <b>{word} </b>검색 결과
       </h2>
 
@@ -99,9 +110,31 @@ export default function SearchList({ allData }: { allData: Product[] }) {
         ))}
       </div>
 
+      {searchProducts.length === 0 &&
+        products.length > 0 &&
+        !loading &&
+        !hasNextPage && (
+          <div className="absolute top-1/2 left-1/2 w-full -translate-1/2">
+            <div className="relative left-1/2 aspect-square w-1/4 -translate-x-1/2">
+              <Image
+                fill
+                src={'/images/ayoung/sad.png'}
+                alt="Sorry"
+                priority={false}
+                sizes="(max-width: 768px) 130px"
+                style={{ objectFit: 'cover', objectPosition: 'center' }}
+              />
+            </div>
+
+            <p className="my-3 text-center text-sm text-[#4B5563]">
+              <span className="font-semibold">{word}</span> 상품이 없습니다.
+            </p>
+          </div>
+        )}
+
       <div ref={observerRef} className="h-10" />
       {loading && <div className="py-4 text-center">불러오는 중...</div>}
-      {!hasNextPage && !loading && (
+      {searchProducts.length > 0 && !hasNextPage && !loading && (
         <p className="py-4 text-center text-gray-500">더 이상 상품이 없어요</p>
       )}
     </section>
