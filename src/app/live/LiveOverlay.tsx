@@ -50,7 +50,7 @@ export default function LiveOverlay({ live }: { live: LiveProduct }) {
       <header className="bg-amber-200select-none fixed z-10 w-full max-w-[600px]">
         <ul>
           <li className="absolute top-3.5 left-0 ml-3.5">
-            <GoBackButton stroke={'stroke-white'} />
+            <GoBackButton />
           </li>
           <li className="fixed top-3.5 left-[50%] translate-x-[-50%] text-xl font-bold text-white">
             라이브
