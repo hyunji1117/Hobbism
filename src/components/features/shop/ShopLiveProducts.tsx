@@ -53,9 +53,9 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
           discountPrice={product.extra.discountedPrice}
           recommendedBy={product.extra.recommendedBy}
           textPrice="text-sm"
-          liveTitle={product.extra.live.title}
-          liveRate={product.extra.live.liveDiscountRate}
-          livePrice={product.extra.live.livePrice}
+          liveTitle={product.extra?.live?.title}
+          liveRate={product.extra?.live?.liveDiscountRate}
+          livePrice={product.extra?.live?.livePrice}
         />
       </SwiperSlide>
     );
