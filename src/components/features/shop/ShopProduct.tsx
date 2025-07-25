@@ -37,23 +37,18 @@ export const ShopProduct = ({
   liveRate,
   livePrice,
 }: ShopProductProps) => {
-  const recommendKr: Record<string, string> = {
-    inhwan: '인환',
-    hyunji: '현지',
-    woomin: '우민',
-    youngchan: '영찬',
-    ayoung: '아영',
+  const recommendData: Record<
+    string,
+    { name: string; color: string; textColor: string }
+  > = {
+    inhwan: { name: '인환', color: 'bg-[#FE508B]', textColor: 'text-white' },
+    hyunji: { name: '현지', color: 'bg-[#FAB91D]', textColor: 'text-black' },
+    woomin: { name: '우민', color: 'bg-[#51AAED]', textColor: 'text-white' },
+    youngchan: { name: '영찬', color: 'bg-[#D2E308]', textColor: 'text-black' },
+    ayoung: { name: '아영', color: 'bg-[#6E67DA]', textColor: 'text-white' },
   };
-  const recommendKrName = recommendKr[recommendedBy];
 
-  const recommendColorCode: Record<string, string> = {
-    inhwan: 'bg-[#FE508B]',
-    hyunji: 'bg-[#FAB91D]',
-    woomin: 'bg-[#51AAED]',
-    youngchan: 'bg-[#D2E308]',
-    ayoung: 'bg-[#6E67DA]',
-  };
-  const recommendColor = recommendColorCode[recommendedBy];
+  const recommendInfo = recommendData[recommendedBy];
 
   // fetchLive 호출
   const fetchLive = useLiveStore(state => state.fetchLive);
@@ -103,9 +98,9 @@ export const ShopProduct = ({
 
         {recommendedBy && (
           <span
-            className={`${recommendColor} pointer-events-none flex items-center rounded-sm px-2 text-[8px] whitespace-nowrap text-white`}
+            className={`${recommendInfo.color} pointer-events-none flex items-center rounded-sm px-2 text-[8px] whitespace-nowrap ${recommendInfo.textColor}`}
           >
-            {recommendKrName}PICK
+            {recommendInfo.name}PICK
           </span>
         )}
       </div>

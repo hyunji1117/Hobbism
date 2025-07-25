@@ -3,7 +3,11 @@ import Tabbar from '@/components/layout/tabbar/Tabbar';
 import { CartProvider } from '@/components/features/shop/ProductDetail/CartContext';
 import { ProductDetailInfo } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { fetchProductDetail } from '@/data/functions/ProductFetch';
-import ProductDetailClient from '@/components/features/shop/ProductDetail/ProductDetailClient';
+import CartAction, {
+  CartIcon,
+  GoBackButton,
+} from '@/components/features/shop/ProductDetail/ProductDetailClient';
+// import ProductDetailClient from '@/components/features/shop/ProductDetail/ProductDetailClient';
 
 export default async function ProductPage({
   params,
@@ -34,6 +38,17 @@ export default async function ProductPage({
 
   return (
     <CartProvider>
+      {/* <HeaderNav>
+        <HeaderNav.LeftContent>
+          뒤로가기 버튼을 클라이언트 컴포넌트에서 다룸
+          <GoBackButton stroke={'stroke-black'} />
+        </HeaderNav.LeftContent>
+        <HeaderNav.Title>제품상세</HeaderNav.Title>
+        <HeaderNav.RightContent>
+          <CartIcon />
+        </HeaderNav.RightContent>
+      </HeaderNav> */}
+
       <div className={`relative mb-1 aspect-square w-full`}>
         <Image
           fill
@@ -56,6 +71,7 @@ export default async function ProductPage({
         extra={{
           recommendedBy: product.extra.recommendedBy,
         }}
+        options={product.options?.map(option => option.value) ?? []}
       />
 
       <h2 className="p-5 text-[18px] font-semibold">상품정보</h2>
@@ -71,7 +87,13 @@ export default async function ProductPage({
       </div>
 
       {/* 하위 클라이언트 컴포넌트로 묶어서 이동 */}
-      <ProductDetailClient price={product.price} />
+      <CartAction
+        price={product.price}
+        options={product.options?.map(option => option.value) ?? []}
+        discountRate={product.extra.discountRate}
+      />
+
+      <Tabbar />
     </CartProvider>
   );
 }
