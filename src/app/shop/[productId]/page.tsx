@@ -70,6 +70,7 @@ export default async function ProductPage({
         extra={{
           recommendedBy: product.extra.recommendedBy,
         }}
+        options={product.options?.map(option => option.value) ?? []}
       />
 
       <h2 className="p-5 text-[18px] font-semibold">상품정보</h2>
@@ -85,7 +86,11 @@ export default async function ProductPage({
       </div>
 
       {/* 하위 클라이언트 컴포넌트로 묶어서 이동 */}
-      <CartAction price={product.price} />
+      <CartAction
+        price={product.price}
+        options={product.options?.map(option => option.value) ?? []}
+        discountRate={product.extra.discountRate}
+      />
 
       <Tabbar />
     </CartProvider>
