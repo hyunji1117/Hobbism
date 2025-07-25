@@ -194,82 +194,82 @@
     },
     {
       "tag": "description",
-      "color": "rgba(152, 152, 152, 0.5)",
+      "color": "rgba(0, 0, 0, 0.7)",
       "strikethrough": false,
       "underline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(152, 152, 152, 0.5)",
       "bold": false,
       "italic": false
     },
     {
       "tag": "component",
-      "color": "rgba(0, 255, 152, 0.5)",
+      "color": "rgba(0, 0, 0, 0.7)",
       "strikethrough": false,
       "underline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0, 255, 152, 0.5)",
       "bold": true,
       "italic": false
     },
     {
       "tag": "interface",
-      "color": "rgba(0, 152, 255, 0.5)",
+      "color": "rgba(0, 0, 0, 0.7)",
       "strikethrough": false,
       "underline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0, 152, 255, 0.5)",
       "bold": true,
       "italic": false
     },
     {
       "tag": "function",
-      "color": "rgba(152, 0, 255, 0.5)",
+      "color": "rgba(255, 255, 255, 1)",
       "strikethrough": false,
       "underline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(152, 0, 255, 0.5)",
       "bold": true,
       "italic": false
     },
     {
       "tag": "state",
-      "color": "rgba(152, 255, 255, 0.5)",
+      "color": "rgba(0, 0, 0, 0.7)",
       "strikethrough": false,
       "underline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(152, 255, 255, 0.5)",
       "bold": true,
       "italic": false
     },
     {
       "tag": "event handler",
-      "color": "rgba(152, 152, 255, 0.5)",
+      "color": "rgba(0, 0, 0, 0.7)",
       "strikethrough": false,
       "underline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(152, 152, 255, 0.5)",
       "bold": true,
       "italic": false
     },
     {
       "tag": "effect",
-      "color": "rgba(100, 149, 237, 0.5)",
+      "color": "rgba(255, 255, 255, 1)",
       "strikethrough": false,
       "underline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0, 0, 255, 0.5)",
       "bold": true,
       "italic": false
     },
     {
       "tag": "render",
-      "color": "rgba(255, 0, 0, 0.5)",
+      "color": "rgba(0, 0, 0, 0.7)",
       "strikethrough": false,
       "underline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(255, 0, 0, 0.5)",
       "bold": true,
       "italic": false
     },
     {
       "tag": "variable",
-      "color": "rgba(0, 255, 0, 0.5)",
+      "color": "rgba(0, 0, 0, 0.7)",
       "strikethrough": false,
       "underline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0, 255, 0, 0.5)",
       "bold": true,
       "italic": false
     }

@@ -1,4 +1,5 @@
 import ShopList from '@/app/shop/ShopList';
+import TopButton from '@/components/common/TopButton';
 import { RandomHobbyBtn } from '@/components/features/shop/RandomHobby/RandomHobbyBtn';
 import { ShopBanner } from '@/components/features/shop/ShopBanner';
 import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';
@@ -23,6 +24,8 @@ export default async function ShopPage() {
 
   return (
     <>
+      <TopButton />
+
       {/* 메인 배너 */}
       <section>
         <ShopBanner />

@@ -1,6 +1,7 @@
 'use client';
 
 import { RecommendProducts } from '@/components/features/shop/RecommendProducts';
+import { Product } from '@/types';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 
@@ -69,7 +70,11 @@ export const hobbyData = [
     comment4: '내 취향 굿즈 장바구니 채워 보자!',
   },
 ];
-export const RandomHobbyContent = () => {
+export const RandomHobbyContent = ({
+  categoryData,
+}: {
+  categoryData: Product[];
+}) => {
   const searchParams = useSearchParams();
   const hobby = searchParams.get('hobby');
 
@@ -114,7 +119,7 @@ export const RandomHobbyContent = () => {
           {randomHobby?.categoryKr} 추천 상품
         </h3>
         <div className="pb-8">
-          <RecommendProducts category={hobby} />
+          <RecommendProducts category={hobby} categoryData={categoryData} />
         </div>
       </section>
     </>

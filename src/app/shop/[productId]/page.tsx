@@ -1,26 +1,27 @@
 import Image from 'next/image';
 import Tabbar from '@/components/layout/tabbar/Tabbar';
 import { CartProvider } from '@/components/features/shop/ProductDetail/CartContext';
-import { HeaderNav } from '@/components/layout/header/Header';
 import { ProductDetailInfo } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { fetchProductDetail } from '@/data/functions/ProductFetch';
 import CartAction, {
   CartIcon,
   GoBackButton,
 } from '@/components/features/shop/ProductDetail/ProductDetailClient';
+// import ProductDetailClient from '@/components/features/shop/ProductDetail/ProductDetailClient';
 
 export default async function ProductPage({
   params,
 }: {
-  params: { productId: string };
+  params: Promise<{ productId: string }>;
 }) {
-  console.log('Product ID:', params.productId);
+  const { productId } = await params;
+  console.log('Product ID:', productId);
 
-  if (!params?.productId) {
+  if (!productId) {
     return <div>상품 데이터를 불러올 수 없습니다.</div>;
   }
 
-  const res = await fetchProductDetail(params.productId);
+  const res = await fetchProductDetail(productId);
 
   // 배열에서 첫 번째 상품을 가져옴
   const product = res.item;
@@ -37,16 +38,16 @@ export default async function ProductPage({
 
   return (
     <CartProvider>
-      <HeaderNav>
+      {/* <HeaderNav>
         <HeaderNav.LeftContent>
-          {/* 뒤로가기 버튼을 클라이언트 컴포넌트에서 다룸 */}
+          뒤로가기 버튼을 클라이언트 컴포넌트에서 다룸
           <GoBackButton stroke={'stroke-black'} />
         </HeaderNav.LeftContent>
         <HeaderNav.Title>제품상세</HeaderNav.Title>
         <HeaderNav.RightContent>
           <CartIcon />
         </HeaderNav.RightContent>
-      </HeaderNav>
+      </HeaderNav> */}
 
       <div className={`relative mb-1 aspect-square w-full`}>
         <Image

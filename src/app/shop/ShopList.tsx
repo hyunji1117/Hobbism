@@ -4,7 +4,7 @@ import { ShopAd } from '@/components/features/shop/ShopAd';
 import { ShopCategory } from '@/components/features/shop/ShopCategory';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
 import { fetchProducts } from '@/data/functions/ProductFetch';
-import { Product } from '@/types/interface/product';
+import { Product } from '@/types';
 import { JSX, useEffect, useRef, useState } from 'react';
 
 export default function ShopList({ initialData }: { initialData: Product[] }) {
@@ -135,6 +135,9 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
           recommendedBy={product.extra.recommendedBy}
           key={product._id}
           textPrice="text-base"
+          liveTitle={product.extra.live?.title}
+          liveRate={product.extra.live?.liveDiscountRate}
+          livePrice={product.extra.live?.livePrice}
         />,
       );
 

@@ -24,7 +24,7 @@ export const Cta = ({ price }: { price: number }) => {
   return (
     <>
       {/* 상품 액션 버튼 컴포넌트 */}
-      <div className="bt-rounded-[8px] fixed bottom-[55px] z-30 w-full max-w-[600px] bg-white px-5 py-3">
+      <div className="bt-rounded-[8px] fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-5 py-3">
         <ProductActionButtons
           onCartClick={() => {
             setIsBottomSheetOpen(true);

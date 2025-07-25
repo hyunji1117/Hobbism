@@ -4,6 +4,7 @@
 import '@/styles/globals.css';
 import localFont from 'next/font/local';
 import { MobileFrame } from '@/components/layout/moblie-frame/MobileFrame';
+import ModalProvider from '@/components/common/ModalProvider';
 import { SessionProvider } from 'next-auth/react';
 import TokenSync from '@/components/features/auth/TokenSync';
 import Script from 'next/script';
@@ -32,6 +33,7 @@ export default function RootLayout({
         <SessionProvider>
           <TokenSync />
           <MobileFrame>{children}</MobileFrame>
+          <ModalProvider />
         </SessionProvider>
       </body>
     </html>
