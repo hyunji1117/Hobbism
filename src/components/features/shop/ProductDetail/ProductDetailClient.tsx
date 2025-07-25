@@ -25,7 +25,7 @@ export function GoBackButton() {
 
   return (
     <button onClick={handleGoBack}>
-      <ChevronLeft />
+      <ChevronLeft stroke="white" />
     </button>
   );
 }

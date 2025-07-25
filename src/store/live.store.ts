@@ -1,5 +1,5 @@
 import { fetchLiveProducts } from '@/data/functions/AllProductFetch';
-import { Product } from '@/types/interface/product';
+import { Product } from '@/types';
 import moment from 'moment';
 import { create } from 'zustand';
 
