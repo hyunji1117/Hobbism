@@ -34,7 +34,7 @@ export default function TopButton() {
           <div className="pointer-events-auto relative mx-auto w-full max-w-[600px]">
             <button
               onClick={scrollTop}
-              className="absolute right-3.5 bottom-0 aspect-square w-10"
+              className="absolute right-3.5 bottom-0 aspect-square w-10 rounded-full bg-white shadow-[1px_3px_8px_#BEBEBE]"
             >
               <ChevronUp
                 stroke="#FE508B"
