@@ -7,6 +7,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 interface ShopProductProps {
   _id: number;
   price: number;
@@ -86,7 +88,7 @@ export const ShopProduct = ({
         <Image
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
-          src={`https://fesp-api.koyeb.app/market/${mainImageSrc}`}
+          src={`${API_URL}/${mainImageSrc}`}
           alt={`/${mainImageSrc}`}
           sizes="100vw, (max-width: 1200px) 50vw, 33vw"
           priority={false}

@@ -2,7 +2,6 @@
 'use client';
 
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
-import { fetchLiveProducts } from '@/data/functions/AllProductFetch';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import { useEffect, useState } from 'react';

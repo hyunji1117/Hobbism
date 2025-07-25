@@ -7,13 +7,17 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
-export default function SearchList({ allData }: { allData: Product[] }) {
+export default function SearchList({
+  initialData,
+}: {
+  initialData: Product[];
+}) {
   const searchParams = useSearchParams();
   const word = searchParams.get('word');
 
   /* ======================== 무한 스크롤 ======================== */
   /* ------------ 상태 변수 --------------- */
-  const [products, setProducts] = useState<Product[]>(allData ?? []); // 화면에 그려질 게시물 목록
+  const [products, setProducts] = useState<Product[]>(initialData ?? []); // 화면에 그려질 게시물 목록
   const [page, setPage] = useState(1); // 현재 불러올 페이지 번호
   const [loading, setLoading] = useState(false); // fetch 진행중 여부
   const [hasNextPage, setHasNextPage] = useState(false); // 다음 페이지가 있는지

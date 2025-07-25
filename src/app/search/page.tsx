@@ -1,5 +1,4 @@
 import SearchList from '@/app/search/searchList';
-import { fetchLiveProducts } from '@/data/functions/AllProductFetch';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
@@ -16,7 +15,7 @@ export default async function SearchPage() {
   return (
     <Suspense>
       <section className="mx-3.5">
-        <SearchList allData={initialData} />
+        <SearchList initialData={initialData} />
       </section>
     </Suspense>
   );

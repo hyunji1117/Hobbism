@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleChevronUp } from 'lucide-react';
+import { ChevronUp, CircleChevronUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function TopButton() {
@@ -34,9 +34,9 @@ export default function TopButton() {
           <div className="pointer-events-auto relative mx-auto w-full max-w-[600px]">
             <button
               onClick={scrollTop}
-              className="absolute right-3.5 bottom-0 aspect-square w-10 md:w-13"
+              className="absolute right-3.5 bottom-0 aspect-square w-10"
             >
-              <CircleChevronUp
+              <ChevronUp
                 stroke="#FE508B"
                 strokeWidth={1.5}
                 fill="white"
