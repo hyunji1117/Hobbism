@@ -10,7 +10,7 @@ import {
 } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
-import { CartActionsProps } from '@/types/interface/product';
+import { CartActionsProps } from '@/types/product';
 
 // 뒤로가기 버튼 핸들러 분리해서 export: 서버 컴포넌트에서 사용
 export function GoBackButton({ stroke }: { stroke: string }) {
