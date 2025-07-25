@@ -135,6 +135,9 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
           recommendedBy={product.extra.recommendedBy}
           key={product._id}
           textPrice="text-base"
+          liveTitle={product.extra.live?.title}
+          liveRate={product.extra.live?.liveDiscountRate}
+          livePrice={product.extra.live?.livePrice}
         />,
       );
 
