@@ -46,7 +46,13 @@ export function CartIcon() {
 }
 
 // 상품 상세 하위 로직
-export default function CartActions({ price, options }: CartActionsProps) {
+export default function CartActions({
+  price,
+  options,
+  discountRate,
+}: CartActionsProps & { discountRate: number }) {
+  console.log('discountRate:', discountRate);
+  console.log('price:', price);
   const [selectedOption, setSelectedOption] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
@@ -63,6 +69,9 @@ export default function CartActions({ price, options }: CartActionsProps) {
   // 옵션이 있으면 옵션 선택 후 수량 UI가 활성화됨
   const isQuantitySelectorEnabled =
     !hasOptions || (hasOptions && selectedOption !== '');
+
+  // 할인된 가격 계산
+  const discountedPrice = price * (1 - discountRate / 100); // 할인율 적용
 
   return (
     <>
@@ -125,12 +134,13 @@ export default function CartActions({ price, options }: CartActionsProps) {
                 onIncrease={() => setQuantity(quantity + 1)}
                 onDecrease={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
                 price={price}
+                discountedPrice={discountedPrice}
               />
             </div>
           )}
 
           {isQuantitySelectorEnabled && (
-            <TotalPrice quantity={quantity} price={price} />
+            <TotalPrice quantity={quantity} price={discountedPrice} />
           )}
         </div>
       )}
