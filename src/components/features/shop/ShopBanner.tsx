@@ -17,6 +17,11 @@ export const ShopBanner = () => {
       path: '/',
     },
     {
+      src: '/images/ayoung/banner/banner00.webp',
+      alt: '배송비 부담 ZERO! 무료배송',
+      path: '/shop',
+    },
+    {
       src: '/images/ayoung/banner/banner02.webp',
       alt: '리즈리사 드레스를 50% 할인된 가격으로! 7월 16일 16시 오픈 예정',
       path: '/',

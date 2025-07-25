@@ -26,6 +26,15 @@ export interface Product {
     isLiveSpecial: boolean;
     discountRate: number;
     discountedPrice: number;
+    live: {
+      start: string;
+      end: string;
+      title: string;
+      livePath: string;
+      liveId: string;
+      livePrice: number;
+      liveDiscountRate: number;
+    };
   };
 }
 
