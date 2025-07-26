@@ -38,21 +38,22 @@ export const ProductDetailInfo = ({
         {recommendInfo.name} PICK
       </span>
       <h1 className="relative text-[24px] font-semibold text-black">
-        {/* 아디다스 언더아머 2.0 윈터브레이크 */}
+        {/* 상품명 */}
         {item.name}
       </h1>
       <span className="flex flex-col pt-2 text-[12px] text-[#C3C3C3] line-through">
-        {/* 167,000원 */}
+        {/* 원가 */}
         {item.price.toLocaleString()}원
       </span>
       <div className="mt-1 flex items-center">
+        {/* 할인률 */}
         {discountRate > 0 && (
           <span className="pr-2 text-[24px] font-semibold text-[#EF4444]">
             {discountRate.toLocaleString()}%
           </span>
         )}
         <span className="justify-self-center text-[24px] font-semibold text-black">
-          {/* 139,000원 */}
+          {/* 할인된 금액 */}
           {discountedPrice.toLocaleString()}원
         </span>
         <span className="ml-auto flex h-[28px] w-[76px] items-center justify-center rounded-[4px] bg-[#F3F4F6] text-[14px] text-black">
@@ -104,7 +105,7 @@ export function ProductQuantitySelector({
           <Plus className="h-[20] w-[20] border-[#C3C3C3]" />
         </button>
         <span className="ml-auto flex items-center justify-center text-[18px] font-semibold text-black">
-          {discountedPrice.toLocaleString()}원
+          {(quantity * discountedPrice).toLocaleString()}원
         </span>
       </div>
     </section>
