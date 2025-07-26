@@ -51,27 +51,26 @@ export default function CartActions({
   options,
   discountRate,
 }: CartActionsProps & { discountRate: number }) {
-  console.log('discountRate:', discountRate);
-  console.log('price:', price);
   const [selectedOption, setSelectedOption] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const { cartCount, setCartCount } = useCart();
 
+  // 옵션 배열 길이가 1개 이상이면 true (옵션 유무 판별)
   const hasOptions = Array.isArray(options) && options.length > 0;
-
-  const swipeHandlers = useSwipeable({
-    onSwipedDown: () => setIsBottomSheetOpen(false),
-    trackMouse: true,
-  });
 
   // 옵션이 없으면 수량 선택 UI는 항상 보이도록 처리
   // 옵션이 있으면 옵션 선택 후 수량 UI가 활성화됨
   const isQuantitySelectorEnabled =
     !hasOptions || (hasOptions && selectedOption !== '');
 
-  // 할인된 가격 계산
-  const discountedPrice = price * (1 - discountRate / 100); // 할인율 적용
+  const discountedPrice = price * (1 - discountRate / 100);
+
+  // 바텀시트에서 아래로 스와이프하면 닫히는 핸들링
+  const swipeHandlers = useSwipeable({
+    onSwipedDown: () => setIsBottomSheetOpen(false),
+    trackMouse: true,
+  });
 
   return (
     <>
@@ -90,11 +89,6 @@ export default function CartActions({
               setQuantity(1);
               return;
             }
-            // 바텀시트가 열려 있을 때 장바구니에 반영
-            setCartCount(cartCount + quantity);
-            setIsBottomSheetOpen(false);
-            setSelectedOption('');
-            setQuantity(1);
           }}
         />
       </div>
@@ -110,7 +104,7 @@ export default function CartActions({
       {isBottomSheetOpen && (
         <div
           {...swipeHandlers}
-          className="fixed bottom-[133px] z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg"
+          className={`fixed z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg ${hasOptions ? 'bottom-[133px]' : 'bottom-[78px]'} `}
         >
           <div className="flex justify-center">
             <div className="mt-2.5 h-[4px] w-[109px] rounded-full bg-[#3D3D3D]" />
@@ -118,11 +112,13 @@ export default function CartActions({
 
           {hasOptions && (
             <div className="bg-white px-5 pt-3.5">
-              <OptionSelector
-                options={options}
-                selectedOption={selectedOption}
-                onSelect={option => setSelectedOption(option)}
-              />
+              {hasOptions && (
+                <OptionSelector
+                  options={options}
+                  selectedOption={selectedOption}
+                  onSelect={option => setSelectedOption(option)}
+                />
+              )}
             </div>
           )}
 
