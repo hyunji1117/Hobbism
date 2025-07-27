@@ -12,6 +12,8 @@ export const ProductDetailInfo = ({
   discountRate,
   discountedPrice,
   extra,
+  sizes,
+  colors,
 }: ProductDetailInfoProps) => {
   // MD PICK 한글 이름, 색상 매핑
   const recommendData: Record<
@@ -64,20 +66,45 @@ export const ProductDetailInfo = ({
   );
 };
 
-// 상품 수량 선택 컴포넌트
+// 수량 컨트롤
+// export function ProductQuantitySelector({
+//   selectedOption,
+//   quantity,
+//   onIncrease,
+//   onDecrease,
+//   price,
+//   discountedPrice,
+// }: ProductQuantitySelectorProps) {
 export function ProductQuantitySelector({
   selectedOption,
   quantity,
   onIncrease,
   onDecrease,
-  // price,
+  price,
   discountedPrice,
-}: ProductQuantitySelectorProps) {
+  item, // <- 상품명 props로 받을 경우
+}: ProductQuantitySelectorProps & { item?: { name: string } }) {
   return (
     <section className="h-[100px] w-full rounded-[8px] bg-[#EAEAEA] p-3">
-      <h2 className="mb-4 text-[18px] font-semibold text-black">
+      {/* <h2 className="mb-4 text-[18px] font-semibold text-black">
         {selectedOption || '옵션을 선택하세요'}
-      </h2>
+      </h2> */}
+      {/* 
+      {selectedOption && (
+        <h2 className="mb-4 text-[18px] font-semibold text-black">
+          {selectedOption}
+        </h2>
+      )} */}
+
+      {selectedOption ? (
+        <h2 className="mb-4 text-[18px] font-semibold text-black">
+          {selectedOption}
+        </h2>
+      ) : item?.name ? (
+        <h2 className="mb-4 text-[18px] font-semibold text-black">
+          {item.name}
+        </h2>
+      ) : null}
       <div id="counter" className="flex gap-4">
         <button
           type="button"
