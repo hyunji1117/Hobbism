@@ -1,5 +1,6 @@
 'use client';
 
+import { SmallLoading } from '@/components/common/SmallLoading';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Product } from '@/types';
@@ -113,16 +114,8 @@ export default function SearchList({
       {/* ===== 무한 스크롤 observer ===== */}
       <div ref={observerRef} className="h-10" />
       {/* ===== loading 중 렌더링 ===== */}
-      {loading && (
-        <div className="absolute top-1/2 left-1/2 w-full -translate-1/2">
-          <div className="flex min-h-screen flex-col items-center justify-center">
-            <span className="mb-3 ml-2 text-2xl font-semibold text-[#FE508B]">
-              Loading...
-            </span>
-            <div className="h-20 w-20 animate-spin rounded-full border-4 border-[#FE508B] border-t-transparent" />
-          </div>
-        </div>
-      )}
+      {loading && <SmallLoading />}
+
       {/* ===== 무한 스크롤 끝날 시 렌더 ====== */}
       {searchProducts.length > 0 && !hasNextPage && !loading && (
         <p className="py-4 text-center text-gray-500">

@@ -1,5 +1,6 @@
 'use client';
 
+import { SmallLoading } from '@/components/common/SmallLoading';
 import { ShopAd } from '@/components/features/shop/ShopAd';
 import { ShopCategory } from '@/components/features/shop/ShopCategory';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
@@ -160,7 +161,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
         </div>
 
         <div ref={observerRef} className="h-10" />
-        {loading && <div className="py-4 text-center">불러오는 중...</div>}
+        {loading && <SmallLoading />}
         {!hasNextPage && !loading && (
           <p className="py-4 text-center text-gray-500">
             더 이상 상품이 없어요
