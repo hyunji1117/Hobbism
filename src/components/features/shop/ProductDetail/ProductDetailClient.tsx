@@ -3,18 +3,16 @@
 import { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { ChevronLeft, ShoppingCart } from 'lucide-react';
-import {
-  ProductActionButtons,
-  ProductQuantitySelector,
-  TotalPrice,
-} from '@/components/features/shop/ProductDetail/ProductDetail';
+import { ProductActionButtons } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
-import { CartActionsProps } from '@/types/product';
+import { ProductOption } from '@/types/product';
 
-// 뒤로가기 버튼 핸들러 분리해서 export: 서버 컴포넌트에서 사용
+type OptionSelections = { [optionName: string]: string };
+
+// 뒤로가기 버튼
 export function GoBackButton({ stroke }: { stroke: string }) {
-  function handleGoBack(): void {
+  const handleGoBack = () => {
     if (window.history.length > 2) {
       // 사용자가 URL을 직접 입력하여 접속 경우, 뒤로가기 버튼을 클릭하면 검색 엔진이나 서비스 외부 페이지로 이동하는 문제 해결 가능
       // browser history stack이 2 이하일 때 내부경로로 이동하도록 설정 (history 1개로 설정 시 브라우저 첫 페이지가 이전 기록이 되어 문제 해결이 어렵기 때문)
@@ -22,7 +20,7 @@ export function GoBackButton({ stroke }: { stroke: string }) {
     } else {
       window.location.href = '/';
     }
-  }
+  };
 
   return (
     <button onClick={handleGoBack}>
@@ -31,6 +29,7 @@ export function GoBackButton({ stroke }: { stroke: string }) {
   );
 }
 
+// 장바구니 아이콘
 export function CartIcon() {
   const { cartCount } = useCart();
   return (
@@ -50,45 +49,50 @@ export default function CartActions({
   price,
   options,
   discountRate,
-}: CartActionsProps & { discountRate: number }) {
-  const [selectedOption, setSelectedOption] = useState('');
+}: {
+  price: number;
+  options: ProductOption[];
+  discountRate: number;
+}) {
+  const [selectedOptions, setSelectedOptions] = useState<OptionSelections>({});
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const { cartCount, setCartCount } = useCart();
+  const { cartCount, setCartCount, addToCart } = useCart?.() || {};
 
-  // 옵션 배열 길이가 1개 이상이면 true (옵션 유무 판별)
   const hasOptions = Array.isArray(options) && options.length > 0;
-
-  // 옵션이 없으면 수량 선택 UI는 항상 보이도록 처리
-  // 옵션이 있으면 옵션 선택 후 수량 UI가 활성화됨
-  const isQuantitySelectorEnabled =
-    !hasOptions || (hasOptions && selectedOption !== '');
-
+  const allOptionsSelected =
+    !hasOptions || options.every(opt => selectedOptions[opt.name]);
   const discountedPrice = price * (1 - discountRate / 100);
 
-  // 바텀시트에서 아래로 스와이프하면 닫히는 핸들링
+  const handleOptionChange = (name: string, value: string) => {
+    setSelectedOptions(prev => ({ ...prev, [name]: value }));
+  };
+
   const swipeHandlers = useSwipeable({
     onSwipedDown: () => setIsBottomSheetOpen(false),
     trackMouse: true,
   });
 
+  const handleAddToCart = () => {
+    addToCart?.({
+      name: '상품이름',
+      price: discountedPrice,
+      option: hasOptions ? selectedOptions : undefined,
+      quantity,
+      productImg: '',
+    });
+    setIsBottomSheetOpen(false);
+    setCartCount?.(cartCount + 1);
+  };
+
   return (
     <>
-      {/* 상품 액션 버튼 컴포넌트 */}
+      {/* 상품 액션 버튼 */}
       <div className="bt-rounded-[8px] fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-5 py-3">
         <ProductActionButtons
           onCartClick={() => {
-            if (!isBottomSheetOpen) {
-              setIsBottomSheetOpen(true);
-              // 옵션이 없으면 수량 선택 UI 활성화
-              if (!hasOptions) {
-                setSelectedOption('');
-              } else {
-                setSelectedOption('');
-              }
-              setQuantity(1);
-              return;
-            }
+            setIsBottomSheetOpen(true);
+            setQuantity(1);
           }}
         />
       </div>
@@ -104,40 +108,26 @@ export default function CartActions({
       {isBottomSheetOpen && (
         <div
           {...swipeHandlers}
-          className={`fixed z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg ${hasOptions ? 'bottom-[133px]' : 'bottom-[78px]'} `}
+          className={`fixed z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg ${
+            hasOptions ? 'bottom-[78px]' : 'bottom-[78px]'
+          }`}
         >
           <div className="flex justify-center">
             <div className="mt-2.5 h-[4px] w-[109px] rounded-full bg-[#3D3D3D]" />
           </div>
 
-          {hasOptions && (
-            <div className="bg-white px-5 pt-3.5">
-              {hasOptions && (
+          {/* 옵션 드롭다운 */}
+          {hasOptions &&
+            options.map(opt => (
+              <div key={opt.name} className="bg-white px-5 pt-3.5">
                 <OptionSelector
-                  options={options}
-                  selectedOption={selectedOption}
-                  onSelect={option => setSelectedOption(option)}
+                  name={opt.name}
+                  options={opt.values}
+                  selectedOption={selectedOptions[opt.name] || ''}
+                  onSelect={value => handleOptionChange(opt.name, value)}
                 />
-              )}
-            </div>
-          )}
-
-          {isQuantitySelectorEnabled && (
-            <div className="bg-white px-5 py-3">
-              <ProductQuantitySelector
-                selectedOption={selectedOption}
-                quantity={quantity}
-                onIncrease={() => setQuantity(quantity + 1)}
-                onDecrease={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
-                price={price}
-                discountedPrice={discountedPrice}
-              />
-            </div>
-          )}
-
-          {isQuantitySelectorEnabled && (
-            <TotalPrice quantity={quantity} price={discountedPrice} />
-          )}
+              </div>
+            ))}
         </div>
       )}
     </>
