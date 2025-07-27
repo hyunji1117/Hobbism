@@ -7,7 +7,7 @@ import CartAction, {
   CartIcon,
   GoBackButton,
 } from '@/components/features/shop/ProductDetail/ProductDetailClient';
-// import ProductDetailClient from '@/components/features/shop/ProductDetail/ProductDetailClient';
+import { ProductOption } from '@/types/product';
 
 export default async function ProductPage({
   params,
@@ -35,6 +35,10 @@ export default async function ProductPage({
   const detailImageUrl = detailImage
     ? `https://fesp-api.koyeb.app/market/${detailImage.path}`
     : '';
+
+  const options = Array.isArray(product.extra.options)
+    ? product.extra.options
+    : [];
 
   return (
     <CartProvider>
@@ -68,10 +72,7 @@ export default async function ProductPage({
         }}
         discountRate={product.extra.discountRate}
         discountedPrice={product.extra.discountedPrice}
-        extra={{
-          recommendedBy: product.extra.recommendedBy,
-        }}
-        options={product.options?.map(option => option.value) ?? []}
+        extra={{ recommendedBy: product.extra.recommendedBy }}
       />
 
       <h2 className="p-5 text-[18px] font-semibold">상품정보</h2>
@@ -89,7 +90,7 @@ export default async function ProductPage({
       {/* 하위 클라이언트 컴포넌트로 묶어서 이동 */}
       <CartAction
         price={product.price}
-        options={product.options?.map(option => option.value) ?? []}
+        options={options} // ProductOption[]
         discountRate={product.extra.discountRate}
       />
 
