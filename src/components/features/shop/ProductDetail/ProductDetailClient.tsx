@@ -3,10 +3,14 @@
 import { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { ChevronLeft, ShoppingCart } from 'lucide-react';
-import { ProductActionButtons } from '@/components/features/shop/ProductDetail/ProductDetail';
+import {
+  ProductActionButtons,
+  TotalPrice,
+} from '@/components/features/shop/ProductDetail/ProductDetail';
 import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
 import { ProductOption } from '@/types/product';
+import { ProductQuantitySelector } from '@/components/features/shop/ProductDetail/ProductDetail';
 
 type OptionSelections = { [optionName: string]: string };
 
@@ -49,12 +53,16 @@ export default function CartActions({
   price,
   options,
   discountRate,
+  item, // item 추가
 }: {
   price: number;
   options: ProductOption[];
   discountRate: number;
+  item: { name: string };
 }) {
-  const [selectedOptions, setSelectedOptions] = useState<OptionSelections>({});
+  const [selectedOptions, setSelectedOptions] = useState<{
+    [key: string]: string;
+  }>({});
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const { cartCount, setCartCount, addToCart } = useCart?.() || {};
@@ -72,18 +80,6 @@ export default function CartActions({
     onSwipedDown: () => setIsBottomSheetOpen(false),
     trackMouse: true,
   });
-
-  const handleAddToCart = () => {
-    addToCart?.({
-      name: '상품이름',
-      price: discountedPrice,
-      option: hasOptions ? selectedOptions : undefined,
-      quantity,
-      productImg: '',
-    });
-    setIsBottomSheetOpen(false);
-    setCartCount?.(cartCount + 1);
-  };
 
   return (
     <>
@@ -116,18 +112,51 @@ export default function CartActions({
             <div className="mt-2.5 h-[4px] w-[109px] rounded-full bg-[#3D3D3D]" />
           </div>
 
-          {/* 옵션 드롭다운 */}
-          {hasOptions &&
-            options.map(opt => (
-              <div key={opt.name} className="bg-white px-5 pt-3.5">
-                <OptionSelector
-                  name={opt.name}
-                  options={opt.values}
-                  selectedOption={selectedOptions[opt.name] || ''}
-                  onSelect={value => handleOptionChange(opt.name, value)}
+          {hasOptions ? (
+            // 옵션이 있을 경우 드롭다운 먼저 노출
+            <>
+              {options.map(opt => (
+                <div key={opt.name} className="bg-white px-5 pt-3.5">
+                  <OptionSelector
+                    name={opt.name}
+                    options={opt.values}
+                    selectedOption={selectedOptions[opt.name] || ''}
+                    onSelect={value => handleOptionChange(opt.name, value)}
+                  />
+                </div>
+              ))}
+              {allOptionsSelected && (
+                <ProductQuantitySelector
+                  selectedOption={
+                    Object.values(selectedOptions).join(', ') || ''
+                  }
+                  quantity={quantity}
+                  onIncrease={() => setQuantity(prev => prev + 1)}
+                  onDecrease={() => setQuantity(prev => Math.max(1, prev - 1))}
+                  price={price}
+                  discountedPrice={discountedPrice}
+                  item={item}
                 />
-              </div>
-            ))}
+              )}
+              {allOptionsSelected && (
+                <TotalPrice quantity={quantity} price={discountedPrice} />
+              )}
+            </>
+          ) : (
+            // 옵션이 없는 경우
+            <>
+              <ProductQuantitySelector
+                selectedOption=""
+                quantity={quantity}
+                onIncrease={() => setQuantity(prev => prev + 1)}
+                onDecrease={() => setQuantity(prev => Math.max(1, prev - 1))}
+                price={price}
+                discountedPrice={discountedPrice}
+                item={item}
+              />
+              <TotalPrice quantity={quantity} price={discountedPrice} />
+            </>
+          )}
         </div>
       )}
     </>
