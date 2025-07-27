@@ -8,18 +8,15 @@ import { Product } from '@/types';
 import { JSX, useEffect, useRef, useState } from 'react';
 
 export default function ShopList({ initialData }: { initialData: Product[] }) {
-  /* ======================== 무한 스크롤 ======================== */
-  /* ------------ 상태 변수 --------------- */
+  //       state: 무한 스크롤 상태 변수          //
   const [products, setProducts] = useState<Product[]>(initialData ?? []); // 화면에 그려질 게시물 목록
   const [page, setPage] = useState(1); // 현재 불러올 페이지 번호
   const [loading, setLoading] = useState(false); // fetch 진행중 여부
   const [hasNextPage, setHasNextPage] = useState(false); // 다음 페이지가 있는지
   const [pageParams, setPageParams] = useState<number[]>([]); // 이미 가져온 페이지 번호 기록
-
-  /* ------ DOM 참조 -------- */
   const observerRef = useRef<HTMLDivElement | null>(null); // 무한 스크롤 트리거 참조
 
-  /* ============ 게시물 로딩 함수 ============ */
+  //        function: 게시물 로딩 함수          //
   const loadingProducts = async (page: number) => {
     if (pageParams.includes(page)) return; // 이미 요청했던 page라면 중복 호출 차단
     setLoading(true);
@@ -36,7 +33,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
     setLoading(false);
   };
 
-  /* IntersectionObserver로 무한 스크롤 트리거 */
+  //        effect: IntersectionObserver로 무한 트리거        //
   useEffect(() => {
     const target = observerRef.current;
     if (!target) return;
@@ -60,12 +57,12 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
     return () => observer.disconnect(); // 클린업
   }, [page, hasNextPage, loading]);
 
-  /* ============== page 값이 변할 때마다 fetch =========== */
+  //         effect: page 값이 변할 때마다 fetch       //
   useEffect(() => {
     loadingProducts(page); //page가 바뀔 때마다 해당 페이지 게시물 로드
   }, [page]);
 
-  /* ================ 선택된 카테고리 상태 ================ */
+  //       state: 선택된 카테고리 상태       //
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
   const filteredProducts =
@@ -75,7 +72,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
           product.extra.category.includes(selectedCategory),
         );
 
-  /*---------- 선택된 카테고리의 상품이 나오는 페이지를 찾아서 렌더링 ------------*/
+  //        function: 선택된 카테고리의 상품이 나오는 페이지를 찾아서 렌더링      //
   const handleCategoryChange = async (newCategory: string) => {
     // 로딩 상태 true, 상품 목록, 페이지 초기화
     setLoading(true);
@@ -116,6 +113,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
     setLoading(false);
   };
 
+  //        render: 상품 렌더링        //
   const productsList = filteredProducts.reduce<JSX.Element[]>(
     (acc, product, idx) => {
       // 8개마다 광고 삽입
@@ -146,9 +144,9 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
     [],
   );
 
+  //          render: 전체 카테고리 별 상품 렌더링        //
   return (
     <>
-      {/* 전체(카테고리 별) 상품 */}
       <section>
         <div className="ml-5">
           <ShopCategory
@@ -158,10 +156,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
         </div>
 
         <div className="mx-5">
-          <div className="grid grid-cols-2 gap-2.5">
-            {/* <ShopAd /> */}
-            {productsList}
-          </div>
+          <div className="grid grid-cols-2 gap-2.5">{productsList}</div>
         </div>
 
         <div ref={observerRef} className="h-10" />
