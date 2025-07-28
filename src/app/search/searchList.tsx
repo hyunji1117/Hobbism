@@ -97,7 +97,7 @@ export default function SearchList({
             <div className="relative left-1/2 aspect-square w-1/4 -translate-x-1/2">
               <Image
                 fill
-                src={'/images/ayoung/sad.png'}
+                src={'/images/ayoung/sad.webp'}
                 alt="Sorry"
                 priority={false}
                 sizes="(max-width: 768px) 130px"
