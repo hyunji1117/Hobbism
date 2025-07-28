@@ -1,5 +1,5 @@
 import { RandomHobbyContent } from '@/components/features/shop/RandomHobby/RandomHobbyContent';
-import { fetchLiveProducts } from '@/data/functions/AllProductFetch';
+import { fetchAllProducts } from '@/data/functions/ProductFetch';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RandomHobby() {
-  const categoryData = await fetchLiveProducts();
+  const categoryData = await fetchAllProducts();
 
   return (
     <>

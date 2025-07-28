@@ -7,6 +7,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+//        interface: 상품 인터페이스        //
 interface ShopProductProps {
   _id: number;
   price: number;
@@ -22,6 +25,7 @@ interface ShopProductProps {
   livePrice: number;
 }
 
+//       component: shop main 상품 컴포넌트       //
 export const ShopProduct = ({
   _id,
   price,
@@ -35,6 +39,7 @@ export const ShopProduct = ({
   liveRate,
   livePrice,
 }: ShopProductProps) => {
+  // 카테고리 한글 변환, 배경색, 글자색
   const recommendData: Record<
     string,
     { name: string; color: string; textColor: string }
@@ -48,7 +53,7 @@ export const ShopProduct = ({
 
   const recommendInfo = recommendData[recommendedBy];
 
-  // fetchLive 호출
+  //              effect: fetchLive 호출          //
   const fetchLive = useLiveStore(state => state.fetchLive);
   useEffect(() => {
     fetchLive();
@@ -67,21 +72,24 @@ export const ShopProduct = ({
     return now.isBetween(start, end);
   });
 
+  //        render: 상품 렌더        //
   return (
     <Link
       href={isLive ? '/live' : `/shop/${_id}`}
       className={`mb-2 flex w-full flex-col gap-1`}
     >
+      {/* 라이브 중인 상품일 경우 라이브 뱃지 */}
       {isLive && (
         <div className="absolute top-2 -left-2 z-5">
           <LiveProgress />
         </div>
       )}
+
       <div className={`relative mb-1 aspect-square w-full`}>
         <Image
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
-          src={`https://fesp-api.koyeb.app/market/${mainImageSrc}`}
+          src={`${API_URL}/${mainImageSrc}`}
           alt={`/${mainImageSrc}`}
           sizes="100vw, (max-width: 1200px) 50vw, 33vw"
           priority={false}
