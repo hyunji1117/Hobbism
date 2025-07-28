@@ -5,15 +5,18 @@ import { useState } from 'react';
 
 // 옵션 선택 컴포넌트
 export const OptionSelector = ({
+  name,
   options,
-  selectedOption, //추가
+  selectedOption,
   onSelect,
 }: {
+  name: string;
   options: string[];
-  selectedOption: string; //추가
+  selectedOption: string;
   onSelect: (selectedOption: string) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -26,10 +29,11 @@ export const OptionSelector = ({
         onClick={toggleDropdown}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
+        aria-label={`${name} 옵션 선택 드롭다운`}
       >
-        <h2 className="text-[16px] text-[#000]">
-          {selectedOption || '옵션 선택'}
-        </h2>
+        <span className="text-[16px] text-[#000]">
+          {selectedOption || `${name}`}
+        </span>
         <ChevronDown
           className={`h-[24px] w-[24px] text-black transition-transform ${
             isOpen ? 'rotate-180' : ''
@@ -41,7 +45,7 @@ export const OptionSelector = ({
         <ul
           className="border-t border-[#EAEAEA]"
           role="listbox"
-          aria-label="옵션 선택"
+          aria-label={`${name} 옵션 선택`}
         >
           {options.map(option => (
             <li
