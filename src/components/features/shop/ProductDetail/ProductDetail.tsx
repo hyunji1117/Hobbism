@@ -5,6 +5,7 @@ import {
   ProductDetailInfoProps,
   ProductQuantitySelectorProps,
 } from '@/types/product';
+import { useCart } from '@/components/features/shop/ProductDetail/CartContext'; // 추가
 
 // 상품 상세 정보 컴포넌트
 export const ProductDetailInfo = ({
@@ -66,15 +67,30 @@ export const ProductDetailInfo = ({
   );
 };
 
+// 장바구니 담기 버튼 컴포넌트
+function ProductDetail({
+  product,
+}: {
+  product: { id: string; name: string; price: number };
+}) {
+  const { addToCart } = useCart();
+
+  const handleAdd = () => {
+    // 옵션 등 추가/정합 체크는 필요시 구현
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      options: {}, // 선택된 옵션 등
+    });
+    alert('장바구니에 담겼습니다.');
+  };
+
+  return <button onClick={handleAdd}>장바구니 담기</button>;
+}
+
 // 수량 컨트롤
-// export function ProductQuantitySelector({
-//   selectedOption,
-//   quantity,
-//   onIncrease,
-//   onDecrease,
-//   price,
-//   discountedPrice,
-// }: ProductQuantitySelectorProps) {
 export function ProductQuantitySelector({
   selectedOption,
   quantity,
@@ -82,20 +98,10 @@ export function ProductQuantitySelector({
   onDecrease,
   price,
   discountedPrice,
-  item, // <- 상품명 props로 받을 경우
+  item,
 }: ProductQuantitySelectorProps & { item?: { name: string } }) {
   return (
     <section className="h-[100px] w-full rounded-[8px] bg-[#EAEAEA] p-3">
-      {/* <h2 className="mb-4 text-[18px] font-semibold text-black">
-        {selectedOption || '옵션을 선택하세요'}
-      </h2> */}
-      {/* 
-      {selectedOption && (
-        <h2 className="mb-4 text-[18px] font-semibold text-black">
-          {selectedOption}
-        </h2>
-      )} */}
-
       {selectedOption ? (
         <h2 className="mb-4 text-[18px] font-semibold text-black">
           {selectedOption}
@@ -163,8 +169,6 @@ export const ProductActionButtons = ({
     </section>
   );
 };
-
-// 옵션 선택 컴포넌트 클라이언트 사이드 관리로 별도 파일 생성 (OptionSelector.tsx)
 
 // 총 결제 금액 컴포넌트
 export const TotalPrice = ({

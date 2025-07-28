@@ -12,14 +12,25 @@ import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
 import { ProductOption } from '@/types/product';
 import { ProductQuantitySelector } from '@/components/features/shop/ProductDetail/ProductDetail';
 
-type OptionSelections = { [optionName: string]: string };
+// 장바구니 아이콘 컴포넌트 추가
+export function CartIcon() {
+  const { cartCount } = useCart();
+  return (
+    <div className="relative">
+      <ShoppingCart />
+      {cartCount > 0 && (
+        <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-bold text-white">
+          {cartCount}
+        </span>
+      )}
+    </div>
+  );
+}
 
 // 뒤로가기 버튼
 export function GoBackButton({ stroke }: { stroke: string }) {
   const handleGoBack = () => {
     if (window.history.length > 2) {
-      // 사용자가 URL을 직접 입력하여 접속 경우, 뒤로가기 버튼을 클릭하면 검색 엔진이나 서비스 외부 페이지로 이동하는 문제 해결 가능
-      // browser history stack이 2 이하일 때 내부경로로 이동하도록 설정 (history 1개로 설정 시 브라우저 첫 페이지가 이전 기록이 되어 문제 해결이 어렵기 때문)
       window.history.back();
     } else {
       window.location.href = '/';
@@ -33,18 +44,29 @@ export function GoBackButton({ stroke }: { stroke: string }) {
   );
 }
 
-// 장바구니 아이콘
-export function CartIcon() {
-  const { cartCount } = useCart();
+// 장바구니 담기 버튼 컴포넌트 추가
+export function AddToCartBtn({
+  product,
+}: {
+  product: { id: string; name: string; price: number; productImg?: string };
+}) {
+  const { addToCart } = useCart();
   return (
-    <div className="relative">
-      <ShoppingCart />
-      {cartCount > 0 && (
-        <span className="absolute -top-0.5 right-[-7] rounded-full bg-red-300 px-1 text-xs font-semibold text-white">
-          {cartCount}
-        </span>
-      )}
-    </div>
+    <button
+      onClick={() => {
+        addToCart({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          productImg: product.productImg || '',
+        });
+        alert('장바구니에 추가되었습니다!');
+      }}
+      className="rounded-md bg-[#FE508B] px-4 py-2 text-white hover:bg-[#e6457b]"
+    >
+      장바구니 담기
+    </button>
   );
 }
 
@@ -53,19 +75,19 @@ export default function CartActions({
   price,
   options,
   discountRate,
-  item, // item 추가
+  item,
 }: {
   price: number;
   options: ProductOption[];
   discountRate: number;
-  item: { name: string };
+  item: { id: string; name: string; price: number; productImg?: string };
 }) {
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: string;
   }>({});
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const { cartCount, setCartCount, addToCart } = useCart?.() || {};
+  const { addToCart } = useCart?.() || {};
 
   const hasOptions = Array.isArray(options) && options.length > 0;
   const allOptionsSelected =
@@ -125,6 +147,7 @@ export default function CartActions({
                   />
                 </div>
               ))}
+
               {allOptionsSelected && (
                 <ProductQuantitySelector
                   selectedOption={
@@ -166,3 +189,4 @@ export default function CartActions({
 // NavBar에서 사용할 수 있게 내보내기
 CartActions.GoBackButton = GoBackButton;
 CartActions.CartIcon = CartIcon;
+CartActions.AddToCartBtn = AddToCartBtn; // AddToCartBtn 내보내기 추가
