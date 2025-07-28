@@ -164,7 +164,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
         {loading && <SmallLoading />}
         {!hasNextPage && !loading && (
           <p className="py-4 text-center text-gray-500">
-            더 이상 상품이 없어요
+            모든 상품을 다 보셨어요!
           </p>
         )}
       </section>
