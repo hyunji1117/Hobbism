@@ -11,6 +11,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tabs": "^1.1.12",
@@ -26,6 +27,7 @@
     "react-daum-postcode": "^3.2.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.60.0",
+    "react-hot-toast": "^2.5.2",
     "react-swipeable": "^7.0.2",
     "react-use-draggable-scroll": "^0.4.7",
     "swiper": "^11.2.10",
