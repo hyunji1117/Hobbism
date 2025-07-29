@@ -36,6 +36,7 @@ export interface Product {
       liveDiscountRate: number;
     };
   };
+  options?: ProductOption[];
 }
 
 // API 서버의 상품 상세조회 응답
@@ -56,16 +57,35 @@ export interface ProductListRes {
   };
 }
 
+// 옵션
+export interface ProductOption {
+  name: string;
+  values: string[];
+}
+
+// 상품 상세 정보
 export interface ProductDetailInfoProps {
-  item: {
-    _id: number;
-    name: string;
-    price: number;
-    path: string;
-  };
+  item: { _id: number; name: string; price: number; path: string };
   discountRate: number;
   discountedPrice: number;
-  extra: {
-    recommendedBy: string;
-  };
+  extra: { recommendedBy: string };
+  sizes?: string[];
+  colors?: string[];
+}
+
+// 장바구니 액션
+export interface CartActionsProps {
+  price: number;
+  options: string[];
+  discountRate: number;
+}
+
+// 상품 수량 선택 컴포넌트
+export interface ProductQuantitySelectorProps {
+  selectedOption: string;
+  quantity: number;
+  onIncrease: () => void;
+  onDecrease: () => void;
+  price: number;
+  discountedPrice: number;
 }

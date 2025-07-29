@@ -9,19 +9,19 @@ import { LiveProduct, useLiveStore } from '@/store/live.store';
 import moment from 'moment';
 import { useState } from 'react';
 
-export default function LiveOverlay({ live }: { live: LiveProduct }) {
+export default function LiveContent({ live }: { live: LiveProduct }) {
   const currentLive = useLiveStore(state => state.currentLive);
 
-  // 오버레이 토글
+  //           state: 방송 중이 아닐 경우 보여 줄 overlay 화면 상태        //
   const [showOverlay, setShowOverlay] = useState(true);
+  //          effect: 오버레이 클릭 시 화면 꺼짐        //
   const handleClickOverlay = () => {
     setShowOverlay(false);
   };
 
   const isLiveNow = moment().isBetween(moment(live.start), moment(live.end));
 
-  console.log('🔍 currentLive in LiveOverlay:', currentLive);
-
+  //          render: 라이브 화면 렌더        //
   return (
     <>
       {isLiveNow ? (
@@ -45,21 +45,6 @@ export default function LiveOverlay({ live }: { live: LiveProduct }) {
           </div>
         )
       )}
-
-      {/* 라이브 캘린더 헤더 */}
-      {/* <header className="bg-amber-200select-none fixed z-10 w-full max-w-[600px]">
-        <ul>
-          <li className="absolute top-3.5 left-0 ml-3.5">
-            <GoBackButton />
-          </li>
-          <li className="fixed top-3.5 left-[50%] translate-x-[-50%] text-xl font-bold text-white">
-            라이브
-          </li>
-          <li>
-            <LiveCalendarBtn />
-          </li>
-        </ul>
-      </header> */}
 
       {/* 라이브 비디오 */}
       <div key={live._id} className="h-screen">
