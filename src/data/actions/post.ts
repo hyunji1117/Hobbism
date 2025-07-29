@@ -107,6 +107,80 @@ export async function createPost(
 }
 
 /**
+ * 게시글 수정
+ */
+export async function updatePost(
+  state: ApiRes<Post> | null,
+  formData: FormData,
+): ApiResPromise<Post> {
+  const _id = formData.get('_id') as string;
+  const content = formData.get('content') as string;
+  const accessToken = formData.get('accessToken') as string;
+
+  let data: ApiRes<Post>;
+
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Client-Id': CLIENT_ID,
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ content }),
+    });
+
+    data = await res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '게시글 수정에 실패했습니다.' };
+  }
+
+  if (data.ok) {
+    revalidateTag('posts');
+    revalidateTag(`posts/${_id}`);
+  }
+
+  return data;
+}
+
+/**
+ * 게시글 삭제
+ */
+export async function deletePost(
+  state: ApiRes<null> | null,
+  formData: FormData,
+): ApiResPromise<null> {
+  const _id = formData.get('_id') as string;
+  const accessToken = formData.get('accessToken') as string;
+
+  let data: ApiRes<null>;
+
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}`, {
+      method: 'DELETE',
+      headers: {
+        'Client-Id': CLIENT_ID,
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+
+    data = await res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '게시글 삭제에 실패했습니다.' };
+  }
+
+  if (data.ok) {
+    revalidateTag('posts');
+  }
+
+  return data;
+}
+
+
+
+/**
  * 댓글을 생성하는 함수
  */
 export async function createReply(
@@ -142,6 +216,81 @@ export async function createReply(
   if (data.ok) {
     revalidateTag(`posts/${_id}/replies`); // 댓글 목록 캐시 무효화
     revalidateTag(`posts/${_id}`); // 게시글 상세 캐시 무효화
+  }
+
+  return data;
+}
+
+/**
+ * 댓글 수정
+ */
+export async function updateReply(
+  state: ApiRes<PostReply> | null,
+  formData: FormData,
+): ApiResPromise<PostReply> {
+  const _id = formData.get('_id') as string;
+  const replyId = formData.get('replyId') as string;
+  const content = formData.get('content') as string;
+  const accessToken = formData.get('accessToken') as string;
+
+  let data: ApiRes<PostReply>;
+
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}/replies/${replyId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Client-Id': CLIENT_ID,
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ content }),
+    });
+
+    data = await res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '댓글 수정에 실패했습니다.' };
+  }
+
+  if (data.ok) {
+    revalidateTag(`posts/${_id}/replies`);
+    revalidateTag(`posts/${_id}`);
+  }
+
+  return data;
+}
+
+/**
+ * 댓글 삭제
+ */
+export async function deleteReply(
+  state: ApiRes<null> | null,
+  formData: FormData,
+): ApiResPromise<null> {
+  const _id = formData.get('_id') as string;
+  const replyId = formData.get('replyId') as string;
+  const accessToken = formData.get('accessToken') as string;
+
+  let data: ApiRes<null>;
+
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}/replies/${replyId}`, {
+      method: 'DELETE',
+      headers: {
+        'Client-Id': CLIENT_ID,
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+
+    data = await res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '댓글 삭제에 실패했습니다.' };
+  }
+
+  if (data.ok) {
+    revalidateTag(`posts/${_id}/replies`);
+    revalidateTag(`posts/${_id}`);
   }
 
   return data;
