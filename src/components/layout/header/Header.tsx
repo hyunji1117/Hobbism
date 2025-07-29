@@ -62,6 +62,7 @@ export default function Header() {
   const isSearchPage = pathname.startsWith('/search');
   const isLivePage = pathname === '/live';
   const isHobbyPage = pathname === '/hobby';
+  const isRandomHobbyPage = pathname === '/shop/randomHobby';
 
   //          state: 현재 페이지가 내 마이페이지인지 여부          //
   const isMypage = user && pathname === `/user/${user._id}`;
@@ -81,6 +82,7 @@ export default function Header() {
     isFeedPage ||
     isLivePage ||
     isHobbyPage ||
+    isRandomHobbyPage ||
     isBookmarkPage; // 일반 뒤로가기 버튼 노출 조건
   const showConfirmBackButton = isEditPage || isCommunityWritePage; // 뒤로가기 시 확인이 필요한 페이지
   const showCartIcon = isShopPage || isProductPage; // 쇼핑카트 아이콘 노출 조건
@@ -154,6 +156,7 @@ export default function Header() {
             {isFeedPage && '피드보기'}
             {isLivePage && '라이브'}
             {isHobbyPage && '취미 선택'}
+            {isRandomHobbyPage && '취향 뽑기'}
           </h3>
 
           {/* 오른쪽 아이콘 영역 */}

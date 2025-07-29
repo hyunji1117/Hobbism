@@ -53,7 +53,7 @@ export default function ItemPurchaseModal({ onClose, item }: Props) {
     }
   };
   return (
-    <Modal key={'purchase-modal'} onClose={onClose}>
+    <Modal key={'purchase-modal'} onClose={() => !isLoading && onClose()}>
       <ModalBackdrop className={cn(isSuccess && 'bg-[rgba(1,1,1,0.7)]')} />
       <ModalPanel
         disableStopPropagation={isSuccess}
