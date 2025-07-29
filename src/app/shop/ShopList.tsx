@@ -5,6 +5,7 @@ import { ShopAd } from '@/components/features/shop/ShopAd';
 import { ShopCategory } from '@/components/features/shop/ShopCategory';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
 import { fetchProducts } from '@/data/functions/ProductFetch';
+import { useLiveStore } from '@/store/live.store';
 import { Product } from '@/types';
 import { JSX, useEffect, useRef, useState } from 'react';
 
@@ -33,6 +34,12 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
 
     setLoading(false);
   };
+
+  //              effect: fetchLive 호출          //
+  const fetchLive = useLiveStore(state => state.fetchLive);
+  useEffect(() => {
+    fetchLive();
+  }, []);
 
   //        effect: IntersectionObserver로 무한 트리거        //
   useEffect(() => {

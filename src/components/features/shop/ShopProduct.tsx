@@ -20,9 +20,9 @@ interface ShopProductProps {
   discountPrice: number;
   recommendedBy: string;
   textPrice: string;
-  liveTitle: string;
-  liveRate: number;
-  livePrice: number;
+  liveTitle?: string;
+  liveRate?: number;
+  livePrice?: number;
 }
 
 //       component: shop main 상품 컴포넌트       //
@@ -52,12 +52,6 @@ export const ShopProduct = ({
   };
 
   const recommendInfo = recommendData[recommendedBy];
-
-  //              effect: fetchLive 호출          //
-  const fetchLive = useLiveStore(state => state.fetchLive);
-  useEffect(() => {
-    fetchLive();
-  }, []);
 
   const currentLive = useLiveStore(state => state.currentLive);
 
