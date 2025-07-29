@@ -128,7 +128,7 @@ export default function CommentBottomSheet({
       <div className="fixed inset-0 z-[100] flex items-end justify-center">
         {/* 배경 오버레이 - 50% 투명도로 변경 */}
         <div
-          className="absolute inset-0 bg-black/50 transition-opacity duration-600"
+          className="absolute inset-0 bg-black/50 transition-opacity duration-500"
           onClick={handleBackdropClick}
         />
 
@@ -137,10 +137,10 @@ export default function CommentBottomSheet({
           ref={modalRef}
           className="relative w-full max-w-[600px] transform rounded-t-[20px] bg-white shadow-xl transition-transform duration-600 ease-out"
           style={{
-            height: '50vh', // 화면 절반 높이로 변경
+            height: '50vh', // 화면 절반 높이 너무 높은가..
             animation: isOpen
-              ? 'slideUp 0.6s ease-out'
-              : 'slideDown 0.6s ease-in', // 2배 느리게
+              ? 'slideUp 0.5s ease-out'
+              : 'slideDown 0.5s ease-in', // 우선 0.5s
           }}
         >
           {/* 상단 헤더 */}
@@ -196,7 +196,7 @@ export default function CommentBottomSheet({
                       </p>
                     </div>
 
-                    {/* 세로점3개 메뉴 */}
+                    {/* 세로점 3개 메뉴 */}
                     <button
                       onClick={() => handleCommentOptions(comment._id)}
                       className="flex-shrink-0 rounded-full p-1 transition-colors hover:bg-gray-100"
@@ -266,7 +266,7 @@ export default function CommentBottomSheet({
           </div>
         </div>
 
-        {/* 애니메이션 CSS - 속도를 2배 느리게 변경 */}
+        {/* 애니메이션 CSS */}
         <style jsx>{`
           @keyframes slideUp {
             from {

@@ -23,11 +23,13 @@ export default function CommentOptionsModal({
     // z-index를 더 높게 설정 (댓글 바텀시트보다 위에)
     <div className="fixed inset-0 z-[200] flex items-end justify-center">
       {/* Dim 처리 */}
-      <div
-        className="absolute inset-0"
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
-        onClick={onClose}
-      />
+      {type !== 'comment' && (
+        <div
+          className="absolute inset-0"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+          onClick={onClose}
+        />
+      )}
 
       {/* 모달 내용 */}
       <div className="relative z-10 px-5 pb-8">
