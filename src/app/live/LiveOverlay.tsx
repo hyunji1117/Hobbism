@@ -46,8 +46,8 @@ export default function LiveOverlay({ live }: { live: LiveProduct }) {
         )
       )}
 
-      {/* 라이브 캘린더 버튼 */}
-      <header className="bg-amber-200select-none fixed z-10 w-full max-w-[600px]">
+      {/* 라이브 캘린더 헤더 */}
+      {/* <header className="bg-amber-200select-none fixed z-10 w-full max-w-[600px]">
         <ul>
           <li className="absolute top-3.5 left-0 ml-3.5">
             <GoBackButton />
@@ -59,7 +59,7 @@ export default function LiveOverlay({ live }: { live: LiveProduct }) {
             <LiveCalendarBtn />
           </li>
         </ul>
-      </header>
+      </header> */}
 
       {/* 라이브 비디오 */}
       <div key={live._id} className="h-screen">

@@ -3,12 +3,16 @@
 import { BackButton } from '@/components/common/BackButton';
 import SearchButton from '@/components/common/SearchHeader';
 import { SettingButton } from '@/components/common/SettingButton';
+import CharacterInfoModal from '@/components/features/character/ChracterInfoModal';
+import { LiveCalendarBtn } from '@/components/features/live/LiveCalendarBtn';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth.store';
-import { Pencil, ShoppingCart } from 'lucide-react';
+import { useModalStore } from '@/store/modal.store';
+import { Info, Pencil, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Suspense, useMemo } from 'react';
 
 //          component: 헤더 컴포넌트          //
@@ -18,6 +22,10 @@ export default function Header() {
 
   //          state: 현재 경로(pathname) 가져오기          //
   const pathname = usePathname();
+
+  const router = useRouter();
+  //          function: 오픈 모달 함수          //
+  const openModal = useModalStore(state => state.openModal); // 성공 모달 열기용
 
   //          state: 경로에 따른 페이지 상태          //
   const isUserPage = useMemo(() => /^\/user\/\d+/.test(pathname), [pathname]); // 유저 상세 페이지
@@ -53,12 +61,13 @@ export default function Header() {
   const isCharacterPage = pathname === '/character'; // 고객센터 페이지
   const isSearchPage = pathname.startsWith('/search');
   const isLivePage = pathname === '/live';
+  const isHobbyPage = pathname === '/hobby';
 
   //          state: 현재 페이지가 내 마이페이지인지 여부          //
   const isMypage = user && pathname === `/user/${user._id}`;
 
   //          logic: 헤더 조건 처리 (렌더링 조건)          //
-  const showLogo = isCommunityPage || isShopPage || isCharacterPage; // 로고 노출 여부
+  const showLogo = isCommunityPage || isShopPage; // 로고 노출 여부
   const showBackButton =
     isSettingPage ||
     isCartPage ||
@@ -71,6 +80,7 @@ export default function Header() {
     (isUserPage && !isMypage) ||
     isFeedPage ||
     isLivePage ||
+    isHobbyPage ||
     isBookmarkPage; // 일반 뒤로가기 버튼 노출 조건
   const showConfirmBackButton = isEditPage || isCommunityWritePage; // 뒤로가기 시 확인이 필요한 페이지
   const showCartIcon = isShopPage || isProductPage; // 쇼핑카트 아이콘 노출 조건
@@ -80,8 +90,21 @@ export default function Header() {
 
   //          render: 헤더 컴포넌트 렌더링          //
   return (
-    <header className={cn('h-12 w-full')}>
-      <div className="fixed top-0 z-50 flex min-h-12 w-full max-w-[600px] items-center bg-white">
+    <header
+      className={cn(
+        'w-full',
+        isCharacterPage || isLivePage || isHobbyPage ? 'h-0' : 'h-12',
+      )}
+    >
+      <div
+        className={cn(
+          // ↓ 조건에 따라 absolute 또는 fixed
+          isCharacterPage || isLivePage || isHobbyPage
+            ? 'absolute bg-transparent'
+            : 'fixed bg-white',
+          'top-0 z-50 flex min-h-12 w-full max-w-[600px] items-center',
+        )}
+      >
         <div className="relative flex w-full items-center">
           {/* 왼쪽 영역 */}
           <div className="absolute left-4 flex items-center">
@@ -93,12 +116,32 @@ export default function Header() {
                 height={24}
               />
             )}
-            {showBackButton && <BackButton />}
+            {isCharacterPage && (
+              <Image
+                src="/images/woomin/logo-test-2.svg"
+                alt="로고"
+                width={70}
+                height={50}
+              />
+            )}
+            {showBackButton && (
+              <BackButton
+                onClickBack={
+                  isHobbyPage ? () => router.replace('/character') : undefined
+                }
+                className={cn(isLivePage && 'text-white')}
+              />
+            )}
             {showConfirmBackButton && <BackButton needConfirm />}
           </div>
 
           {/* 가운데 타이틀 영역 */}
-          <h3 className="flex w-full items-center justify-center text-lg font-medium">
+          <h3
+            className={cn(
+              'flex w-full items-center justify-center text-lg font-medium',
+              isLivePage && 'text-white',
+            )}
+          >
             {isCommunityPage && '커뮤니티'}
             {isCommunityWritePage && '피드등록'}
             {isSettingPage && '설정'}
@@ -107,12 +150,12 @@ export default function Header() {
             {isProductPage && '제품 상세'}
             {isBookmarkPage && '게시물 북마크'}
             {isFeedPage && '피드보기'}
-            {isCharacterPage && '나의 캐릭터'}
             {isLivePage && '라이브'}
+            {isHobbyPage && '취미 선택'}
           </h3>
 
           {/* 오른쪽 아이콘 영역 */}
-          <div className="absolute right-4 flex gap-6">
+          <div className="absolute right-4 flex items-center gap-6">
             {(isShopPage || isSearchPage) && (
               <Suspense>
                 <SearchButton />
@@ -129,6 +172,19 @@ export default function Header() {
                 <Pencil size={24} />
               </Link>
             )}
+            {isCharacterPage && (
+              <>
+                <Info
+                  className="cursor-pointer"
+                  onClick={() =>
+                    openModal(({ onClose }) => (
+                      <CharacterInfoModal onClose={onClose} />
+                    ))
+                  }
+                />
+              </>
+            )}
+            {isLivePage && <LiveCalendarBtn />}
           </div>
         </div>
       </div>

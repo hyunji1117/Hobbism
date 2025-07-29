@@ -80,8 +80,12 @@ export async function updateUserInfo(
     const introduction = formData.get('introduction')?.toString();
     const address = formData.get('address')?.toString();
     const detail = formData.get('detail')?.toString();
+    const equippedItemCodes = formData.get('equippedItemCodes');
+    const ownedItemCodes = formData.get('ownedItemCodes');
+    const point = formData.get('point');
+    const hobby = formData.get('hobby');
     const extraRes = await getUserAttribute(_id, 'extra');
-    const prevExtra = extraRes.ok ? extraRes.item.extra : {};
+    const prevExtra = extraRes.ok === 1 ? extraRes.item.extra : {};
     let image;
 
     console.log(attach);
@@ -101,7 +105,17 @@ export async function updateUserInfo(
         ...prevExtra,
         ...(nickname && { nickname }),
         ...(introduction && { introduction }),
+        ...(hobby && { hobby }),
         ...(detail && { detail_address: detail }),
+        ...(equippedItemCodes && {
+          equippedItemCodes: JSON.parse(
+            formData.get('equippedItemCodes') as string,
+          ),
+        }),
+        ...(ownedItemCodes && {
+          ownedItemCodes: JSON.parse(formData.get('ownedItemCodes') as string),
+        }),
+        ...(point && { point: parseInt(point.toString(), 10) }),
       },
       ...(image ? { image } : {}),
     };

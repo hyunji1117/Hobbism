@@ -10,13 +10,15 @@ export default function ModalProvider() {
 
   useEffect(() => {
     clearModals();
+    console.log('modals', modals);
   }, [clearModals, pathname]);
 
   return (
     <>
-      {modals.map((Modal, index) => (
-        <Modal key={index} onClose={() => closeModal(index)} />
-      ))}
+      {modals.map((Modal, index) => {
+        console.log('modal index:', index);
+        return <Modal key={index} onClose={() => closeModal(index)} />;
+      })}
     </>
   );
 }

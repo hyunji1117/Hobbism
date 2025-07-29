@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'fesp-api.koyeb.app',
         port: '',
-        pathname: '/market/files/febc13-final01-emjf/**',
+        pathname: '/market/files/**',
       },
       {
         protocol: 'https',

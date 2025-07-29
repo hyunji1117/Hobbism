@@ -43,9 +43,9 @@ export const OptionSelector = ({
           role="listbox"
           aria-label="옵션 선택"
         >
-          {options.map(option => (
+          {options.map((option, idx) => (
             <li
-              key={option}
+              key={idx}
               className="cursor-pointer border-b border-[#EAEAEA] p-2 text-[#666]"
               onClick={() => {
                 onSelect(option);
