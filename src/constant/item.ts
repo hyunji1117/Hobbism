@@ -80,7 +80,7 @@ export const ITEM_DATA = {
       height: 10,
     },
     hobby: 'INTERIOR',
-    z: 0,
+    z: 10,
   },
   circulator: {
     name: '써큘레이터',
