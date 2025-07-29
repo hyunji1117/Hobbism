@@ -7,11 +7,14 @@ import {
   Bookmark,
   MoreHorizontal,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
+import { useActionState } from 'react';
 import { Post } from '@/types';
 import { getUserImageUrl } from '@/utils';
 import CommentBottomSheet from '../community-detail/CommentBottomSheet';
 import CommentOptionsModal from '../community-detail/CommentOptionsModal';
+import { updatePost, deletePost } from '@/data/actions/post';
+import { useAuthStore } from '@/store/auth.store';
 
 // 카카오 SDK 타입 정의
 interface KakaoSDK {
@@ -58,6 +61,21 @@ export default function CommunityMain({ post }: CommunityMainProps) {
   const [isOpenComment, setIsOpenComment] = useState(false);
   const [showPostOptions, setShowPostOptions] = useState(false);
 
+  // 게시글 수정 관련 상태
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(post.content || '');
+
+  // 사용자 정보 및 권한
+  const { user } = useAuthStore();
+  const isOwner = user?._id === post.user._id;
+
+  // 서버 액션 상태 관리
+  const [updateState, updateAction] = useActionState(updatePost, null);
+  const [deleteState, deleteAction] = useActionState(deletePost, null);
+
+  // 트랜지션 상태 관리
+  const [isPending, startTransition] = useTransition();
+
   useEffect(() => {
     if (
       typeof window !== 'undefined' &&
@@ -67,6 +85,25 @@ export default function CommunityMain({ post }: CommunityMainProps) {
       window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY || '');
     }
   }, []);
+
+  // 수정 성공/실패 처리
+  useEffect(() => {
+    if (updateState?.ok === 1) {
+      alert('게시글이 수정되었습니다.');
+    } else if (updateState?.ok === 0) {
+      alert(updateState.message || '수정에 실패했습니다.');
+    }
+  }, [updateState]);
+
+  // 삭제 성공/실패 처리
+  useEffect(() => {
+    if (deleteState?.ok === 1) {
+      alert('게시글이 삭제되었습니다.');
+      window.location.reload();
+    } else if (deleteState?.ok === 0) {
+      alert(deleteState.message || '삭제에 실패했습니다.');
+    }
+  }, [deleteState]);
 
   const handleComment = () => {
     setIsOpenComment(true);
@@ -81,18 +118,54 @@ export default function CommunityMain({ post }: CommunityMainProps) {
     setShowPostOptions(true);
   };
 
-  // 게시글 수정
+  // 게시글 수정 시작
   const handleEditPost = () => {
-    console.log('게시글 수정:', post._id);
+    setIsEditing(true);
     setShowPostOptions(false);
-    // TODO: 게시글 수정 로직
+  };
+
+  // 게시글 수정 저장
+  const handleEditSubmit = () => {
+    const { accessToken: token } = useAuthStore.getState();
+
+    console.log('accessToken:', token);
+    console.log('user:', user);
+
+    const formData = new FormData();
+    formData.append('_id', post._id.toString());
+    formData.append('content', editContent);
+    formData.append('accessToken', token || '');
+
+    console.log('FormData accessToken:', formData.get('accessToken'));
+
+    startTransition(() => {
+      updateAction(formData);
+    });
+    setIsEditing(false);
+  };
+
+  // 게시글 수정 취소
+  const handleEditCancel = () => {
+    setIsEditing(false);
+    setEditContent(post.content || '');
   };
 
   // 게시글 삭제
   const handleDeletePost = () => {
-    console.log('게시글 삭제:', post._id);
+    if (confirm('정말 삭제하시겠습니까?')) {
+      const { accessToken } = useAuthStore.getState();
+
+      console.log('Delete accessToken:', accessToken);
+
+      const formData = new FormData();
+      formData.append('_id', post._id.toString());
+      formData.append('accessToken', accessToken || '');
+
+      startTransition(() => {
+        deleteAction(formData);
+      });
+    }
     setShowPostOptions(false);
-    // TODO: 게시글 삭제 로직
   };
 
   const handleShareToKakao = () => {
@@ -169,13 +242,15 @@ export default function CommunityMain({ post }: CommunityMainProps) {
             </div>
           </div>
 
-          {/* 우측 게시글 옵션 아이콘 */}
-          <button
-            onClick={handlePostOptions}
-            className="rounded-full p-1 transition-colors hover:bg-gray-100"
-          >
-            <MoreHorizontal size={20} className="text-gray-400" />
-          </button>
+          {/* 우측 게시글 옵션 아이콘 (본인만 표시) */}
+          {isOwner && (
+            <button
+              onClick={handlePostOptions}
+              className="rounded-full p-1 transition-colors hover:bg-gray-100"
+            >
+              <MoreHorizontal size={20} className="text-gray-400" />
+            </button>
+          )}
         </div>
 
         {/* 중간 - 피드 이미지 */}
@@ -215,19 +290,47 @@ export default function CommunityMain({ post }: CommunityMainProps) {
           </button>
         </div>
 
-        {/* 하단 - 텍스트 영역 (한 줄 기준으로 수정) */}
+        {/* 하단 텍스트 영역 */}
         <div className="min-h-12 px-5 py-3">
-          <p className="text-sm leading-5 font-normal text-black">
-            {displayText}
-            {isLongText && (
-              <button
-                onClick={handleTextToggle}
-                className="ml-2 text-sm text-gray-500 hover:text-gray-700"
-              >
-                {isExpandedText ? '접기' : '더보기'}
-              </button>
-            )}
-          </p>
+          {isEditing ? (
+            // 수정 모드
+            <div className="space-y-3">
+              <textarea
+                value={editContent}
+                onChange={e => setEditContent(e.target.value)}
+                className="w-full resize-none rounded-lg border border-gray-300 p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                rows={4}
+                placeholder="내용을 입력하세요..."
+              />
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleEditSubmit}
+                  className="rounded-lg bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600"
+                >
+                  저장
+                </button>
+                <button
+                  onClick={handleEditCancel}
+                  className="rounded-lg bg-gray-500 px-4 py-2 text-sm text-white hover:bg-gray-600"
+                >
+                  취소
+                </button>
+              </div>
+            </div>
+          ) : (
+            // 일반 보기 모드
+            <p className="text-sm leading-5 font-normal text-black">
+              {displayText}
+              {isLongText && (
+                <button
+                  onClick={handleTextToggle}
+                  className="ml-2 text-sm text-gray-500 hover:text-gray-700"
+                >
+                  {isExpandedText ? '접기' : '더보기'}
+                </button>
+              )}
+            </p>
+          )}
         </div>
 
         {/* 하단 보더라인 */}
