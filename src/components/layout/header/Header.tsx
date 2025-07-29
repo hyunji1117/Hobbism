@@ -157,6 +157,10 @@ export default function Header() {
             {isLivePage && '라이브'}
             {isHobbyPage && '취미 선택'}
             {isRandomHobbyPage && '취향 뽑기'}
+            {isTermsPage && '서비스 이용약관'}
+            {isPolicyPage && '개인정보 처리방침'}
+            {isNoticePage && '공지사항'}
+            {isContactPage && '고객센터'}
           </h3>
 
           {/* 오른쪽 아이콘 영역 */}
