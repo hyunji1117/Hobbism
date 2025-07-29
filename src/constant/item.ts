@@ -5,6 +5,7 @@ export const ITEM_DATA = {
     name: '소파',
     code: 'sofa',
     image: '/images/items/interior/sofa.webp',
+    price: 300,
     width: 600,
     height: 400,
     position: {
@@ -21,6 +22,7 @@ export const ITEM_DATA = {
     name: '거울',
     code: 'mirror',
     image: '/images/items/interior/mirror.webp',
+    price: 300,
     width: 480,
     height: 480,
     position: {
@@ -36,6 +38,7 @@ export const ITEM_DATA = {
     name: '선반',
     code: 'shelf',
     image: '/images/items/interior/shelf.webp',
+    price: 300,
     width: 240,
     height: 160,
     position: {
@@ -51,6 +54,7 @@ export const ITEM_DATA = {
     name: '액자',
     code: 'frame',
     image: '/images/items/interior/frame.webp',
+    price: 300,
     width: 210,
     height: 210,
     position: {
@@ -66,6 +70,7 @@ export const ITEM_DATA = {
     name: '디퓨저',
     code: 'diffuser',
     image: '/images/items/interior/diffuser.webp',
+    price: 300,
     width: 210,
     height: 210,
     position: {
@@ -81,6 +86,7 @@ export const ITEM_DATA = {
     name: '써큘레이터',
     code: 'circulator',
     image: '/images/items/interior/circulator.webp',
+    price: 400,
     width: 210,
     height: 210,
     position: {
@@ -90,6 +96,6 @@ export const ITEM_DATA = {
       height: 10,
     },
     hobby: 'INTERIOR',
-    z: 0,
+    z: 10,
   },
 } satisfies Record<Code, Item>;

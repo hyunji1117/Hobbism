@@ -88,8 +88,6 @@ export async function updateUserInfo(
     const prevExtra = extraRes.ok === 1 ? extraRes.item.extra : {};
     let image;
 
-    console.log(attach);
-    console.log(accessToken);
     if (attach instanceof File && attach.size > 0) {
       const fileRes = await uploadFile(formData);
       console.log(`fileRes`, fileRes);
@@ -120,8 +118,6 @@ export async function updateUserInfo(
       ...(image ? { image } : {}),
     };
 
-    console.log(`body`, body);
-    console.log(`accessToken`, accessToken);
     res = await fetch(`${API_URL}/users/${_id}`, {
       method: 'PATCH',
       headers: {
@@ -133,8 +129,6 @@ export async function updateUserInfo(
     });
 
     data = await res.json();
-
-    console.log('data patch', data);
   } catch (error) {
     // 네트워크 오류 처리
     console.error(error);

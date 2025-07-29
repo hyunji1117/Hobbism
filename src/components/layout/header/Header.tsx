@@ -118,10 +118,12 @@ export default function Header() {
             )}
             {isCharacterPage && (
               <Image
-                src="/images/woomin/logo-test-2.svg"
+                src="/images/etc/logo.svg"
                 alt="로고"
                 width={70}
                 height={50}
+                priority
+                className="h-auto w-[70px]"
               />
             )}
             {showBackButton && (

@@ -1,3 +1,4 @@
+'use client';
 import Modal, { ModalBackdrop, ModalPanel } from '@/components/common/Modal';
 import { X } from 'lucide-react';
 
@@ -31,7 +32,7 @@ export default function CharacterInfoModal({ onClose }: Props) {
               <li>LV7: 1500 ~ 2199P - 칠덕</li>
               <li>LV8: 2200 ~ 3199P - 팔덕</li>
               <li>LV9: 3200 ~ 3999P - 구덕</li>
-              <li>LV10: 4000p 이상 - VIP / 십덕</li>
+              <li>LV10: 4000p 이상 - 십덕</li>
             </ul>
           </div>
         </div>

@@ -104,7 +104,7 @@ export default function ItemPurchaseModal({ onClose, item }: Props) {
                 height={50}
               />
               <X />
-              <span className="text-2xl">300</span>
+              <span className="text-2xl">{item.price}</span>
             </div>
 
             <div className="flex w-full gap-2">
@@ -117,7 +117,7 @@ export default function ItemPurchaseModal({ onClose, item }: Props) {
               </Button>
               <Button
                 className="flex-1 cursor-pointer"
-                onClick={() => handlePurchase(300)}
+                onClick={() => handlePurchase(item.price)}
                 disabled={isLoading}
               >
                 구매하기

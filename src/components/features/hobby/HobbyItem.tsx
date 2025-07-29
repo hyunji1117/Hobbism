@@ -30,7 +30,9 @@ export default function HobbyItem({
           src={image}
           alt={title}
           fill
+          sizes="84px"
           className="scale-150 object-cover object-center"
+          priority
         />
       </div>
       <div className="flex flex-col">

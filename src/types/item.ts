@@ -10,6 +10,7 @@ export type Item = {
   name: string;
   code: Code;
   image: string;
+  price: number;
   width: number;
   height: number;
   position: {

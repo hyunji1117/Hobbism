@@ -4,41 +4,50 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { HOBBY_ITEMS } from '@/constant/hobby';
 import { ITEM_DATA } from '@/constant/item';
+import { CHARACTER_MESSAGES } from '@/constant/message';
 import { useItemStore } from '@/store/item.store';
 import { usePointStore } from '@/store/point';
 import { User } from '@/types';
 import { getLevelInfo } from '@/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+//         interface: CharacterPageClient component properties          //
 interface Props {
-  user: Pick<User, 'extra'>;
+  extra: User['extra'];
 }
 
-export default function ChracterPageClient({ user }: Props) {
-  const { equippedItems, setEquippedItems, setOwnedItems } = useItemStore();
-
+//          component: 캐릭터 페이지(클라이언트)          //
+export default function ChracterPageClient({ extra }: Props) {
+  //          state: 포인트 상태          //
   const { point, setPoint } = usePointStore();
+  //          state: 장착 아이템 상태          //
+  const { equippedItems, setEquippedItems, setOwnedItems } = useItemStore();
+  //          state: 메세지 인덱스 상태          //
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  const handleCharacterClick = () => {
+    setMessageIndex(prev => (prev + 1) % CHARACTER_MESSAGES.length);
+  };
 
   const hobbyTitle =
-    HOBBY_ITEMS.find(item => item.code === user.extra?.hobby)?.title ??
-    '취미 없음';
+    HOBBY_ITEMS.find(item => item.code === extra?.hobby)?.title ?? '취미 없음';
 
-  const levelInfo = getLevelInfo(user.extra?.total_point || 0);
+  const levelInfo = getLevelInfo(extra?.total_point || 0);
 
   useEffect(() => {
-    if (user.extra?.equippedItemCodes) {
-      setEquippedItems(user.extra.equippedItemCodes);
+    if (extra?.equippedItemCodes) {
+      setEquippedItems(extra.equippedItemCodes);
     }
-    if (user.extra?.ownedItemCodes) {
-      setOwnedItems(user.extra.ownedItemCodes);
+    if (extra?.ownedItemCodes) {
+      setOwnedItems(extra.ownedItemCodes);
     }
-    if (user.extra?.point) {
-      setPoint(user.extra.point);
+    if (extra?.point) {
+      setPoint(extra.point);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.extra?.equippedItemCodes]);
+  }, [extra?.equippedItemCodes]);
 
   return (
     <>
@@ -52,6 +61,7 @@ export default function ChracterPageClient({ user }: Props) {
             width={item.width}
             height={item.height}
             className="absolute"
+            priority
             style={{
               top: `${item.position.top}%`,
               left: `${item.position.left}%`,
@@ -64,34 +74,35 @@ export default function ChracterPageClient({ user }: Props) {
 
       <Link href="/hobby" className="absolute right-4">
         <Image
-          src="/images/woomin/hobby.png"
+          src="/images/etc/hobby.webp"
           alt="취미 아이콘"
           width={48}
           height={48}
         />
         <span className="text-sm text-gray-500 select-none">취미선택</span>
       </Link>
-      <div className="h-24"></div>
-      <div className="z-40 flex flex-1 flex-col items-center justify-center p-4">
+
+      <div className="z-40 mt-24 flex flex-1 flex-col items-center justify-center p-4">
         <div className="relative flex w-full flex-col items-center justify-center">
           <div className="relative flex items-center justify-center rounded-full border-2 border-black bg-white px-6 py-2">
             <span className="text-center text-base font-semibold">
-              {'테스트 해봐야지'}
+              {CHARACTER_MESSAGES[messageIndex]}
             </span>
             <div className="absolute -bottom-[20px] left-1/2 h-0 w-0 -translate-x-1/2 border-10 border-transparent border-t-black"></div>
             <div className="absolute -bottom-[17px] left-1/2 h-0 w-0 -translate-x-1/2 border-10 border-transparent border-t-white"></div>
           </div>
           <Image
-            src={'/images/woomin/character-test-4.webp'}
-            alt="테스트입니두"
+            src={'/images/character/character-normal.webp'}
+            alt="캐릭터"
             width={350}
             height={350}
             className="w-3/5 cursor-pointer"
+            onClick={handleCharacterClick}
           />
 
           <div className="flex items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm">
             <span>{levelInfo.name}</span>
-            <span>{user.extra?.nickname}</span>
+            <span>{extra?.nickname || '-'}</span>
           </div>
         </div>
       </div>
@@ -124,7 +135,7 @@ export default function ChracterPageClient({ user }: Props) {
               보유한 포인트
             </p>
             <Image
-              src="/images/woomin/point-test.png"
+              src="/images/etc/point.webp"
               alt="포인트"
               width={32}
               height={32}
@@ -133,7 +144,7 @@ export default function ChracterPageClient({ user }: Props) {
             <p className="flex items-center gap-2 text-base text-[22px] whitespace-pre-line text-gray-900 select-none">
               <span className="text-gray-500 select-none">{point || 0}</span>/
               <span className="text-gray-900 select-none">
-                {user.extra?.total_point || 0}
+                {extra?.total_point || 0}
               </span>
             </p>
           </div>
