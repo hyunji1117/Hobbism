@@ -28,18 +28,18 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
   });
 
   const liveProducts = sortedLiveData.map(product => {
-    const liveInfo = currentLive.find(
-      live => live._id === product._id && now.isBetween(live.start, live.end),
-    );
+    const liveInfo = currentLive.find(live => live._id === product._id);
 
-    const isLiveNow = !!liveInfo;
+    const isLiveNow = liveInfo && now.isBetween(liveInfo.start, liveInfo.end);
+
+    const isEnded = now.isAfter(product.extra.live?.end);
 
     return (
       <SwiperSlide key={product._id} className="mr-2.5 !w-[calc(100%/3.5)]">
         {!isLiveNow && (
           <div className="pointer-events-none absolute z-2 flex aspect-square w-full rounded-2xl bg-black/50 text-white">
             <p className="absolute top-1/2 h-fit w-full -translate-y-1/2 text-center text-sm">
-              라이브 예정
+              {isEnded ? '종료된 라이브' : '라이브 예정'}
             </p>
           </div>
         )}
