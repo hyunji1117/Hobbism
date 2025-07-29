@@ -23,9 +23,9 @@ interface Props {
 //          component: 유저 프로필 섹션 컴포넌트          //
 export function UserProfileSection({ user, isMypage }: Props) {
   //          variable: 디폴트 이미지 변수          //
-  console.log('user.image', user.image);
+
   const imageUrl = getUserImageUrl(user.image);
-  console.log('imageUrl', imageUrl);
+
   //          state: 팔로잉 카운트 상태          //
   const { followingCount, setFollowingCount } = useFollowStore();
   //          state: accessToken 상태          //
@@ -45,7 +45,7 @@ export function UserProfileSection({ user, isMypage }: Props) {
       if (isFollowed && bookmarkId) {
         // 팔로우 취소 → 북마크 삭제
         const res = await deleteBookmark(bookmarkId, accessToken);
-        console.log('res', res);
+
         if (res.ok === 1) {
           console.log('삭제됨');
           setIsFollowed(false);

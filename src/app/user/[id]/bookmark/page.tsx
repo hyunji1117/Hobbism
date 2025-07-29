@@ -17,6 +17,7 @@ export default async function BookmarkPage({
     <>
       <div className="grid grid-cols-2 gap-4 p-4">
         {bookmarks.map(bookmark => {
+          console.log(bookmark._id);
           return (
             <FeedCard
               key={bookmark._id}

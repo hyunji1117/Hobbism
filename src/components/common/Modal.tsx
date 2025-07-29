@@ -19,16 +19,25 @@ export default function Modal({ children, onClose }: ModalProps) {
   );
 }
 
-export function ModalBackdrop() {
+export function ModalBackdrop({ className }: { className?: string }) {
   return (
-    <div className="fixed inset-0 -z-10 mx-auto h-full w-full max-w-[600px] bg-[rgba(1,1,1,0.2)]" />
+    <div
+      className={cn(
+        'fixed inset-0 -z-10 mx-auto h-full w-full max-w-[600px] bg-[rgba(1,1,1,0.2)]',
+        className,
+      )}
+    />
   );
 }
 
 export function ModalPanel({
   children,
   className,
-}: PropsWithChildren<{ className?: string }>) {
+  disableStopPropagation = false,
+}: PropsWithChildren<{
+  className?: string;
+  disableStopPropagation?: boolean;
+}>) {
   return (
     <motion.div
       className="fixed inset-0 flex items-center justify-center"
@@ -42,9 +51,13 @@ export function ModalPanel({
       }}
     >
       <div
-        onClick={e => e.stopPropagation()}
+        onClick={e => {
+          if (!disableStopPropagation) {
+            e.stopPropagation(); // 평소엔 막음
+          }
+        }}
         className={cn(
-          'rounded-2xl border border-[#D9D9D9] bg-white',
+          'relative rounded-2xl border border-[#D9D9D9] bg-white',
           className,
         )}
       >

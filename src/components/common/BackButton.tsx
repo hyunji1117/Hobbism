@@ -15,7 +15,6 @@ interface BackButtonProps {
 export const BackButton = ({
   onClickBack,
   className,
-
   needConfirm,
 }: BackButtonProps) => {
   const router = useRouter();

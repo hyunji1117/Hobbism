@@ -29,9 +29,9 @@ export function UserFeedTab({ posts }: Props) {
   //          render: 유저 피드 탭 컴포넌트 렌더링(게시물 o)          //
   return (
     <div className="grid grid-cols-3 gap-2 p-4">
-      {posts.map(post => (
+      {posts.map((post, idx) => (
         <FeedCard
-          key={post._id}
+          key={idx}
           images={post.image}
           href={`/${post.type}/${post._id}`}
           alt={post.title}
