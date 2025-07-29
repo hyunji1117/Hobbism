@@ -33,8 +33,10 @@ export async function getUserPosts(
     return { ok: 0, message: '일시적인 네트워크 문제로 등록에 실패했습니다.' };
   }
 }
-//  * 게시글을 생성하는 함수
-//  */
+
+/**
+ * 게시글을 생성하는 함수
+ */
 export async function createPost(
   state: ApiRes<Post> | null,
   formData: FormData,
@@ -97,8 +99,8 @@ export async function createPost(
   // redirect를 try 밖으로 이동
   if (data.ok) {
     revalidatePath(`/${body.type}`); // 목록 페이지 캐시 갱신
-    revalidatePath(`/${body.type}/${data.item._id}`); // 상세페이지 캐시 갱신
-    redirect(`/${body.type}/${data.item._id}`); // 게시글 상세페이지로 이동
+    // 메인페이지로 이동 (상세페이지 대신)
+    redirect(`/${body.type}`); // /community로 이동
   } else {
     return data;
   }
