@@ -33,6 +33,9 @@ export const ProductDetailInfo = ({
     ? recommendData[extra.recommendedBy]
     : { name: '추천', color: 'bg-[#C3C3C3]', textColor: 'text-black' };
 
+  // 원가 기본값 설정
+  const originalPrice = extra.originalPrice;
+
   return (
     <section className="h-[145px] items-center justify-center px-5 py-4">
       <span
@@ -44,12 +47,10 @@ export const ProductDetailInfo = ({
         {/* 상품명 */}
         {item.name}
       </h1>
-      {extra?.originalPrice ? (
-        <span className="flex flex-col pt-2 text-[12px] text-[#C3C3C3] line-through">
-          {/* 원가 */}
-          {extra.originalPrice.toLocaleString()}원
-        </span>
-      ) : null}
+      <span className="flex flex-col pt-2 text-[12px] text-[#C3C3C3] line-through">
+        {/* 원가 */}
+        {originalPrice.toLocaleString()}원
+      </span>
       <div className="mt-1 flex items-center">
         {/* 할인률 */}
         {discountRate > 0 && (
@@ -93,19 +94,28 @@ function ProductDetail({
 }
 
 // 수량 컨트롤
-export function ProductQuantitySelector({
+export const ProductQuantitySelector = ({
   selectedOption,
   quantity,
   onIncrease,
   onDecrease,
   price,
+  originalPrice,
   item,
-}: ProductQuantitySelectorProps & { item?: { name: string } }) {
+}: {
+  selectedOption: string;
+  quantity: number;
+  onIncrease: () => void;
+  onDecrease: () => void;
+  price: number;
+  originalPrice: number;
+  item: { name: string };
+}) => {
   return (
     <section className="h-[100px] w-full rounded-[8px] bg-[#EAEAEA] p-3">
       {selectedOption ? (
         <h2 className="mb-4 text-[18px] font-semibold text-black">
-          {selectedOption}
+          {item.name}
         </h2>
       ) : item?.name ? (
         <h2 className="mb-4 text-[18px] font-semibold text-black">
@@ -144,7 +154,7 @@ export function ProductQuantitySelector({
       </div>
     </section>
   );
-}
+};
 
 // 상품 액션 버튼 컴포넌트
 export const ProductActionButtons = ({
@@ -175,11 +185,13 @@ export const ProductActionButtons = ({
 export const TotalPrice = ({
   quantity,
   price,
+  originalPrice,
 }: {
   quantity: number;
   price: number;
+  originalPrice?: number; // originalPrice를 선택적 속성으로 변경
 }) => {
-  const totalPrice = quantity * price;
+  const totalPrice = quantity * (originalPrice ?? price); // originalPrice가 없으면 price 사용
 
   return (
     <section className="z-20 flex h-[54px] items-center justify-between border-t border-[#EAEAEA] bg-white px-4 pt-4">
