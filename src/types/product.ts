@@ -29,7 +29,7 @@ export interface Product {
     // discountedPrice: number;
     // 원가
     originalPrice: number;
-    options?: ProductOption[];
+    options: ProductOption[];
     live: {
       start: string;
       end: string;
@@ -106,7 +106,4 @@ export interface ProductQuantitySelectorProps {
   onDecrease: () => void;
   price: number;
   originalPrice: number;
-  // extra: {
-  //   originalPrice: number;
-  // };
 }
