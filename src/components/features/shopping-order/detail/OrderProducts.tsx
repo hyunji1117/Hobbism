@@ -11,7 +11,7 @@ export function OrderProducts({
   options: OrderOptions[];
 }) {
   return (
-    <>
+    <ul>
       {products.map(product => (
         <li className="mt-3 flex gap-5" key={product._id}>
           <div className="relative aspect-square w-20">
@@ -44,6 +44,6 @@ export function OrderProducts({
           </div>
         </li>
       ))}
-    </>
+    </ul>
   );
 }

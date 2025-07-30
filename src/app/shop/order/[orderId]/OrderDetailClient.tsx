@@ -46,9 +46,7 @@ export default function OrderDetailClient({ orderId }: { orderId: number }) {
             <h2 className="border-b border-b-[#EAEAEA] pb-2 text-lg font-bold">
               주문 상품 {products.length}개
             </h2>
-            <ul>
-              <OrderProducts products={products} options={options} />
-            </ul>
+            <OrderProducts products={products} options={options} />
           </div>
 
           <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
@@ -76,14 +74,11 @@ export default function OrderDetailClient({ orderId }: { orderId: number }) {
               결제 내역
             </h2>
             <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-4 py-2 text-sm">
-              <dt>결제 수단</dt>
-              <dd>카카오페이</dd>
-
               <dt>총 상품 금액</dt>
-              <dd>{cost.products}원</dd>
+              <dd className="text-right">{cost.products}원</dd>
 
               <dt>할인 금액</dt>
-              <dd>{cost?.discount.products ?? 0}원</dd>
+              <dd className="text-right">{cost?.discount.products ?? 0}원</dd>
             </dl>
 
             <span className="mt-2 flex w-full justify-between border-t border-t-[#EAEAEA] pt-2 font-bold">
