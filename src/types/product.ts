@@ -37,7 +37,6 @@ export interface Product {
       liveDiscountRate: number;
     };
   };
-  options?: ProductOption[];
 }
 
 // API 서버의 상품 상세조회 응답
@@ -60,8 +59,8 @@ export interface ProductListRes {
 
 // 옵션
 export interface ProductOption {
-  name: string;
-  values: string[];
+  size: number[] | string[];
+  color: string[];
 }
 
 // 상품 상세 정보
@@ -77,7 +76,10 @@ export interface ProductDetailInfoProps {
 // 장바구니 액션
 export interface CartActionsProps {
   price: number;
-  options: string[];
+  options: {
+    size: number[] | string[];
+    color: string[];
+  };
   discountRate: number;
 }
 
