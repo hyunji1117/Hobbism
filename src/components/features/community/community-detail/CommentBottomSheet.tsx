@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { X, MoreVertical, CircleArrowUp } from 'lucide-react';
 import Image from 'next/image';
 import { fetchReplies } from '@/data/functions/CommunityFetch';
-import { createReply } from '@/data/actions/post';
+import { createReply, updateReply, deleteReply } from '@/data/actions/post';
 import { useActionState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useAuthStore } from '@/store/auth.store';
 import CommentOptionsModal from './CommentOptionsModal';
 
 interface CommentBottomSheetProps {
@@ -39,8 +40,29 @@ export default function CommentBottomSheet({
   );
   const [showOptionsModal, setShowOptionsModal] = useState(false);
 
+  // 댓글 수정 관련 상태
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState('');
+
   const { data: session } = useSession();
-  const [state, formAction, isSubmitting] = useActionState(createReply, null);
+  const { user } = useAuthStore();
+
+  // 트랜지션 상태 관리
+  const [isPending, startTransition] = useTransition();
+
+  // 서버 액션들
+  const [createState, createAction, isCreating] = useActionState(
+    createReply,
+    null,
+  );
+  const [updateState, updateAction, isUpdating] = useActionState(
+    updateReply,
+    null,
+  );
+  const [deleteState, deleteAction, isDeleting] = useActionState(
+    deleteReply,
+    null,
+  );
 
   // 댓글 목록 불러오기
   const loadComments = async () => {
@@ -59,10 +81,42 @@ export default function CommentBottomSheet({
 
   // 댓글 등록 성공 시 새로고침
   useEffect(() => {
-    if (state?.ok) {
+    if (createState?.ok) {
       loadComments();
     }
-  }, [state]);
+  }, [createState]);
+
+  // 이전 상태 추적 (중복 방지용)
+  const [prevUpdateState, setPrevUpdateState] = useState<any>(null);
+  const [prevDeleteState, setPrevDeleteState] = useState<any>(null);
+
+  // 댓글 수정 성공 시 처리 (중복 방지)
+  useEffect(() => {
+    if (updateState !== prevUpdateState) {
+      if (updateState?.ok === 1) {
+        alert('댓글이 수정되었습니다.');
+        setEditingCommentId(null);
+        setEditContent('');
+        loadComments();
+      } else if (updateState?.ok === 0) {
+        alert(updateState.message || '댓글 수정에 실패했습니다.');
+      }
+      setPrevUpdateState(updateState);
+    }
+  }, [updateState, prevUpdateState]);
+
+  // 댓글 삭제 성공 시 처리 (중복 방지)
+  useEffect(() => {
+    if (deleteState !== prevDeleteState) {
+      if (deleteState?.ok === 1) {
+        alert('댓글이 삭제되었습니다.');
+        loadComments();
+      } else if (deleteState?.ok === 0) {
+        alert(deleteState.message || '댓글 삭제에 실패했습니다.');
+      }
+      setPrevDeleteState(deleteState);
+    }
+  }, [deleteState, prevDeleteState]);
 
   // 모달 열릴 때 댓글 로드
   useEffect(() => {
@@ -95,25 +149,61 @@ export default function CommentBottomSheet({
     }
   };
 
-  // 댓글 옵션 메뉴 열기
-  const handleCommentOptions = (commentId: number) => {
-    setSelectedCommentId(commentId);
-    setShowOptionsModal(true);
+  // 댓글 옵션 메뉴 열기 (본인 댓글만)
+  const handleCommentOptions = (comment: Comment) => {
+    if (user?._id === comment.user._id) {
+      setSelectedCommentId(comment._id);
+      setShowOptionsModal(true);
+    }
   };
 
-  // 댓글 수정
+  // 댓글 수정 시작
   const handleEditComment = () => {
-    console.log('댓글 수정:', selectedCommentId);
+    const comment = comments.find(c => c._id === selectedCommentId);
+    if (comment) {
+      setEditingCommentId(comment._id);
+      setEditContent(comment.content);
+    }
     setShowOptionsModal(false);
-    // TODO: 댓글 수정 로직
+  };
+
+  // 댓글 수정 저장
+  const handleSaveEdit = () => {
+    const { accessToken } = useAuthStore.getState();
+
+    const formData = new FormData();
+    formData.append('_id', postId.toString());
+    formData.append('replyId', editingCommentId!.toString());
+    formData.append('content', editContent);
+    formData.append('accessToken', accessToken || '');
+
+    startTransition(() => {
+      updateAction(formData);
+    });
+  };
+
+  // 댓글 수정 취소
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditContent('');
   };
 
   // 댓글 삭제
-  const handleDeleteComment = () => {
-    console.log('댓글 삭제:', selectedCommentId);
-    setShowOptionsModal(false);
-    // TODO: 댓글 삭제 로직
-  };
+const handleDeleteComment = () => {
+  if (confirm('정말 댓글을 삭제하시겠습니까?')) {
+    const { accessToken } = useAuthStore.getState();
+
+    const formData = new FormData();
+    formData.append('_id', postId.toString());
+    formData.append('replyId', selectedCommentId!.toString());
+    formData.append('accessToken', accessToken || '');
+
+    startTransition(() => {
+      deleteAction(formData);
+    });
+  }
+  setShowOptionsModal(false);
+};
 
   // 시간 포맷팅
   const formatTime = (dateString: string) => {
@@ -137,10 +227,10 @@ export default function CommentBottomSheet({
           ref={modalRef}
           className="relative w-full max-w-[600px] transform rounded-t-[20px] bg-white shadow-xl transition-transform duration-600 ease-out"
           style={{
-            height: '50vh', // 화면 절반 높이 너무 높은가..
+            height: '50vh', // 화면 절반 높이
             animation: isOpen
               ? 'slideUp 0.5s ease-out'
-              : 'slideDown 0.5s ease-in', // 우선 0.5s
+              : 'slideDown 0.5s ease-in',
           }}
         >
           {/* 상단 헤더 */}
@@ -191,18 +281,49 @@ export default function CommentBottomSheet({
                           {formatTime(comment.createdAt)}
                         </span>
                       </div>
-                      <p className="text-sm leading-relaxed text-gray-800">
-                        {comment.content}
-                      </p>
+
+                      {/* 수정 모드일 때 입력창, 아닐 때 텍스트 */}
+                      {editingCommentId === comment._id ? (
+                        <div className="space-y-2">
+                          <textarea
+                            value={editContent}
+                            onChange={e => setEditContent(e.target.value)}
+                            className="w-full resize-none rounded-lg border border-gray-300 p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            rows={2}
+                            placeholder="댓글을 입력하세요..."
+                          />
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={handleSaveEdit}
+                              disabled={isUpdating}
+                              className="rounded-lg bg-blue-500 px-3 py-1 text-xs text-white hover:bg-blue-600 disabled:opacity-50"
+                            >
+                              저장
+                            </button>
+                            <button
+                              onClick={handleCancelEdit}
+                              className="rounded-lg bg-gray-500 px-3 py-1 text-xs text-white hover:bg-gray-600"
+                            >
+                              취소
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-sm leading-relaxed text-gray-800">
+                          {comment.content}
+                        </p>
+                      )}
                     </div>
 
-                    {/* 세로점 3개 메뉴 */}
-                    <button
-                      onClick={() => handleCommentOptions(comment._id)}
-                      className="flex-shrink-0 rounded-full p-1 transition-colors hover:bg-gray-100"
-                    >
-                      <MoreVertical size={16} className="text-gray-400" />
-                    </button>
+                    {/* 세로점 3개 메뉴 (본인 댓글만 표시) */}
+                    {user?._id === comment.user._id && (
+                      <button
+                        onClick={() => handleCommentOptions(comment)}
+                        className="flex-shrink-0 rounded-full p-1 transition-colors hover:bg-gray-100"
+                      >
+                        <MoreVertical size={16} className="text-gray-400" />
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -215,7 +336,7 @@ export default function CommentBottomSheet({
 
           {/* 하단 고정 댓글 입력창 */}
           <div className="absolute right-0 bottom-0 left-0 border-t border-gray-200 bg-white">
-            <form action={formAction} className="p-4">
+            <form action={createAction} className="p-4">
               <input type="hidden" name="_id" value={postId} />
               <input
                 type="hidden"
@@ -242,14 +363,14 @@ export default function CommentBottomSheet({
                     name="content"
                     placeholder="댓글을 입력하세요"
                     className="h-10 w-full rounded-full border-none bg-gray-100 px-4 text-sm placeholder-gray-500 transition-colors outline-none focus:bg-gray-200"
-                    disabled={isSubmitting}
+                    disabled={isCreating}
                   />
                 </div>
 
                 {/* 전송 버튼 */}
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isCreating}
                   className="flex-shrink-0 rounded-full p-2 transition-colors hover:bg-gray-100 disabled:opacity-50"
                 >
                   <CircleArrowUp size={24} className="text-black" />
@@ -257,9 +378,9 @@ export default function CommentBottomSheet({
               </div>
 
               {/* 에러 메시지 */}
-              {state?.ok === 0 && (
+              {createState?.ok === 0 && (
                 <p className="mt-2 text-sm text-red-500">
-                  {state.errors?.content?.msg || state.message}
+                  {createState.errors?.content?.msg || createState.message}
                 </p>
               )}
             </form>
