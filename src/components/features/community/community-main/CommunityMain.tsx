@@ -3,8 +3,8 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useActionState } from 'react';
 import { Post } from '@/types';
-import CommentBottomSheet from '../community-detail/CommentBottomSheet';
-import CommentOptionsModal from '../community-detail/CommentOptionsModal';
+import CommentBottomSheet from '../community-comment/CommentBottomSheet';
+import CommentOptionsModal from '../community-comment/CommentOptionsModal';
 import CommunityPostHeader from './CommunityPostHeader';
 import CommunityPostImage from './CommunityPostImage';
 import CommunityPostActions from './CommunityPostActions';
