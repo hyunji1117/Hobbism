@@ -189,21 +189,21 @@ export default function CommentBottomSheet({
   };
 
   // 댓글 삭제
-const handleDeleteComment = () => {
-  if (confirm('정말 댓글을 삭제하시겠습니까?')) {
-    const { accessToken } = useAuthStore.getState();
+  const handleDeleteComment = () => {
+    if (confirm('정말 댓글을 삭제하시겠습니까?')) {
+      const { accessToken } = useAuthStore.getState();
 
-    const formData = new FormData();
-    formData.append('_id', postId.toString());
-    formData.append('replyId', selectedCommentId!.toString());
-    formData.append('accessToken', accessToken || '');
+      const formData = new FormData();
+      formData.append('_id', postId.toString());
+      formData.append('replyId', selectedCommentId!.toString());
+      formData.append('accessToken', accessToken || '');
 
-    startTransition(() => {
-      deleteAction(formData);
-    });
-  }
-  setShowOptionsModal(false);
-};
+      startTransition(() => {
+        deleteAction(formData);
+      });
+    }
+    setShowOptionsModal(false);
+  };
 
   // 시간 포맷팅
   const formatTime = (dateString: string) => {
