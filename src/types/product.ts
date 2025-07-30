@@ -26,7 +26,7 @@ export interface Product {
     isLiveSpecial: boolean;
     discountRate: number;
     discountedPrice: number;
-    live: {
+    live?: {
       start: string;
       end: string;
       title: string;
