@@ -10,7 +10,7 @@ export default function ConfirmModal({
   onClose,
 }: ConfirmModalProps) {
   return (
-    <Modal onClose={onClose}>
+    <Modal key={'confitem-modal'} onClose={onClose}>
       <ModalBackdrop />
 
       <ModalPanel className="w-[300px] p-6 text-center">

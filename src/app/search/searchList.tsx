@@ -1,5 +1,6 @@
 'use client';
 
+import { SmallLoading } from '@/components/common/SmallLoading';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Product } from '@/types';
@@ -7,82 +8,59 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
-export default function SearchList({ allData }: { allData: Product[] }) {
+export default function SearchList({
+  initialData,
+}: {
+  initialData: Product[];
+}) {
   const searchParams = useSearchParams();
-  const word = searchParams.get('word');
+  const word = searchParams.get('word') ?? '';
 
   /* ======================== 무한 스크롤 ======================== */
-  /* ------------ 상태 변수 --------------- */
-  const [products, setProducts] = useState<Product[]>(allData ?? []); // 화면에 그려질 게시물 목록
-  const [page, setPage] = useState(1); // 현재 불러올 페이지 번호
+  //          state: 무한 스크롤 상태            //
+  const [products, setProducts] = useState<Product[]>(initialData ?? []); // 화면에 그려질 게시물 목록
+  const [page, setPage] = useState(2); // 현재 불러올 페이지 번호
   const [loading, setLoading] = useState(false); // fetch 진행중 여부
-  const [hasNextPage, setHasNextPage] = useState(false); // 다음 페이지가 있는지
-  const [pageParams, setPageParams] = useState<number[]>([]); // 이미 가져온 페이지 번호 기록
-
-  /* ------ DOM 참조 -------- */
+  const [hasNextPage, setHasNextPage] = useState(true); // 다음 페이지가 있는지
   const observerRef = useRef<HTMLDivElement | null>(null); // 무한 스크롤 트리거 참조
 
-  /* ============ 게시물 로딩 함수 ============ */
-  const loadingProducts = async (page: number) => {
-    if (loading || pageParams.includes(page)) return; // 이미 요청했던 page라면 중복 호출 차단
+  //          function: 게시물 로딩 함수          //
+  const loadingProducts = async () => {
+    if (loading || !hasNextPage) return; // 이미 요청했던 page라면 중복 호출 차단
     setLoading(true);
 
     const data = await fetchProducts(page); // 서버에서 (page)번 페이지 게시물 받아옴
-    setProducts(prev => {
-      const newData = data.filter(d => !prev.some(p => p._id === d._id)); // 중복 제거 로직
-      return [...prev, ...newData];
-    });
-
-    setPageParams(prev => [...prev, page]); // 요청한 page 번호를 기록 -> 중복 호출 방지
-    setHasNextPage(data.length !== 0); // '다음 페이지가 있는가?' 판정: 이번에 가져온 data가 0개면 더 없음
+    if (data.length === 0) {
+      setHasNextPage(false);
+    } else {
+      setProducts(prev => [...prev, ...data]);
+      setPage(prev => prev + 1);
+    }
 
     setLoading(false);
   };
 
+  //          function: word(searchParams) 포함된 상품           //
   const searchProducts = products.filter(product =>
-    product.name.includes(word ?? ''),
+    product.name.includes(word),
   );
 
-  /* IntersectionObserver로 무한 스크롤 트리거 */
+  //        effect: IntersectionObserver로 무한스크롤 트리거       //
   useEffect(() => {
-    const target = observerRef.current;
-    if (!target) return;
-
     const observer = new IntersectionObserver(
-      async ([entry]) => {
-        // div가 화면에 50% 이상 보이고, 다음 페이지도 있으며, 로딩 중이 아닐 때
-        if (entry.isIntersecting && hasNextPage && !loading) {
-          const nextPage = page + 1;
-          await loadingProducts(nextPage);
-          setPage(nextPage); // page 값을 1 증가
+      ([entry]) => {
+        if (entry.isIntersecting && !loading && hasNextPage) {
+          loadingProducts();
         }
       },
-      {
-        threshold: 0.5,
-      },
+      { threshold: 0.5 },
     );
 
-    observer.observe(target);
+    if (observerRef.current) observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, [observerRef.current, hasNextPage, loading]);
 
-    return () => observer.disconnect(); // 클린업
-  }, [page, hasNextPage, loading]);
-
-  /* ============== page 값이 변할 때마다 fetch =========== */
-  useEffect(() => {
-    loadingProducts(page); //page가 바뀔 때마다 해당 페이지 게시물 로드
-  }, [page]);
-
-  /* ================= 검색어 바뀔 시 상태 초기화 ========== */
-  useEffect(() => {
-    if (!word) return;
-
-    setProducts([]);
-    setPage(1);
-    setPageParams([]);
-    setHasNextPage(true);
-  }, [word]);
-
-  console.log('searchProducts', searchProducts);
+  //         render: 검색 결과 렌더링          //
   return (
     <section className="mx-3.5">
       <h2 className="my-2">
@@ -110,6 +88,7 @@ export default function SearchList({ allData }: { allData: Product[] }) {
         ))}
       </div>
 
+      {/* ========= 상품이 없을 경우 렌더링 ======== */}
       {searchProducts.length === 0 &&
         products.length > 0 &&
         !loading &&
@@ -118,7 +97,7 @@ export default function SearchList({ allData }: { allData: Product[] }) {
             <div className="relative left-1/2 aspect-square w-1/4 -translate-x-1/2">
               <Image
                 fill
-                src={'/images/ayoung/sad.png'}
+                src={'/images/ayoung/sad.webp'}
                 alt="Sorry"
                 priority={false}
                 sizes="(max-width: 768px) 130px"
@@ -132,10 +111,16 @@ export default function SearchList({ allData }: { allData: Product[] }) {
           </div>
         )}
 
+      {/* ===== 무한 스크롤 observer ===== */}
       <div ref={observerRef} className="h-10" />
-      {loading && <div className="py-4 text-center">불러오는 중...</div>}
+      {/* ===== loading 중 렌더링 ===== */}
+      {loading && <SmallLoading />}
+
+      {/* ===== 무한 스크롤 끝날 시 렌더 ====== */}
       {searchProducts.length > 0 && !hasNextPage && !loading && (
-        <p className="py-4 text-center text-gray-500">더 이상 상품이 없어요</p>
+        <p className="py-4 text-center text-gray-500">
+          모든 상품을 다 보셨어요!
+        </p>
       )}
     </section>
   );

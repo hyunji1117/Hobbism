@@ -8,6 +8,8 @@ import ModalProvider from '@/components/common/ModalProvider';
 import { SessionProvider } from 'next-auth/react';
 import TokenSync from '@/components/features/auth/TokenSync';
 import Script from 'next/script';
+import AdBannerModal from '@/components/features/user/alarm/AdBannerModal';
+import { ToastProvider } from '@/components/common/ToastProvider';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -32,8 +34,12 @@ export default function RootLayout({
       <body className={`${pretendard.className}`}>
         <SessionProvider>
           <TokenSync />
-          <MobileFrame>{children}</MobileFrame>
-          <ModalProvider />
+          <MobileFrame>
+            {children}
+            <AdBannerModal />
+            <ModalProvider />
+            <ToastProvider />
+          </MobileFrame>
         </SessionProvider>
       </body>
     </html>

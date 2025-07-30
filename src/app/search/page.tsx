@@ -1,5 +1,5 @@
 import SearchList from '@/app/search/searchList';
-import { fetchLiveProducts } from '@/data/functions/AllProductFetch';
+import TopButton from '@/components/common/TopButton';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
@@ -10,13 +10,14 @@ export const metadata: Metadata = {
 };
 
 export default async function SearchPage() {
-  // const allData = await fetchProducts();
   const initialData = await fetchProducts(1);
 
   return (
     <Suspense>
       <section className="mx-3.5">
-        <SearchList allData={initialData} />
+        <SearchList initialData={initialData} />
+
+        <TopButton />
       </section>
     </Suspense>
   );

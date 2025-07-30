@@ -34,6 +34,7 @@ export default function TabBar() {
       '/community/write',
       '/shop/cart',
       '/live',
+      '/hobby',
     ];
     const shouldHide = hidden.some(path => pathname.startsWith(path));
     const shopDetailPath = pathname.match(/^\/shop\/\d+/);

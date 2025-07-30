@@ -7,6 +7,7 @@ export default function FollowingSection({ user }: { user: Bookmark[] }) {
   return (
     <>
       {user.map(bookmark => {
+        console.log('bookmark', bookmark._id);
         return (
           <UserPreviewCard
             key={bookmark._id}

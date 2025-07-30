@@ -1,4 +1,4 @@
-import { fetchLiveProducts } from '@/data/functions/AllProductFetch';
+import { fetchAllProducts } from '@/data/functions/ProductFetch';
 import { Product } from '@/types';
 import moment from 'moment';
 import { create } from 'zustand';
@@ -20,7 +20,7 @@ export const useLiveStore = create<LiveStore>(set => ({
   currentLive: [],
   liveToShow: [],
   fetchLive: async () => {
-    const data = await fetchLiveProducts();
+    const data = await fetchAllProducts();
     const liveData = data.filter(item => item?.extra?.isLiveSpecial);
 
     const now = moment();

@@ -11,8 +11,6 @@ export default async function UserPage({
   const userId = Number(id);
   const res = await getUserInfo(userId);
 
-  console.log('유저 데이터', res);
-
   if (!res.ok || !res.item) return null;
   const user = res.item;
 
