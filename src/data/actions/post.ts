@@ -178,7 +178,25 @@ export async function deletePost(
   return data;
 }
 
+/**
+ * 게시글 단일 조회
+ */
+export async function getPost(_id: number): ApiResPromise<Post> {
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}`, {
+      headers: {
+        'Client-Id': CLIENT_ID,
+      },
+      cache: 'no-store',
+      next: { tags: [`posts/${_id}`] }
+    });
 
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '게시글을 불러오는데 실패했습니다.' };
+  }
+}
 
 /**
  * 댓글을 생성하는 함수

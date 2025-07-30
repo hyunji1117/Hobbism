@@ -188,6 +188,7 @@ export default function CommunityMain({ post }: CommunityMainProps) {
 
         {/* 아이콘 영역 (댓글, 공유, 북마크) */}
         <CommunityPostActions
+          postId={post._id.toString()}
           onCommentClick={handleComment}
           onShareClick={handleShareToKakao}
         />

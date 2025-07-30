@@ -1,12 +1,25 @@
 import Image from 'next/image';
 import { CircleArrowUp } from 'lucide-react';
+import { getUserImageUrl } from '@/utils';
+import { useAuthStore } from '@/store/auth.store';
+import { ApiRes } from '@/types'; 
 
+interface CommentResponse {
+  _id: number;
+  content: string;
+  createdAt: string;
+  user: {
+    _id: number;
+    name: string;
+    image?: string;
+  };
+}
 interface CommentInputProps {
   postId: number;
   accessToken: string;
   createAction: (formData: FormData) => void;
   isCreating: boolean;
-  createState: any;
+  createState: ApiRes<CommentResponse> | null;
 }
 
 export default function CommentInput({
@@ -16,6 +29,8 @@ export default function CommentInput({
   isCreating,
   createState,
 }: CommentInputProps) {
+  const { user } = useAuthStore(); 
+
   return (
     <div className="absolute right-0 bottom-0 left-0 border-t border-gray-200 bg-white">
       <form action={createAction} className="p-4">
@@ -26,7 +41,7 @@ export default function CommentInput({
           {/* 프로필 이미지 */}
           <div className="h-8 w-8 flex-shrink-0">
             <Image
-              src="/images/inhwan/profile-default.png"
+              src={getUserImageUrl(user?.image)}
               alt="내 프로필"
               width={32}
               height={32}

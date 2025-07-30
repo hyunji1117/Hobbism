@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition, useCallback } from 'react';
 import { useActionState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useAuthStore } from '@/store/auth.store';
 import { fetchReplies } from '@/data/functions/CommunityFetch';
 import { createReply, updateReply, deleteReply } from '@/data/actions/post';
+import { ApiRes } from '@/types';
 import CommentHeader from './CommentHeader';
 import CommentList from './CommentList';
 import CommentInput from './CommentInput';
@@ -70,8 +71,15 @@ export default function CommentBottomSheet({
     null,
   );
 
-  // 댓글 목록 불러오기
-  const loadComments = async () => {
+  // 이전 상태 추적 (중복 방지용) - 타입 수정
+  const [prevUpdateState, setPrevUpdateState] =
+    useState<ApiRes<Comment> | null>(null);
+  const [prevDeleteState, setPrevDeleteState] = useState<ApiRes<null> | null>(
+    null,
+  );
+
+  // 댓글 목록 불러오기 - useCallback으로 메모이제이션
+  const loadComments = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetchReplies(postId);
@@ -83,18 +91,14 @@ export default function CommentBottomSheet({
     } finally {
       setLoading(false);
     }
-  };
+  }, [postId]);
 
   // 댓글 등록 성공 시 새로고침
   useEffect(() => {
     if (createState?.ok) {
       loadComments();
     }
-  }, [createState]);
-
-  // 이전 상태 추적 (중복 방지용)
-  const [prevUpdateState, setPrevUpdateState] = useState<any>(null);
-  const [prevDeleteState, setPrevDeleteState] = useState<any>(null);
+  }, [createState, loadComments]);
 
   // 댓글 수정 성공 시 처리 (중복 방지)
   useEffect(() => {
@@ -109,7 +113,7 @@ export default function CommentBottomSheet({
       }
       setPrevUpdateState(updateState);
     }
-  }, [updateState, prevUpdateState]);
+  }, [updateState, prevUpdateState, loadComments]);
 
   // 댓글 삭제 성공 시 처리 (중복 방지)
   useEffect(() => {
@@ -122,14 +126,14 @@ export default function CommentBottomSheet({
       }
       setPrevDeleteState(deleteState);
     }
-  }, [deleteState, prevDeleteState]);
+  }, [deleteState, prevDeleteState, loadComments]);
 
   // 모달 열릴 때 댓글 로드
   useEffect(() => {
     if (isOpen) {
       loadComments();
     }
-  }, [isOpen, postId]);
+  }, [isOpen, loadComments]);
 
   // ESC 키로 모달 닫기
   useEffect(() => {

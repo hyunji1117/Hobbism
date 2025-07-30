@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { MoreVertical } from 'lucide-react';
+import { getUserImageUrl } from '@/utils'; 
 
 interface Comment {
   _id: number;
@@ -44,7 +45,7 @@ export default function CommentItem({
       {/* 프로필 이미지 */}
       <div className="h-8 w-8 flex-shrink-0">
         <Image
-          src={comment.user.image || '/images/inhwan/profile-default.png'}
+          src={getUserImageUrl(comment.user.image)}
           alt={`${comment.user.name} 프로필`}
           width={32}
           height={32}
