@@ -11,7 +11,6 @@ export function LogoutButton() {
 
   const handleLogout = async () => {
     resetUser();
-    localStorage.clear();
     sessionStorage.clear();
 
     await signOut({ callbackUrl: '/login' });
