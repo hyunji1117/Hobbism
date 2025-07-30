@@ -45,12 +45,6 @@ export const ShopProduct = ({
 
   const recommendInfo = recommendData[recommendedBy];
 
-  //              effect: fetchLive 호출          //
-  const fetchLive = useLiveStore(state => state.fetchLive);
-  useEffect(() => {
-    fetchLive();
-  }, []);
-
   const currentLive = useLiveStore(state => state.currentLive);
 
   const now = moment();
@@ -66,7 +60,10 @@ export const ShopProduct = ({
 
   //        render: 상품 렌더        //
   return (
-    <Link href="/live" className={`mb-2 flex w-full flex-col gap-1`}>
+    <Link
+      href={isLive ? '/live' : `/shop/${_id}`}
+      className={`mb-2 flex w-full flex-col gap-1`}
+    >
       {/* 라이브 중인 상품일 경우 라이브 뱃지 */}
       {isLive && (
         <div className="absolute top-2 -left-2 z-5">
