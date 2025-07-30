@@ -66,8 +66,16 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
   });
 
   return (
-    <Swiper spaceBetween={10} slidesPerView={3.5}>
-      {liveProducts}
-    </Swiper>
+    <>
+      <Swiper spaceBetween={10} slidesPerView={3.5}>
+        {liveProducts}
+      </Swiper>
+
+      {liveData.length === 0 && (
+        <p className="p-10 text-center text-[#c3c3c3]">
+          이번 달 라이브 특가 상품이 없습니다.
+        </p>
+      )}
+    </>
   );
 };
