@@ -41,10 +41,6 @@ export async function fetchProductDetail(
         'Content-Type': 'application/json',
         'Client-Id': CLIENT_ID,
       },
-      // {
-      //   ok: 1,
-      //   item: { ...productData }
-      // }
     },
   );
   const data = await res.json();
