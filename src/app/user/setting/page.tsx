@@ -1,3 +1,5 @@
+'use client';
+
 import { Separator } from '@/components/ui/separator';
 
 import {
@@ -8,14 +10,30 @@ import {
   Megaphone,
   Moon,
   Scroll,
+  ShieldAlert,
+  ShieldCheck,
 } from 'lucide-react';
 import Link from 'next/link';
 
 import AddressForm from '@/components/features/user/setting/AddressForm';
 import { UserLoginInfo } from '@/components/features/user/setting/LoginInfo';
 import { LogoutButton } from '@/components/features/user/setting/LogoutButton';
+import { useState } from 'react';
+import { useBannerStore } from '@/store/Banner.store';
 
 export default function SettingPage() {
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState<'on' | 'off' | null>(null);
+  const showBanner = useBannerStore(state => state.showBanner);
+
+  const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    useBannerStore.getState().setShowBanner(e.target.checked);
+
+    setToastType(e.target.checked ? 'on' : 'off');
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+
   return (
     <div className="flex min-h-[calc(100%-48px)] flex-col">
       <main className="scrollbar-hide flex h-full flex-col gap-2 overflow-y-scroll p-5">
@@ -43,7 +61,12 @@ export default function SettingPage() {
               <li className="flex items-center gap-2.5 py-4">
                 <Bell />
                 <span className="flex-1">알림 수신</span>
-                <input type="checkbox" className="custom-toggle" />
+                <input
+                  type="checkbox"
+                  className="custom-toggle"
+                  checked={showBanner ?? false}
+                  onChange={handleToggle}
+                />
               </li>
             </ul>
           </div>
@@ -110,6 +133,22 @@ export default function SettingPage() {
         </section>
         <LogoutButton />
       </main>
+      {showToast && toastType === 'on' && (
+        <div className="mx-auto mt-4 flex h-15 items-center gap-x-2 rounded-xl border border-green-200 bg-green-50 px-4 py-2 shadow-lg">
+          <ShieldCheck className="text-green-600" />
+          <p className="text-sm text-green-800">
+            이벤트 및 혜택 알림 수신에 동의하셨습니다.
+          </p>
+        </div>
+      )}
+      {showToast && toastType === 'off' && (
+        <div className="mx-auto mt-4 flex h-15 items-center gap-x-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 shadow-lg">
+          <ShieldAlert className="text-red-600" />
+          <p className="text-sm text-red-800">
+            이벤트 및 혜택 알림 수신이 해제되었습니다.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

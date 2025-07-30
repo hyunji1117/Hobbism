@@ -3,17 +3,17 @@
 import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
+import { signOut } from 'next-auth/react';
 
 export function LogoutButton() {
   const router = useRouter();
   const resetUser = useAuthStore(state => state.clearAuth);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     resetUser();
-    localStorage.clear();
     sessionStorage.clear();
 
-    router.push('/login');
+    await signOut({ callbackUrl: '/login' });
   };
 
   return (

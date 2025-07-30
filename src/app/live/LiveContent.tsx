@@ -46,21 +46,6 @@ export default function LiveContent({ live }: { live: LiveProduct }) {
         )
       )}
 
-      {/* 라이브 캘린더 헤더 */}
-      <header className="bg-amber-200select-none fixed z-10 w-full max-w-[600px]">
-        <ul>
-          <li className="absolute top-3.5 left-0 ml-3.5">
-            <GoBackButton stroke="stroke-white" />
-          </li>
-          <li className="fixed top-3.5 left-[50%] translate-x-[-50%] text-xl font-bold text-white">
-            라이브
-          </li>
-          <li>
-            <LiveCalendarBtn />
-          </li>
-        </ul>
-      </header>
-
       {/* 라이브 비디오 */}
       <div key={live._id} className="h-screen">
         <div className="h-[60%]">

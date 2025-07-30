@@ -14,9 +14,9 @@ export default function ModalProvider() {
 
   return (
     <>
-      {modals.map((Modal, index) => (
-        <Modal key={index} onClose={() => closeModal(index)} />
-      ))}
+      {modals.map((Modal, index) => {
+        return <Modal key={index} onClose={() => closeModal(index)} />;
+      })}
     </>
   );
 }

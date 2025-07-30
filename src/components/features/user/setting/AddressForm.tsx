@@ -8,6 +8,7 @@ import { ChevronDown, ChevronUp, Map } from 'lucide-react';
 import { getUserAttribute, updateUserInfo } from '@/data/actions/user';
 import { useAuthStore } from '@/store/auth.store';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 //          interface: 주소 폼 입력 타입 정의          //
 interface FormValues {
@@ -71,7 +72,8 @@ export default function AddressForm() {
     formData.append('detail', data.detail);
     if (!currentUser?._id) return;
     const res = await updateUserInfo(currentUser._id, formData);
-    if (res.ok) {
+    if (res.ok === 1) {
+      toast.success('배송지가 변경되었습니다');
     } else {
       console.error(res);
     }
