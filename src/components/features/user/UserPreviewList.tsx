@@ -80,10 +80,10 @@ export default function UserPreviewList({ recommendedUser }: Props) {
         {...events}
         className="scrollbar-hide relative flex w-full cursor-grab gap-2 overflow-x-scroll select-none"
       >
-        {users.map(user => (
+        {users.map((user, idx) => (
           <UserPreviewCard
             variant="vertical"
-            key={user._id}
+            key={idx}
             id={user._id}
             name={user.name}
             introduction={user.extra?.introduction}

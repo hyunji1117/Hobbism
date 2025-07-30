@@ -10,6 +10,27 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
 /**
  * 게시판 타입에 해당하는 게시글 목록을 가져옵니다.
  * @param {string} boardType - 게시판 타입(예: notice, free 등)
+ * @returns {Promise<ApiRes<Post[]>>} - 게시글 목록 응답 객체
+ */
+export async function getPosts(boardType: string): ApiResPromise<Post[]> {
+  try {
+    const res = await fetch(`${API_URL}/posts?type=${boardType}`, {
+      headers: {
+        'Client-Id': CLIENT_ID,
+      },
+      cache: 'no-cache',
+    });
+    return res.json();
+  } catch (error) {
+    // 네트워크 오류 처리
+    console.error(error);
+    return { ok: 0, message: '일시적인 네트워크 문제로 등록에 실패했습니다.' };
+  }
+}
+
+/**
+ * 게시판 타입에 해당하는 하나의 게시글 목록을 가져옵니다.
+ * @param {string} boardType - 게시판 타입(예: notice, free 등)
  * @returns {Promise<ApiRes<PostList[]>>} - 게시글 목록 응답 객체
  */
 export async function getUserPosts(
@@ -17,8 +38,6 @@ export async function getUserPosts(
   boardType: string,
 ): ApiResPromise<PostList[]> {
   try {
-    console.log('id', _id);
-
     const res = await fetch(`${API_URL}/posts/users/${_id}?type=${boardType}`, {
       headers: {
         'Client-Id': CLIENT_ID,
@@ -33,8 +52,10 @@ export async function getUserPosts(
     return { ok: 0, message: '일시적인 네트워크 문제로 등록에 실패했습니다.' };
   }
 }
-//  * 게시글을 생성하는 함수
-//  */
+
+/**
+ * 게시글 생성하는 함수
+ */
 export async function createPost(
   state: ApiRes<Post> | null,
   formData: FormData,
@@ -105,6 +126,26 @@ export async function createPost(
 }
 
 /**
+ * 특정 게시글의 댓글 목록을 가져옵니다.
+ * @param {number} _id - 게시글의 고유 ID
+ * @returns {Promise<ApiRes<PostReply[]>>} - 댓글 목록 응답 객체
+ */
+export async function getReplies(_id: number): ApiResPromise<PostReply[]> {
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}/replies`, {
+      headers: {
+        'Client-Id': CLIENT_ID,
+      },
+    });
+    return res.json();
+  } catch (error) {
+    // 네트워크 오류 처리
+    console.error(error);
+    return { ok: 0, message: '일시적인 네트워크 문제로 등록에 실패했습니다.' };
+  }
+}
+
+/**
  * 댓글을 생성하는 함수
  */
 export async function createReply(
@@ -143,4 +184,75 @@ export async function createReply(
   }
 
   return data;
+}
+
+/**
+ * 게시글 id로 1개의 게시글을 가져오는 함수
+ */
+export async function getPostDetail(_id: number): ApiResPromise<Post> {
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}`, {
+      headers: { 'Client-Id': CLIENT_ID },
+      cache: 'no-store',
+    });
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '조회 실패' };
+  }
+}
+
+/**
+ * 게시글을 삭제하는 함수 (일반적인 형태)
+ * @param _id - 삭제할 게시글의 id
+ * @param accessToken - 인증 토큰
+ * @returns 삭제 결과 응답 객체
+ */
+export async function deletePost(
+  _id: number,
+  accessToken: string,
+): Promise<{ ok: 0 | 1; message?: string }> {
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Client-Id': CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '일시적인 네트워크 문제가 발생했습니다.' };
+  }
+}
+
+/**
+ * 게시글을 삭제하는 함수 (일반적인 형태)
+ * @param _id - 삭제할 게시글의 id
+ * @param accessToken - 인증 토큰
+ * @returns 삭제 결과 응답 객체
+ */
+export async function deleteReply(
+  _id: number,
+  accessToken: string,
+  reply_id: number,
+): Promise<{ ok: 0 | 1; message?: string }> {
+  try {
+    const res = await fetch(`${API_URL}/posts/${_id}/replies/${reply_id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Client-Id': CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: '일시적인 네트워크 문제가 발생했습니다.' };
+  }
 }
