@@ -79,13 +79,11 @@ function ProductDetail({
   const { addToCart } = useCart();
 
   const handleAdd = () => {
-    // 옵션 등 추가/정합 체크는 필요시 구현
     addToCart({
       id: product.id,
       name: product.name,
       price: product.price,
       quantity: 1,
-      // selected_options: {}, // 선택된 옵션 등
     });
     alert('장바구니에 담겼습니다.');
   };
@@ -189,9 +187,9 @@ export const TotalPrice = ({
 }: {
   quantity: number;
   price: number;
-  originalPrice?: number; // originalPrice를 선택적 속성으로 변경
+  originalPrice?: number;
 }) => {
-  const totalPrice = quantity * (originalPrice ?? price); // originalPrice가 없으면 price 사용
+  const totalPrice = quantity * (originalPrice ?? price);
 
   return (
     <section className="z-20 flex h-[54px] items-center justify-between border-t border-[#EAEAEA] bg-white px-4 pt-4">

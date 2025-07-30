@@ -11,7 +11,7 @@ export const OptionSelector = ({
   onSelect,
 }: {
   name: string;
-  options: string[];
+  options: string[] | number[];
   selectedOption: string;
   onSelect: (selectedOption: string) => void;
 }) => {
@@ -49,14 +49,14 @@ export const OptionSelector = ({
         >
           {options.map(option => (
             <li
-              key={option}
+              key={option.toString()}
               className="cursor-pointer border-b border-[#EAEAEA] p-2 text-[#666]"
               onClick={() => {
-                onSelect(option);
+                onSelect(option.toString());
                 setIsOpen(false);
               }}
               role="option"
-              aria-selected={selectedOption === option}
+              aria-selected={selectedOption === option.toString()}
             >
               {option}
             </li>
