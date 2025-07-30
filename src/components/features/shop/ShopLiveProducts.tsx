@@ -37,7 +37,7 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
     return (
       <SwiperSlide key={product._id} className="mr-2.5 !w-[calc(100%/3.5)]">
         {!isLiveNow && (
-          <div className="pointer-events-none absolute z-2 flex aspect-square w-full rounded-2xl bg-black/50 text-white">
+          <div className="absolute z-2 flex aspect-square w-full rounded-2xl bg-black/50 text-white">
             <p className="absolute top-1/2 h-fit w-full -translate-y-1/2 text-center text-sm">
               {isEnded ? '종료된 라이브' : '라이브 예정'}
             </p>
@@ -50,12 +50,8 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
           mainImageSrc={product.mainImages[0]?.path}
           category={product.extra.category}
           discountRate={product.extra.discountRate}
-          discountPrice={product.extra.discountedPrice}
           recommendedBy={product.extra.recommendedBy}
           textPrice="text-sm"
-          liveTitle={product.extra?.live?.title}
-          liveRate={product.extra?.live?.liveDiscountRate}
-          livePrice={product.extra?.live?.livePrice}
         />
       </SwiperSlide>
     );
