@@ -72,10 +72,18 @@ export interface ProductOption {
 
 // 상품 상세 정보
 export interface ProductDetailInfoProps {
-  item: { _id: number; name: string; price: number; path: string };
+  item: {
+    _id: number;
+    name: string;
+    price: number;
+    path?: string;
+  };
   price: number;
   discountRate: number;
-  extra: { recommendedBy: string; originalPrice: number };
+  extra: {
+    recommendedBy: string;
+    originalPrice: number;
+  };
   sizes?: string[];
   colors?: string[];
 }
@@ -98,4 +106,7 @@ export interface ProductQuantitySelectorProps {
   onDecrease: () => void;
   price: number;
   originalPrice: number;
+  // extra: {
+  //   originalPrice: number;
+  // };
 }
