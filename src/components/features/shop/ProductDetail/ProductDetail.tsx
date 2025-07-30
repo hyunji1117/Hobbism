@@ -10,8 +10,8 @@ import { useCart } from '@/components/features/shop/ProductDetail/CartContext'; 
 // 상품 상세 정보 컴포넌트
 export const ProductDetailInfo = ({
   item,
+  price,
   discountRate,
-  discountedPrice,
   extra,
   sizes,
   colors,
@@ -44,10 +44,12 @@ export const ProductDetailInfo = ({
         {/* 상품명 */}
         {item.name}
       </h1>
-      <span className="flex flex-col pt-2 text-[12px] text-[#C3C3C3] line-through">
-        {/* 원가 */}
-        {item.price.toLocaleString()}원
-      </span>
+      {extra?.originalPrice ? (
+        <span className="flex flex-col pt-2 text-[12px] text-[#C3C3C3] line-through">
+          {/* 원가 */}
+          {extra.originalPrice.toLocaleString()}원
+        </span>
+      ) : null}
       <div className="mt-1 flex items-center">
         {/* 할인률 */}
         {discountRate > 0 && (
@@ -57,7 +59,7 @@ export const ProductDetailInfo = ({
         )}
         <span className="justify-self-center text-[24px] font-semibold text-black">
           {/* 할인된 금액 */}
-          {discountedPrice.toLocaleString()}원
+          {item.price.toLocaleString()}원
         </span>
         <span className="ml-auto flex h-[28px] w-[76px] items-center justify-center rounded-[4px] bg-[#F3F4F6] text-[14px] text-black">
           무료배송
@@ -82,7 +84,7 @@ function ProductDetail({
       name: product.name,
       price: product.price,
       quantity: 1,
-      options: {}, // 선택된 옵션 등
+      // selected_options: {}, // 선택된 옵션 등
     });
     alert('장바구니에 담겼습니다.');
   };
@@ -97,7 +99,6 @@ export function ProductQuantitySelector({
   onIncrease,
   onDecrease,
   price,
-  discountedPrice,
   item,
 }: ProductQuantitySelectorProps & { item?: { name: string } }) {
   return (
@@ -138,7 +139,7 @@ export function ProductQuantitySelector({
           <Plus className="h-[20] w-[20] border-[#C3C3C3]" />
         </button>
         <span className="ml-auto flex items-center justify-center text-[18px] font-semibold text-black">
-          {(quantity * discountedPrice).toLocaleString()}원
+          {(quantity * price).toLocaleString()}원
         </span>
       </div>
     </section>
