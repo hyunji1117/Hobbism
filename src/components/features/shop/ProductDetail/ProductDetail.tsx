@@ -157,8 +157,23 @@ export const ProductQuantitySelector = ({
 // 상품 액션 버튼 컴포넌트
 export const ProductActionButtons = ({
   onCartClick,
+  onBuyNowClick,
+  product,
+  options,
 }: {
   onCartClick: () => void;
+  onBuyNowClick: () => void;
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    productImg: string;
+  };
+  options?: {
+    id: string;
+    name: string;
+    price: number;
+  }[];
 }) => {
   return (
     <section className="flex h-[54px] gap-3">
@@ -172,6 +187,7 @@ export const ProductActionButtons = ({
       <button
         type="button"
         className="w-[60%] cursor-pointer rounded-[8px] bg-[#FE508B] text-[18px] font-semibold text-white"
+        onClick={onBuyNowClick}
       >
         구매하기
       </button>
