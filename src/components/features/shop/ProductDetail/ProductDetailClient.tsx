@@ -78,24 +78,31 @@ export default function CartActions({
   item,
 }: {
   price: number;
-  options: ProductOption[];
+  options: { size: number[]; color: string[] };
   discountRate: number;
-  item: { id: string; name: string; price: number; productImg?: string };
+  item: {
+    id: string;
+    name: string;
+    price: number;
+    productImg?: string;
+  };
 }) {
   const [selectedOptions, setSelectedOptions] = useState<{
-    [key: string]: string;
+    size?: number;
+    color?: string;
   }>({});
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const { addToCart } = useCart?.() || {};
 
-  const hasOptions = Array.isArray(options) && options.length > 0;
+  const hasOptions = options && (options.size || options.color);
   const allOptionsSelected =
-    !hasOptions || options.every(opt => selectedOptions[opt.name]);
-  const discountedPrice = price * (1 - discountRate / 100);
+    !hasOptions || (selectedOptions.size && selectedOptions.color);
 
-  const handleOptionChange = (name: string, value: string) => {
-    setSelectedOptions(prev => ({ ...prev, [name]: value }));
+  const handleOptionChange = (
+    type: 'size' | 'color',
+    value: string | number,
+  ) => {
+    setSelectedOptions(prev => ({ ...prev, [type]: value }));
   };
 
   const swipeHandlers = useSwipeable({
@@ -135,49 +142,68 @@ export default function CartActions({
           </div>
 
           {hasOptions ? (
-            // 옵션이 있을 경우 드롭다운 먼저 노출
             <>
-              {options.map(opt => (
-                <div key={opt.name} className="bg-white px-5 pt-3.5">
+              {/* 사이즈 옵션 */}
+              {options.size && (
+                <div className="bg-white px-5 pt-3.5">
                   <OptionSelector
-                    name={opt.name}
-                    options={opt.values}
-                    selectedOption={selectedOptions[opt.name] || ''}
-                    onSelect={value => handleOptionChange(opt.name, value)}
+                    name="사이즈"
+                    options={options.size}
+                    selectedOption={selectedOptions.size?.toString() || ''}
+                    onSelect={value =>
+                      handleOptionChange('size', Number(value))
+                    }
                   />
                 </div>
-              ))}
+              )}
+
+              {/* 색상 옵션 */}
+              {options.color && (
+                <div className="bg-white px-5 pt-3.5">
+                  <OptionSelector
+                    name="색상"
+                    options={options.color}
+                    selectedOption={selectedOptions.color || ''}
+                    onSelect={value => handleOptionChange('color', value)}
+                  />
+                </div>
+              )}
 
               {allOptionsSelected && (
                 <ProductQuantitySelector
-                  selectedOption={
-                    Object.values(selectedOptions).join(', ') || ''
-                  }
+                  selectedOption={`사이즈: ${selectedOptions.size}, 색상: ${selectedOptions.color}`}
                   quantity={quantity}
                   onIncrease={() => setQuantity(prev => prev + 1)}
                   onDecrease={() => setQuantity(prev => Math.max(1, prev - 1))}
-                  price={price}
-                  discountedPrice={discountedPrice}
+                  price={item.price}
+                  originalPrice={item.originalPrice}
                   item={item}
                 />
               )}
               {allOptionsSelected && (
-                <TotalPrice quantity={quantity} price={discountedPrice} />
+                <TotalPrice
+                  quantity={quantity}
+                  price={item.price}
+                  originalPrice={item.originalPrice}
+                />
               )}
             </>
           ) : (
-            // 옵션이 없는 경우
             <>
               <ProductQuantitySelector
                 selectedOption=""
                 quantity={quantity}
                 onIncrease={() => setQuantity(prev => prev + 1)}
                 onDecrease={() => setQuantity(prev => Math.max(1, prev - 1))}
-                price={price}
-                discountedPrice={discountedPrice}
+                price={item.price}
+                originalPrice={item.originalPrice}
                 item={item}
               />
-              <TotalPrice quantity={quantity} price={discountedPrice} />
+              <TotalPrice
+                quantity={quantity}
+                price={item.price}
+                originalPrice={item.originalPrice}
+              />
             </>
           )}
         </div>
@@ -189,4 +215,4 @@ export default function CartActions({
 // NavBar에서 사용할 수 있게 내보내기
 CartActions.GoBackButton = GoBackButton;
 CartActions.CartIcon = CartIcon;
-CartActions.AddToCartBtn = AddToCartBtn; // AddToCartBtn 내보내기 추가
+CartActions.AddToCartBtn = AddToCartBtn;
