@@ -32,8 +32,6 @@ export interface Product {
       title: string;
       livePath: string;
       liveId: string;
-      livePrice: number;
-      liveDiscountRate: number;
     };
   };
   options?: ProductOption[];

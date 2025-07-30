@@ -130,13 +130,9 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
           mainImageSrc={product.mainImages[0]?.path}
           category={product.extra.category}
           discountRate={product.extra.discountRate}
-          discountPrice={product.extra.discountedPrice}
           recommendedBy={product.extra.recommendedBy}
           key={product._id}
           textPrice="text-base"
-          liveTitle={product.extra.live?.title}
-          liveRate={product.extra.live?.liveDiscountRate}
-          livePrice={product.extra.live?.livePrice}
         />,
       );
 
