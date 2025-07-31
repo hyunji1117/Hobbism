@@ -68,7 +68,9 @@ export function UserEditForm({ user }: Props) {
     const res = await updateUserInfo(user._id, formData);
 
     if (res.ok === 1) {
-      openModal(({ onClose }) => <SuccessModal onClose={onClose} />);
+      openModal(({ onClose }) => (
+        <SuccessModal key="success-modal" onClose={onClose} />
+      ));
       setTimeout(() => {
         router.push(`/user/${user._id}`);
       }, 1000);

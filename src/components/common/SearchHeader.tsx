@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 
 //          component: 검색 버튼 컴포넌트          //
@@ -25,6 +25,7 @@ export default function SearchButton() {
   const handleClose = () => {
     setStatus(false);
     setWord('');
+    redirect('/shop');
   };
 
   const handleSubmit = () => {

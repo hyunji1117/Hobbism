@@ -1,3 +1,5 @@
+import { Code } from '@/types/item';
+
 export interface UserBookmark {
   products: number;
   users: number;
@@ -41,6 +43,11 @@ export interface User {
     nickname?: string;
     introduction?: string;
     deatil_address?: string;
+    point?: number;
+    total_point?: number;
+    ownedItemCodes?: Code[];
+    equippedItemCodes?: Code[];
+    hobby?: string;
   };
   post?: number;
   bookmark?: {

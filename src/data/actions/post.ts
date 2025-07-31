@@ -125,7 +125,7 @@ export async function updatePost(
       headers: {
         'Content-Type': 'application/json',
         'Client-Id': CLIENT_ID,
-        'Authorization': `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ content }),
     });
@@ -161,7 +161,7 @@ export async function deletePost(
       method: 'DELETE',
       headers: {
         'Client-Id': CLIENT_ID,
-        'Authorization': `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -188,7 +188,7 @@ export async function getPost(_id: number): ApiResPromise<Post> {
         'Client-Id': CLIENT_ID,
       },
       cache: 'no-store',
-      next: { tags: [`posts/${_id}`] }
+      next: { tags: [`posts/${_id}`] },
     });
 
     return res.json();
@@ -259,7 +259,7 @@ export async function updateReply(
       headers: {
         'Content-Type': 'application/json',
         'Client-Id': CLIENT_ID,
-        'Authorization': `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ content }),
     });
@@ -296,7 +296,7 @@ export async function deleteReply(
       method: 'DELETE',
       headers: {
         'Client-Id': CLIENT_ID,
-        'Authorization': `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
