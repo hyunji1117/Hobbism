@@ -36,7 +36,7 @@ export default function OrderDetailClient({ orderId }: { orderId: number }) {
 
   const products = order.item.products;
   const cost = order.item.cost;
-  const options = order.item.options ?? [];
+  const options = order.item.selected_options ?? [];
 
   return (
     <>
