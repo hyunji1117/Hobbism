@@ -46,7 +46,7 @@ export function PurchaseProductList() {
   );
 }
 
-export async function PurchaseAddress({
+export function PurchaseAddress({
   userInfo,
   addressInfo,
 }: {
@@ -171,26 +171,18 @@ export function PaymentSummary() {
           product.quantity
         ).toLocaleString();
         return (
-          <>
-            <div className="mx-3.5 mb-5" key={product.id}>
-              <span className="mb-2 flex w-full justify-between border-b border-b-[#EAEAEA] pb-2 text-lg font-bold">
-                <h2>총 결제 금액</h2>
-                <p>{total}원</p>
-              </span>
-              <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-4 py-2 text-sm">
-                <dt>총 상품 금액</dt>
-                <dd className="text-right">{originalTotal}원</dd>
-                <dt>할인 금액</dt>
-                <dd className="text-right">{sale}원</dd>
-              </dl>
-            </div>
-            {/* <button
-              type="submit"
-              className="w-full max-w-[600px] rounded-xl bg-black py-4 text-xl font-semibold text-white"
-            >
-              {total}원 결제하기
-            </button> */}
-          </>
+          <div className="mx-3.5 mb-5" key={product.id}>
+            <span className="mb-2 flex w-full justify-between border-b border-b-[#EAEAEA] pb-2 text-lg font-bold">
+              <h2>총 결제 금액</h2>
+              <p>{total}원</p>
+            </span>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-4 py-2 text-sm">
+              <dt>총 상품 금액</dt>
+              <dd className="text-right">{originalTotal}원</dd>
+              <dt>할인 금액</dt>
+              <dd className="text-right">{sale}원</dd>
+            </dl>
+          </div>
         );
       })}
     </>
