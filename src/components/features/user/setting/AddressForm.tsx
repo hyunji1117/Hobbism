@@ -103,7 +103,7 @@ export default function AddressForm({ address, detail, postcode }: FormValues) {
               <div className="flex items-center gap-3">
                 <input
                   {...register('postcode')}
-                  className="h-9 w-22 rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none"
+                  className="h-9 w-22 rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black"
                   placeholder="우편번호"
                   readOnly
                 />
