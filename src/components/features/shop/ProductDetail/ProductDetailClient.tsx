@@ -13,6 +13,8 @@ import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
 import { ProductOption } from '@/types/product';
 import { ProductQuantitySelector } from '@/components/features/shop/ProductDetail/ProductDetail';
 
+import { usePurchaseStore } from '@/store/order.store';
+
 // 장바구니 아이콘 컴포넌트 추가
 export function CartIcon() {
   const { cartCount } = useCart();
@@ -89,6 +91,8 @@ export default function CartActions({
     originalPrice?: number;
   };
 }) {
+  console.log('item', item);
+
   const router = useRouter();
   const [selectedOptions, setSelectedOptions] = useState<{
     size?: number;
@@ -135,24 +139,30 @@ export default function CartActions({
       return;
     }
 
-    alert('결제 페이지로 이동합니다!');
     setIsBottomSheetOpen(false);
 
-    const selectedOptionDetails = {
-      size: selectedOptions.size,
-      color: selectedOptions.color,
+    const purchaseData = {
+      id: item.id,
+      name: item.name,
+      originalPrice: item.originalPrice,
+      price: item.price,
+      quantity,
+      selected_options: [
+        {
+          id: item.id,
+          extra: {
+            size: selectedOptions.size,
+            color: selectedOptions.color,
+          },
+        },
+      ],
+      productImg: item.productImg || '',
     };
 
-    // router.push({
-    //   pathname: '/checkout',
-    //   query: {
-    //     id: item.id,
-    //     name: item.name,
-    //     price: item.price,
-    //     quantity,
-    //     options: JSON.stringify(selectedOptionDetails),
-    //   },
-    // });
+    console.log('purchaseData', purchaseData);
+
+    usePurchaseStore.getState().setPurchaseData([purchaseData]);
+    router.push(`/shop/purchase`);
   };
 
   const swipeHandlers = useSwipeable({
