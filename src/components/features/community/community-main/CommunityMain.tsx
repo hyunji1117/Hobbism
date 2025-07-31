@@ -153,9 +153,7 @@ export default function CommunityMain({ post }: CommunityMainProps) {
       content: {
         title: `${post.user.name}의 게시물`,
         description: post.content,
-        imageUrl: post.image?.[0]
-          ? `https://fesp-api.koyeb.app/market/${post.image[0]}`
-          : `${window.location.origin}/images/inhwan/barrier.webp`,
+        imageUrl: `https://fesp-api.koyeb.app/market/${post.image?.[0]}`,
         link: {
           mobileWebUrl: window.location.href,
           webUrl: window.location.href,
