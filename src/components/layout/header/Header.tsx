@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth.store';
 import { useModalStore } from '@/store/modal.store';
-import { Info, Pencil, ShoppingCart } from 'lucide-react';
+import { Info, Pencil, ShoppingCart, Siren } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -56,7 +56,7 @@ export default function Header() {
   const isCartPage = pathname === '/shop/cart'; // 장바구니 페이지
   const isTermsPage = pathname === '/terms'; // 약관 페이지
   const isPolicyPage = pathname === '/policy'; // 개인정보 처리방침 페이지
-  const isNoticePage = pathname === '/notice'; // 공지사항 페이지
+  const isNoticePage = pathname.startsWith('/notice'); // 공지사항 페이지
   const isContactPage = pathname === '/contact'; // 고객센터 페이지
   const isCharacterPage = pathname === '/character'; // 고객센터 페이지
   const isSearchPage = pathname.startsWith('/search');
@@ -68,7 +68,11 @@ export default function Header() {
   const isMypage = user && pathname === `/user/${user._id}`;
 
   //          logic: 헤더 조건 처리 (렌더링 조건)          //
-  const showLogo = isCommunityPage || isShopPage; // 로고 노출 여부
+  const showLogo =
+    isCommunityPage ||
+    isShopPage ||
+    isCharacterPage ||
+    (isUserPage && isMypage); // 로고 노출 여부
   const showBackButton =
     isSettingPage ||
     isCartPage ||
@@ -112,14 +116,6 @@ export default function Header() {
           <div className="absolute left-4 flex items-center">
             {showLogo && (
               <Image
-                src="/images/inhwan/logo-H.svg"
-                alt="로고"
-                width={24}
-                height={24}
-              />
-            )}
-            {isCharacterPage && (
-              <Image
                 src="/images/etc/logo.svg"
                 alt="로고"
                 width={70}
@@ -128,6 +124,7 @@ export default function Header() {
                 className="h-auto w-[70px]"
               />
             )}
+
             {showBackButton && (
               <BackButton
                 onClickBack={
@@ -176,6 +173,7 @@ export default function Header() {
               </Link>
             )}
             {isUserPage && isMypage && <SettingButton />}
+            {isUserPage && !isMypage && !isFollowPage && <Siren />}
             {isCommunityPage && (
               <Link href="/community/write">
                 <Pencil size={24} />

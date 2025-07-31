@@ -64,6 +64,8 @@ export async function deleteBookmark(
       }),
     });
 
+    console.log(res);
+
     return res.json();
   } catch (error) {
     console.error(error);
@@ -131,7 +133,7 @@ export async function getBookmark(
 export async function getBookmarks(
   type: 'product' | 'user' | 'post',
   accessToken: string,
-): ApiResPromise<BookmarkPost[]> {
+): ApiResPromise<Bookmark[]> {
   try {
     const res = await fetch(`${API_URL}/bookmarks/${type}`, {
       method: 'GET',
