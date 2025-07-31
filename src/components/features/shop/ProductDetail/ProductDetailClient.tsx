@@ -81,7 +81,7 @@ export default function CartActions({
   item,
 }: {
   price: number;
-  options: { size: number[]; color: string[] };
+  options?: { size?: number[]; color?: string[] };
   discountRate: number;
   item: {
     id: string;
@@ -183,7 +183,7 @@ export default function CartActions({
             price: item.price,
             productImg: item.productImg || '',
           }}
-          options={options.size?.map(size => ({
+          options={options?.size?.map(size => ({
             id: size.toString(),
             name: `사이즈 ${size}`,
             price: item.price,

@@ -38,7 +38,7 @@ export default function PurchaseClient() {
                   <p className="text-sm font-bold">{product.name}</p>
                   {product.selected_options?.map((option, i) => (
                     <p className="text-sm text-[#4B5563]" key={i}>
-                      {option.extra.color ?? ''}, {option.extra.size ?? ''}
+                      {option.extra.color ?? ''} {option.extra.size ?? ''}
                     </p>
                   ))}
                   <p className="text-md font-semibold">
