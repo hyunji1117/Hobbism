@@ -28,7 +28,7 @@ export default function PurchaseClient({
   const { purchaseData } = usePurchaseStore();
 
   return (
-    <form className="">
+    <>
       <div className="pb-[10vh]">
         <PurchaseProductList />
         <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
@@ -42,7 +42,7 @@ export default function PurchaseClient({
         <PaymentSummary />
       </div>
 
-      <div className="">
+      <form className="">
         {purchaseData.map(product => {
           const total = (product.price * product.quantity).toLocaleString();
           return (
@@ -54,7 +54,7 @@ export default function PurchaseClient({
             </button>
           );
         })}
-      </div>
-    </form>
+      </form>
+    </>
   );
 }

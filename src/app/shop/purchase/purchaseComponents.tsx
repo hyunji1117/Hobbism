@@ -1,6 +1,16 @@
+'use client';
+
+import Postcode from 'react-daum-postcode';
 import { usePurchaseStore } from '@/store/order.store';
 import { Banknote, CreditCard, MapPin, WalletCards } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import AddressForm from '@/components/features/user/setting/AddressForm';
+import { useAuthStore } from '@/store/auth.store';
+import { Address } from 'react-daum-postcode';
+import { updateUserInfo } from '@/data/actions/user';
+import toast from 'react-hot-toast';
 
 export function PurchaseProductList() {
   const { purchaseData } = usePurchaseStore();
@@ -46,6 +56,13 @@ export function PurchaseProductList() {
   );
 }
 
+//          interface: 주소 폼 입력 타입 정의          //
+interface FormValues {
+  address?: string;
+  detail?: string;
+  postcode?: string;
+}
+
 export function PurchaseAddress({
   userInfo,
   addressInfo,
@@ -53,23 +70,125 @@ export function PurchaseAddress({
   userInfo: { name: string; phone: string };
   addressInfo: { address: string; detailAddress: string; postcode: string };
 }) {
+  //          state: 주소 입력 폼 오픈 상태          //
+  const [isOpen, setIsOpen] = useState(false);
+
+  //          state: 로그인 유저 상태          //
+  const currentUser = useAuthStore(state => state.user);
+  //          state: accessToken 상태          //
+  const accessToken = useAuthStore(state => state.accessToken);
+  //           state: localAddress 상태           //
+  const [localAddressInfo, setLocalAddressInfo] = useState(addressInfo);
+
+  const { register, setValue, handleSubmit } = useForm<FormValues>({
+    defaultValues: {
+      address: addressInfo.address ?? '',
+      detail: addressInfo.detailAddress ?? '',
+      postcode: addressInfo.postcode ?? '',
+    },
+  });
+  const toggleOpen = () => setIsOpen(prev => !prev);
+
+  const onComplete = (data: Address) => {
+    setValue('address', data.address);
+    setValue('postcode', data.zonecode);
+  };
+
+  const onSubmit = async (data: FormValues) => {
+    if (!currentUser) return;
+
+    if (!accessToken) {
+      console.error('AccessToken 없음');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('accessToken', accessToken);
+    formData.append('address', data.address ?? '');
+    formData.append('postcode', data.postcode ?? '');
+    formData.append('detail', data.detail ?? '');
+    if (!currentUser?._id) return;
+    const res = await updateUserInfo(currentUser._id, formData);
+    if (res.ok === 1) {
+      toast.success('배송지가 변경되었습니다');
+      setLocalAddressInfo({
+        address: data.address ?? '',
+        detailAddress: data.detail ?? '',
+        postcode: data.postcode ?? '',
+      });
+    } else {
+      console.error(res);
+    }
+
+    setIsOpen(false);
+  };
+
   return (
     <>
       <div className="mx-3.5">
         <div className="mb-2 flex justify-between border-b border-b-[#EAEAEA] pb-2">
           <h2 className="text-lg font-bold">배송 정보</h2>
-          <button className="text-right font-semibold text-[#FE508B]">
+          <button
+            onClick={toggleOpen}
+            className="text-right font-semibold text-[#FE508B]"
+          >
             변경하기
           </button>
         </div>
+        {isOpen && (
+          <form
+            id="address-form"
+            onSubmit={handleSubmit(onSubmit)}
+            className="mb-4 flex flex-col gap-2 px-3"
+          >
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-sm">주소</span>
+                <div className="flex items-center gap-3">
+                  <input
+                    {...register('postcode')}
+                    className="h-9 w-22 rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black"
+                    placeholder="우편번호"
+                    readOnly
+                  />
+                  <button type="submit" className="cursor-pointer">
+                    저장
+                  </button>
+                </div>
+              </div>
+
+              <input
+                {...register('address')}
+                placeholder="주소 입력은 아래 검색 창을 통해 가능합니다"
+                className="h-12 w-full rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black"
+                readOnly
+              />
+            </div>
+            <input
+              {...register('detail')}
+              placeholder="나머지 주소를 입력하세요 (예: 101동 202호)"
+              className="h-12 w-full rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black"
+            />
+
+            <div className="mt-3 overflow-hidden rounded-md border">
+              <Postcode
+                onComplete={onComplete}
+                autoClose={false}
+                className="h-[400px] w-full"
+              />
+            </div>
+          </form>
+        )}
+
         <div className="flex gap-2">
           <MapPin />
           <div className="leading-snug">
             <p className="font-semibold">{userInfo.name}</p>
             <p className="text-[#4B5563]">{userInfo.phone}</p>
             <p className="text-[#4B5563]">
-              [{addressInfo.postcode}] {addressInfo.address}{' '}
-              {addressInfo.detailAddress && `(${addressInfo.detailAddress})`}
+              [{localAddressInfo.postcode}] {localAddressInfo.address}{' '}
+              {localAddressInfo.detailAddress &&
+                `(${localAddressInfo.detailAddress})`}
             </p>
           </div>
         </div>
