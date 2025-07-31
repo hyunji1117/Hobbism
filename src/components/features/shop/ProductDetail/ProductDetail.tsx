@@ -205,7 +205,7 @@ export const TotalPrice = ({
   price: number;
   originalPrice?: number;
 }) => {
-  const totalPrice = quantity * (originalPrice ?? price);
+  const totalPrice = quantity * (price ?? originalPrice);
 
   return (
     <section className="z-20 flex h-[54px] items-center justify-between border-t border-[#EAEAEA] bg-white px-4 pt-4">
