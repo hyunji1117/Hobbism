@@ -30,8 +30,13 @@ export default async function SettingPage() {
     session.user._id,
     'extra/detail_address',
   );
+  const postcodeRes = await getUserAttribute(
+    session.user._id,
+    'extra/postcode',
+  );
 
-  if (addressRes.ok !== 1 || addressDetailRes.ok !== 1) return null;
+  if (addressRes.ok !== 1 || addressDetailRes.ok !== 1 || postcodeRes.ok !== 1)
+    return null;
 
   return (
     <div className="flex min-h-[calc(100%-48px)] flex-col">
@@ -45,6 +50,7 @@ export default async function SettingPage() {
               <AddressForm
                 address={addressRes.item.address}
                 detail={addressDetailRes.item.extra.detail_address}
+                postcode={postcodeRes.item.extra.postcode}
               />
             </ul>
           </div>

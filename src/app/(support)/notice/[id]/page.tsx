@@ -14,7 +14,7 @@ export default async function NoticeDetailPage({
   if (res.ok !== 1) return null;
 
   const notice = res.item;
-  console.log(res);
+
   return (
     <main className="mb-10 flex w-full">
       <div className="flex w-full flex-col items-center px-4">
@@ -47,12 +47,14 @@ export default async function NoticeDetailPage({
           </div>
           {/* 본문 영역 */}
           <div className="flex flex-col gap-3 py-8 whitespace-pre-wrap text-[#4D4D4D]">
-            <Image
-              src={getUserImageUrl(notice.image)}
-              alt="공지사항 이미지"
-              width={600}
-              height={600}
-            />
+            {notice.image && (
+              <Image
+                src={getUserImageUrl(notice.image)}
+                alt="공지사항 이미지"
+                width={600}
+                height={600}
+              />
+            )}
             <div>{notice.content}</div>
           </div>
         </div>

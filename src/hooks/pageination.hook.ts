@@ -20,8 +20,6 @@ const usePagination = <T>(countPerPage: number) => {
 
   //          function: 보여줄 객체 리스트 추출 함수          //
   const setView = () => {
-    console.log('currentPage', currentPage);
-    console.log('totalListLenght', totalList.length);
     const FIRST_INDEX = countPerPage * (currentPage - 1);
     const LAST_INDEX =
       totalList.length > countPerPage * currentPage
@@ -47,8 +45,7 @@ const usePagination = <T>(countPerPage: number) => {
     const totalPageList: number[] = [];
     for (let page = 1; page <= totalPage; page++) totalPageList.push(page);
     setTotalPageList(totalPageList);
-    console.log('totalPage', totalPage);
-    console.log('totalPageLenght', totalPageList.length);
+
     const totalSection = Math.ceil(totalList.length / (countPerPage * 5));
     setTotalSection(totalSection);
 
@@ -71,7 +68,6 @@ const usePagination = <T>(countPerPage: number) => {
   }, [currentPage]);
   //          effect: current section이 변경될 때마다 실행할 작업          //
   useEffect(() => {
-    console.log('currentSection', currentSection);
     setViewPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSection]);

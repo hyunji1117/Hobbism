@@ -173,7 +173,9 @@ export default function Header() {
               </Link>
             )}
             {isUserPage && isMypage && <SettingButton />}
-            {isUserPage && !isMypage && !isFollowPage && <Siren />}
+            {isUserPage && !isMypage && !isFollowPage && !isBookmarkPage && (
+              <Siren />
+            )}
             {isCommunityPage && (
               <Link href="/community/write">
                 <Pencil size={24} />

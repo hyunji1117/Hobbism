@@ -2,7 +2,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Bookmark, Star, UserPlus, UsersRound } from 'lucide-react';
+import {
+  Bookmark,
+  ChevronRight,
+  Star,
+  UserPlus,
+  UsersRound,
+} from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { User } from '@/types';
 import { useFollowStore } from '@/store/follow.store';
@@ -118,10 +124,11 @@ export function UserProfileSection({
             className="ml-auto cursor-pointer self-start"
           >
             <Button
-              className="ml-auto cursor-pointer self-start"
               variant="ghost"
+              className="!hover:bg-transparent ml-auto cursor-pointer self-start !bg-transparent"
             >
-              북마크
+              <span>북마크 목록</span>
+              <ChevronRight />
             </Button>
           </Link>
         )}

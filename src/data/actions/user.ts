@@ -79,6 +79,7 @@ export async function updateUserInfo(
     const nickname = formData.get('nickname')?.toString();
     const introduction = formData.get('introduction')?.toString();
     const address = formData.get('address')?.toString();
+    const phone = formData.get('phone')?.toString();
     const detail = formData.get('detail')?.toString();
     const equippedItemCodes = formData.get('equippedItemCodes');
     const ownedItemCodes = formData.get('ownedItemCodes');
@@ -100,6 +101,7 @@ export async function updateUserInfo(
     }
     const body = {
       ...(address && { address }),
+      ...(phone && { phone }),
       extra: {
         ...prevExtra,
         ...(nickname && { nickname }),
