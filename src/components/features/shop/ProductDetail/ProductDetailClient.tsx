@@ -125,11 +125,11 @@ export default function CartActions({
   };
 
   const handleBuyNow = () => {
-    if (!allOptionsSelected) {
-      alert('모든 옵션을 선택해주세요.');
+    if (!isBottomSheetOpen) {
+      // 바텀시트가 열리지 않은 상태에서는 아무 작업 않도록
+      setIsBottomSheetOpen(true);
       return;
     }
-
     if (!allOptionsSelected) {
       alert('모든 옵션을 선택해주세요.');
       return;

@@ -36,31 +36,44 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
 
     return (
       <SwiperSlide key={product._id} className="mr-2.5 !w-[calc(100%/3.5)]">
-        {!isLiveNow && (
-          <div className="absolute z-2 flex aspect-square w-full rounded-2xl bg-black/50 text-white">
-            <p className="absolute top-1/2 h-fit w-full -translate-y-1/2 text-center text-xs md:text-sm">
-              {isEnded ? (
-                '종료된 라이브'
-              ) : (
-                <>
-                  {start.format('MM월 DD일')} <br />
-                  {start.format('HH시')} <br />
-                  라이브 예정
-                </>
-              )}
-            </p>
+        {!isLiveNow ? (
+          <div className="pointer-events-none select-none">
+            <div className="absolute z-2 flex aspect-square w-full rounded-2xl bg-black/50 text-white">
+              <p className="absolute top-1/2 h-fit w-full -translate-y-1/2 text-center text-xs md:text-sm">
+                {isEnded ? (
+                  '종료된 라이브'
+                ) : (
+                  <>
+                    {start.format('MM월 DD일')} <br />
+                    {start.format('HH시')} <br />
+                    라이브 예정
+                  </>
+                )}
+              </p>
+            </div>
+            <ShopProduct
+              _id={product._id}
+              price={product.price}
+              name={product.name}
+              mainImageSrc={product.mainImages[0]?.path}
+              category={product.extra.category}
+              discountRate={product.extra.discountRate}
+              recommendedBy={product.extra.recommendedBy}
+              textPrice="text-sm"
+            />
           </div>
+        ) : (
+          <ShopProduct
+            _id={product._id}
+            price={product.price}
+            name={product.name}
+            mainImageSrc={product.mainImages[0]?.path}
+            category={product.extra.category}
+            discountRate={product.extra.discountRate}
+            recommendedBy={product.extra.recommendedBy}
+            textPrice="text-sm"
+          />
         )}
-        <ShopProduct
-          _id={product._id}
-          price={product.price}
-          name={product.name}
-          mainImageSrc={product.mainImages[0]?.path}
-          category={product.extra.category}
-          discountRate={product.extra.discountRate}
-          recommendedBy={product.extra.recommendedBy}
-          textPrice="text-sm"
-        />
       </SwiperSlide>
     );
   });

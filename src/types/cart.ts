@@ -11,7 +11,7 @@ export interface ProductListRes {
     quantity: number;
   };
   extra: {
-    discountedPrice: number;
+    originalPrice: number;
   };
 }
 
@@ -40,32 +40,41 @@ export interface AddToCartRes {
     quantity: number;
   };
   extra: {
-    discountedPrice: number;
+    originalPrice: number;
   };
 }
 
 // 장바구니 상품 여러건 삭제
+// export interface CartItem {
+//   id: number;
+//   item: {
+//     _id: number;
+//     name: string;
+//     price: number;
+//     quantity: number;
+//     buyQuantity: number;
+//     mainImages: {
+//       path: string;
+//     };
+//     extra: {
+//       originalPrice: number;
+//       options: {
+//         size: number[] | string[];
+//         color: string[];
+//       };
+//     };
+//   };
+//   isChecked?: boolean;
+// }
 export interface CartItem {
-  id: number;
-  item: {
-    _id: number;
-    name: string;
-    price: number;
-    quantity: number;
-    buyQuantity: number;
-    mainImages: {
-      path: string;
-    };
-    extra: {
-      discountedPrice: number;
-      options: {
-        size: number[] | string[];
-        color: string[];
-      };
-    };
+  id: string;
+  name: string;
+  price: number;
+  productImg?: string;
+  extra?: {
+    originalPrice: number; // extra 속성 추가
   };
-  // options?: string[];
-  isChecked?: boolean;
+  originalPrice: number;
 }
 
 // 장바구니 목록 죄회
@@ -82,7 +91,7 @@ interface RawCartItem {
     buyQuantity: number;
     mainImages: { path: string }[];
     extra: {
-      discountedPrice: number;
+      originalPrice: number;
       options: {
         size: number[] | string[];
         color: string[];
