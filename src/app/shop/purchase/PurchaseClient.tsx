@@ -25,19 +25,36 @@ export default function PurchaseClient({
   //   addressInfo,
   // });
 
+  const { purchaseData } = usePurchaseStore();
+
   return (
-    <>
-      <PurchaseProductList />
-      <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
-      <PurchaseAddress userInfo={userInfo} addressInfo={addressInfo} />
-      <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
-      <PaymentSelector
-        selected={selectedPayment}
-        setSelectedPayment={setSelectedPayment}
-      />
-      <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
-      <PaymentSummary />
-      <button>결제하기</button>
-    </>
+    <form className="">
+      <div className="pb-[10vh]">
+        <PurchaseProductList />
+        <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
+        <PurchaseAddress userInfo={userInfo} addressInfo={addressInfo} />
+        <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
+        <PaymentSelector
+          selected={selectedPayment}
+          setSelectedPayment={setSelectedPayment}
+        />
+        <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
+        <PaymentSummary />
+      </div>
+
+      <div className="">
+        {purchaseData.map(product => {
+          const total = (product.price * product.quantity).toLocaleString();
+          return (
+            <button
+              className="fixed bottom-[10vh] left-1/2 w-[93vw] max-w-[572px] -translate-x-1/2 rounded-xl bg-black py-4 text-lg font-semibold text-white md:w-full"
+              key={product.id}
+            >
+              {total}원 결제하기
+            </button>
+          );
+        })}
+      </div>
+    </form>
   );
 }
