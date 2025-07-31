@@ -9,7 +9,7 @@ interface CommunityPostImageProps {
 export default function CommunityPostImage({ post }: CommunityPostImageProps) {
   console.log('post.image:', post.image);
 
-  // getUserImageUrl 함수 사용 (팀원이 만든 방식)
+  // getUserImageUrl 함수 사용
   const imageUrl = getUserImageUrl(
     Array.isArray(post.image) ? post.image[0] : post.image,
   );
