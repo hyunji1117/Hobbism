@@ -7,7 +7,7 @@ export function PurchaseProductList() {
   return (
     <>
       <div className="mx-3.5 rounded-2xl border border-[#EAEAEA] p-3">
-        <h2 className="mx-3.5 border-b border-b-[#EAEAEA] pb-2 text-lg font-bold">
+        <h2 className="border-b border-b-[#EAEAEA] pb-2 text-lg font-bold">
           주문 상품 {purchaseData.length}개
         </h2>
         <ul>
