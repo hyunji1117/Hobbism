@@ -9,6 +9,7 @@ export type OrderProductType = Product & {
     name: string;
   };
   price: number;
+  originalPrice?: number;
 };
 
 export type OrderOptions = {
@@ -32,6 +33,6 @@ export interface OrderInfoRes {
       };
       total: number;
     };
-    options?: OrderOptions[];
+    selected_options?: OrderOptions[];
   };
 }
