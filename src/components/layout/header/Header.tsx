@@ -14,6 +14,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Suspense, useMemo } from 'react';
+import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
+import { CartIcon } from '@/components/features/shopping-cart/CartIcon';
 
 //          component: 헤더 컴포넌트          //
 export default function Header() {
@@ -86,6 +88,20 @@ export default function Header() {
     isBookmarkPage; // 일반 뒤로가기 버튼 노출 조건
   const showConfirmBackButton = isEditPage || isCommunityWritePage; // 뒤로가기 시 확인이 필요한 페이지
   const showCartIcon = isShopPage || isProductPage; // 쇼핑카트 아이콘 노출 조건
+
+  //          state: 장바구니 아이콘의 상품 개수 가져오기           //     //
+  // const { cartCount } = useCart();
+  const { cartItems } = useCart();
+
+  // return (
+  //   <header>
+  //     <h1>My Shop</h1>
+  //     <div>
+  //       <span>🛒</span>
+  //       <span>{cartItems.length}</span>
+  //     </div>
+  //   </header>
+  // );
 
   //          render: 로그인 페이지에서는 헤더 숨김 처리          //
   if (isLoginPage) return null;
@@ -170,9 +186,31 @@ export default function Header() {
                 <SearchButton />
               </Suspense>
             )}
-            {showCartIcon && (
-              <Link href="/shop/cart">
+            {/* {showCartIcon && (
+              <Link href="/shop/cart" className="relative">
                 <ShoppingCart />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+            )} */}
+
+            {/* {showCartIcon && (
+              <Link href="/shop/cart" className="relative">
+                <CartIcon />
+              </Link>
+            )} */}
+
+            {showCartIcon && (
+              <Link href="/shop/cart" className="relative">
+                <CartIcon />
+                {cartItems.length > 0 && ( // 장바구니에 상품이 있을 때만 수량 표시
+                  <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                    {cartItems.length}
+                  </span>
+                )}
               </Link>
             )}
             {isUserPage && isMypage && <SettingButton />}
