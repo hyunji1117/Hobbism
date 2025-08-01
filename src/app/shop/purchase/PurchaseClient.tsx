@@ -23,6 +23,7 @@ export default function PurchaseClient({
   addressInfo: { address: string; detailAddress: string; postcode: string };
 }) {
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
+
   const accessToken = useAuthStore(state => state.accessToken);
   const [state, formAction, isLoading] = useActionState(createOrder, null);
 
@@ -42,11 +43,6 @@ export default function PurchaseClient({
     ...item,
     _id: Number(item.id),
     quantity: Number(item.quantity),
-    // selected_options:
-    //   item.selected_options?.map(opt => ({
-    //     _id: Number(opt.id),
-    //     extra: opt.extra || {},
-    //   })) || [],
   }));
 
   console.log('products 직렬화 테스트', JSON.stringify(products));
@@ -68,25 +64,25 @@ export default function PurchaseClient({
 
       <form
         action={formAction}
-        onSubmit={() => {
+        onSubmit={e => {
+          if (!selectedPayment) {
+            e.preventDefault();
+            toast.error('결제 수단을 선택해 주세요.');
+            return;
+          }
+
+          if (!addressInfo.address || !addressInfo.postcode) {
+            e.preventDefault();
+            toast.error('배송지를 입력해 주세요. 주세요.');
+            return;
+          }
+
           console.log('폼 제출');
         }}
       >
         <input type="hidden" name="products" value={JSON.stringify(products)} />
 
         <input type="hidden" name="accessToken" value={accessToken || ''} />
-        {/* <input
-          type="hidden"
-          name="selectedPayment"
-          value={selectedPayment || ''}
-        />
-        <input type="hidden" name="userInfo" value={JSON.stringify(userInfo)} />
-        <input
-          type="hidden"
-          name="addressInfo"
-          value={JSON.stringify(addressInfo)}
-        /> */}
-
         {purchaseData.length > 0 && (
           <button
             type="submit"
