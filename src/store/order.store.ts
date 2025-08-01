@@ -9,13 +9,8 @@ type PurchaseItem = {
   price: number;
   quantity: number;
   originalPrice?: number;
-  selected_options?: {
-    id: string;
-    extra: {
-      size?: number | string;
-      color?: string;
-    };
-  }[];
+  size?: number | string;
+  color?: string;
   productImg: string;
 };
 

@@ -36,11 +36,15 @@ export function PurchaseProductList() {
               </div>
               <div className="leading-loose">
                 <p className="text-sm font-bold">{product.name}</p>
-                {product.selected_options?.map((option, i) => (
+                {/* {product.selected_options?.map((option, i) => (
                   <p className="text-sm text-[#4B5563]" key={i}>
                     {option.extra.color ?? ''} {option.extra.size ?? ''}
                   </p>
-                ))}
+                ))} */}
+                <p className="text-sm text-[#4B5563]">
+                  <span className="mr-1">{product.size && product.size}</span>
+                  <span>{product.color && product.color}</span>
+                </p>
                 <p className="text-md font-semibold">
                   {product.price * product.quantity}원{' '}
                   <span className="font-normal text-[#4B5563]">

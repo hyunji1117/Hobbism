@@ -147,15 +147,8 @@ export default function CartActions({
       originalPrice: item.originalPrice,
       price: item.price,
       quantity,
-      selected_options: [
-        {
-          id: item.id,
-          extra: {
-            size: selectedOptions.size,
-            color: selectedOptions.color,
-          },
-        },
-      ],
+      size: selectedOptions.size,
+      color: selectedOptions.color,
       productImg: item.productImg || '',
     };
 
