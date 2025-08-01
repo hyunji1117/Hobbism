@@ -27,11 +27,6 @@ export default function PurchaseClient({
   const accessToken = useAuthStore(state => state.accessToken);
   const [state, formAction, isLoading] = useActionState(createOrder, null);
 
-  // usePurchaseStore.setState({
-  //   userInfo,
-  //   addressInfo,
-  // });
-
   const { purchaseData } = usePurchaseStore();
 
   const totalAmount = purchaseData.reduce(
@@ -83,6 +78,13 @@ export default function PurchaseClient({
         <input type="hidden" name="products" value={JSON.stringify(products)} />
 
         <input type="hidden" name="accessToken" value={accessToken || ''} />
+
+        <input
+          type="hidden"
+          name="selectedPayment"
+          value={selectedPayment || ''}
+        />
+
         {purchaseData.length > 0 && (
           <button
             type="submit"
