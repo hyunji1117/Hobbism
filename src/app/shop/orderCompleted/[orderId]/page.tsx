@@ -7,7 +7,14 @@ export const metadata: Metadata = {
   description: '주문 완료 페이지입니다.',
 };
 
-export default function orderCompletedPage() {
+export default async function orderCompletedPage({
+  params,
+}: {
+  params: Promise<{ orderId: number }>;
+}) {
+  const { orderId } = await params;
+
+  console.log('orderId', orderId);
   return (
     <section className="mx-3.5 mt-19">
       <div className="absolute top-12 left-1/2 aspect-[1.4/1] w-[65%] -translate-x-1/2">
@@ -38,7 +45,7 @@ export default function orderCompletedPage() {
 
       <div className="my-3 flex w-full gap-2">
         <Link
-          href={`/`}
+          href={`/shop/order/${orderId}`}
           className="w-1/2 rounded-full border border-[#2C2F33] bg-white py-3 text-center font-semibold transition-all hover:bg-[#f4f4f4]"
         >
           주문 상세보기

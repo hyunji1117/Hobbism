@@ -2,6 +2,8 @@
 
 import { ApiRes, ApiResPromise } from '@/types';
 import { OrderProductType } from '@/types/orders';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
@@ -14,14 +16,19 @@ export async function createOrder(
   const products = JSON.parse(raw);
   const accessToken = formData.get('accessToken') as string;
 
-  console.log('🛒 주문 데이터:', products);
-  console.log('🔑 토큰:', accessToken);
+  const selectedPayment = formData.get('selectedPayment') as string;
+
+  console.log(selectedPayment);
+
+  console.log('주문 데이터:', products);
+  console.log('selectedPayment:', selectedPayment);
 
   let res: Response;
   let data: ApiRes<OrderProductType>;
 
   const body = {
     products: products,
+    selectedPayment: selectedPayment,
   };
 
   try {
@@ -42,5 +49,12 @@ export async function createOrder(
     return { ok: 0, message: '일시적인 네트워크 문제로 주문에 실패했습니다.' };
   }
 
-  return data;
+  if (data.ok) {
+    const orderId = data.item._id;
+
+    revalidatePath(`/shop/orderCompleted/${orderId}`);
+    redirect(`/shop/orderCompleted/${orderId}`);
+  } else {
+    return data;
+  }
 }

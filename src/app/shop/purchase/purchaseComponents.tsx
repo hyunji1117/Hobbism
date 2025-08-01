@@ -196,7 +196,9 @@ export function PurchaseAddress({
                   `(${localAddressInfo.detailAddress})`}
               </p>
             ) : (
-              <p>배송지를 입력해 주세요.</p>
+              <p className="text-[#4B5563]">
+                배송지가 비어 있습니다. 배송지를 입력해 주세요.
+              </p>
             )}
           </div>
         </div>

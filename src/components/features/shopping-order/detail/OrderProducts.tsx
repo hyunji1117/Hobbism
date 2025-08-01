@@ -1,15 +1,9 @@
-import { OrderOptions, OrderProductType } from '@/types/orders';
+import { OrderProductType } from '@/types/orders';
 import Image from 'next/image';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export function OrderProducts({
-  products,
-  options,
-}: {
-  products: OrderProductType[];
-  options: OrderOptions[];
-}) {
+export function OrderProducts({ products }: { products: OrderProductType[] }) {
   return (
     <ul>
       {products.map(product => (
@@ -27,13 +21,13 @@ export function OrderProducts({
           </div>
           <div className="leading-loose">
             <p className="text-sm font-bold">{product.name}</p>
-            {options
-              .filter(option => option._id === product._id)
-              .map((option, i) => (
-                <p className="text-sm text-[#4B5563]" key={i}>
-                  {option.extra.color ?? ''}, {option.extra.size ?? ''}
-                </p>
-              ))}
+
+            {(product.size || product.color) && (
+              <p className="text-sm text-[#4B5563]">
+                <span className="mr-1">{product.size && product.size}</span>
+                <span>{product.color && product.color}</span>
+              </p>
+            )}
 
             <p className="text-md font-semibold">
               {product.price}원{' '}

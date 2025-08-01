@@ -8,16 +8,10 @@ export type OrderProductType = Product & {
     path: string;
     name: string;
   };
+  size?: number | string;
+  color?: string;
   price: number;
   originalPrice?: number;
-};
-
-export type OrderOptions = {
-  _id: number;
-  extra: {
-    size?: number;
-    color?: string;
-  };
 };
 
 // API 서버의 구매 상세 조회 응답
@@ -33,6 +27,5 @@ export interface OrderInfoRes {
       };
       total: number;
     };
-    selected_options?: OrderOptions[];
   };
 }

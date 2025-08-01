@@ -68,7 +68,7 @@ export default function PurchaseClient({
 
           if (!addressInfo.address || !addressInfo.postcode) {
             e.preventDefault();
-            toast.error('배송지를 입력해 주세요. 주세요.');
+            toast.error('배송지를 입력해 주세요.');
             return;
           }
 

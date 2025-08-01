@@ -6,7 +6,15 @@ import { useAuthStore } from '@/store/auth.store';
 import { OrderInfoRes } from '@/types/orders';
 import { useEffect, useState } from 'react';
 
-export default function OrderDetailClient({ orderId }: { orderId: number }) {
+export default function OrderDetailClient({
+  orderId,
+  userInfo,
+  addressInfo,
+}: {
+  orderId: number;
+  userInfo: { name: string; phone: string };
+  addressInfo: { address: string; detailAddress: string; postcode: string };
+}) {
   const accessToken = useAuthStore(state => state.accessToken);
   const user = useAuthStore(state => state.user);
 
@@ -36,7 +44,16 @@ export default function OrderDetailClient({ orderId }: { orderId: number }) {
 
   const products = order.item.products;
   const cost = order.item.cost;
-  const options = order.item.selected_options ?? [];
+
+  const totalOriginalProducts = products.reduce((sum, p) => {
+    if (!p.extra.originalPrice) return cost.total;
+    return sum + p.extra.originalPrice * p.quantity;
+  }, 0);
+
+  const totalSale = products.reduce((sum, p) => {
+    if (!p.extra.originalPrice) return sum;
+    return sum + (p.extra.originalPrice - p.price) * p.quantity;
+  }, 0);
 
   return (
     <>
@@ -46,7 +63,7 @@ export default function OrderDetailClient({ orderId }: { orderId: number }) {
             <h2 className="border-b border-b-[#EAEAEA] pb-2 text-lg font-bold">
               주문 상품 {products.length}개
             </h2>
-            <OrderProducts products={products} options={options} />
+            <OrderProducts products={products} />
           </div>
 
           <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
@@ -57,13 +74,19 @@ export default function OrderDetailClient({ orderId }: { orderId: number }) {
             </h2>
             <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-4 text-sm">
               <dt className="text-[#4B5563]">수령인</dt>
-              <dd>{user?.name}</dd>
+              <dd>{userInfo.name} </dd>
 
               <dt className="text-[#4B5563]">휴대폰</dt>
-              <dd>{user?.phone}</dd>
+              <dd>
+                {userInfo.phone?.replace(/(\d{3})(\d{4})(\d{4})/, `$1-$2-$3`)}
+              </dd>
 
               <dt className="text-[#4B5563]">주소</dt>
-              <dd>{user?.address}</dd>
+              <dd>
+                {' '}
+                [{addressInfo.postcode}] {addressInfo.address}{' '}
+                {addressInfo.detailAddress && `(${addressInfo.detailAddress})`}
+              </dd>
             </dl>
           </div>
 
@@ -75,10 +98,11 @@ export default function OrderDetailClient({ orderId }: { orderId: number }) {
             </h2>
             <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-4 py-2 text-sm">
               <dt>총 상품 금액</dt>
-              <dd className="text-right">{cost.products}원</dd>
+              {/* <dd className="text-right">{cost.products}원</dd> */}
+              <dd className="text-right">{totalOriginalProducts}원</dd>
 
               <dt>할인 금액</dt>
-              <dd className="text-right">{cost?.discount.products ?? 0}원</dd>
+              <dd className="text-right">{totalSale}원</dd>
             </dl>
 
             <span className="mt-2 flex w-full justify-between border-t border-t-[#EAEAEA] pt-2 font-bold">
