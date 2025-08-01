@@ -3,48 +3,31 @@
 import { OrderProducts } from '@/components/features/shopping-order/detail/OrderProducts';
 import { fetchOrderDetail } from '@/data/functions/OrdersFetch';
 import { useAuthStore } from '@/store/auth.store';
-import { OrderInfoRes } from '@/types/orders';
+import {
+  OrderedAddress,
+  OrderedCost,
+  OrderedPayment,
+  OrderedUser,
+  OrderInfoRes,
+  OrderProductType,
+} from '@/types/orders';
 import { useEffect, useState } from 'react';
 
 export default function OrderDetailClient({
   orderId,
-  userInfo,
-  addressInfo,
+  user,
+  address,
+  payment,
+  cost,
+  products,
 }: {
   orderId: number;
-  userInfo: { name: string; phone: string };
-  addressInfo: { address: string; detailAddress: string; postcode: string };
+  user: OrderedUser;
+  address: OrderedAddress;
+  payment: OrderedPayment;
+  cost: OrderedCost;
+  products: OrderProductType[];
 }) {
-  const accessToken = useAuthStore(state => state.accessToken);
-  const user = useAuthStore(state => state.user);
-
-  const [order, setOrder] = useState<OrderInfoRes | null>(null);
-
-  useEffect(() => {
-    const loadData = async () => {
-      if (!accessToken) {
-        console.warn('accessToken 없음');
-        return;
-      }
-      try {
-        const data = await fetchOrderDetail(accessToken, orderId);
-
-        setOrder(data);
-      } catch (err) {
-        console.error('fetchOrderDetail 에러:', err);
-      }
-    };
-
-    loadData();
-  }, [accessToken, orderId]);
-
-  if (!accessToken) return <p>로그인이 필요합니다.</p>;
-  if (!order || !order.item || !order.item.products)
-    return <p>주문 정보를 불러오는 중...</p>;
-
-  const products = order.item.products;
-  const cost = order.item.cost;
-
   const totalOriginalProducts = products.reduce((sum, p) => {
     if (!p.extra.originalPrice) return cost.total;
     return sum + p.extra.originalPrice * p.quantity;
@@ -74,18 +57,18 @@ export default function OrderDetailClient({
             </h2>
             <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-4 text-sm">
               <dt className="text-[#4B5563]">수령인</dt>
-              <dd>{userInfo.name} </dd>
+              <dd>{user.name} </dd>
 
               <dt className="text-[#4B5563]">휴대폰</dt>
               <dd>
-                {userInfo.phone?.replace(/(\d{3})(\d{4})(\d{4})/, `$1-$2-$3`)}
+                {user.phone?.replace(/(\d{3})(\d{4})(\d{4})/, `$1-$2-$3`)}
               </dd>
 
               <dt className="text-[#4B5563]">주소</dt>
               <dd>
                 {' '}
-                [{addressInfo.postcode}] {addressInfo.address}{' '}
-                {addressInfo.detailAddress && `(${addressInfo.detailAddress})`}
+                [{address.postcode}] {address.address}{' '}
+                {address.detailAddress && `(${address.detailAddress})`}
               </dd>
             </dl>
           </div>
@@ -98,7 +81,6 @@ export default function OrderDetailClient({
             </h2>
             <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-4 py-2 text-sm">
               <dt>총 상품 금액</dt>
-              {/* <dd className="text-right">{cost.products}원</dd> */}
               <dd className="text-right">{totalOriginalProducts}원</dd>
 
               <dt>할인 금액</dt>

@@ -76,6 +76,20 @@ export default function PurchaseClient({
         }}
       >
         <input type="hidden" name="products" value={JSON.stringify(products)} />
+        <input type="hidden" name="name" value={userInfo.name || ''} />
+        <input type="hidden" name="phone" value={userInfo.phone || ''} />
+        <input type="hidden" name="products" value={JSON.stringify(products)} />
+        <input type="hidden" name="address" value={addressInfo.address || ''} />
+        <input
+          type="hidden"
+          name="detail"
+          value={addressInfo.detailAddress || ''}
+        />
+        <input
+          type="hidden"
+          name="postcode"
+          value={addressInfo.postcode || ''}
+        />
 
         <input type="hidden" name="accessToken" value={accessToken || ''} />
 

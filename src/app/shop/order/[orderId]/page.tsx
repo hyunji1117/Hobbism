@@ -1,6 +1,8 @@
 import OrderDetailClient from '@/app/shop/order/[orderId]/OrderDetailClient';
 import { getUserAttribute } from '@/data/actions/user';
+import { fetchOrderDetail } from '@/data/functions/OrdersFetch';
 import { authOptions } from '@/lib/auth';
+import { OrderInfoRes } from '@/types/orders';
 import { getServerSession } from 'next-auth';
 
 export default async function orderDetailPage({
@@ -8,44 +10,35 @@ export default async function orderDetailPage({
 }: {
   params: Promise<{ orderId: number }>;
 }) {
-  const { orderId } = await params;
-
   const session = await getServerSession(authOptions);
+  const accessToken = session?.accessToken;
 
-  if (!session?.user?._id) {
-    throw new Error('로그인이 필요합니다.');
+  if (!accessToken) {
+    return <p>로그인이 필요합니다.</p>;
   }
 
-  const addressRes = await getUserAttribute(session.user._id, 'address');
-  const addressDetailRes = await getUserAttribute(
-    session.user._id,
-    'extra/detail_address',
-  );
-  const postcodeRes = await getUserAttribute(
-    session.user._id,
-    'extra/postcode',
-  );
+  const { orderId } = await params;
+  const order = await fetchOrderDetail(accessToken, orderId);
 
-  const name = session.user?.name ?? '';
-  const phone = session.user?.phone ?? '';
-
-  if (
-    addressRes.ok !== 1 ||
-    addressDetailRes.ok !== 1 ||
-    postcodeRes.ok !== 1
-  ) {
-    return <div>주소 정보를 불러오지 못했습니다.</div>;
+  if (!order || !order.item) {
+    return <p>주문 정보를 불러올 수 없습니다.</p>;
   }
+
+  const { item } = order;
+  const user = item.user;
+  const address = item.address;
+  const payment = item.selectedPayment;
+  const cost = item.cost;
+  const products = item.products;
 
   return (
     <OrderDetailClient
       orderId={orderId}
-      userInfo={{ name, phone }}
-      addressInfo={{
-        address: addressRes.item.address,
-        detailAddress: addressDetailRes.item.extra.detail_address,
-        postcode: postcodeRes.item.extra.postcode,
-      }}
+      user={user}
+      address={address}
+      payment={payment}
+      cost={cost}
+      products={products}
     />
   );
 }

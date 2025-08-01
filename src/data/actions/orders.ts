@@ -15,13 +15,7 @@ export async function createOrder(
   const raw = formData.get('products') as string;
   const products = JSON.parse(raw);
   const accessToken = formData.get('accessToken') as string;
-
   const selectedPayment = formData.get('selectedPayment') as string;
-
-  console.log(selectedPayment);
-
-  console.log('주문 데이터:', products);
-  console.log('selectedPayment:', selectedPayment);
 
   let res: Response;
   let data: ApiRes<OrderProductType>;
@@ -29,6 +23,15 @@ export async function createOrder(
   const body = {
     products: products,
     selectedPayment: selectedPayment,
+    address: {
+      address: formData.get('address'),
+      detailAddress: formData.get('detail'),
+      postcode: formData.get('postcode'),
+    },
+    user: {
+      name: formData.get('name'),
+      phone: formData.get('phone'),
+    },
   };
 
   try {
@@ -43,7 +46,7 @@ export async function createOrder(
     });
 
     data = await res.json();
-    console.log('✅ 주문 생성 응답:', data);
+    console.log('주문 생성 응답:', data);
   } catch (error) {
     console.error(error);
     return { ok: 0, message: '일시적인 네트워크 문제로 주문에 실패했습니다.' };
