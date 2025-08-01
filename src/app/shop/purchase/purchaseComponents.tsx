@@ -2,11 +2,10 @@
 
 import Postcode from 'react-daum-postcode';
 import { usePurchaseStore } from '@/store/order.store';
-import { Banknote, CreditCard, MapPin, WalletCards } from 'lucide-react';
+import { Banknote, CreditCard, MapPin, WalletCards, X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import AddressForm from '@/components/features/user/setting/AddressForm';
 import { useAuthStore } from '@/store/auth.store';
 import { Address } from 'react-daum-postcode';
 import { updateUserInfo } from '@/data/actions/user';
@@ -34,17 +33,14 @@ export function PurchaseProductList() {
                   className="rounded-2xl"
                 />
               </div>
-              <div className="leading-loose">
+              <div>
                 <p className="text-sm font-bold">{product.name}</p>
-                {/* {product.selected_options?.map((option, i) => (
-                  <p className="text-sm text-[#4B5563]" key={i}>
-                    {option.extra.color ?? ''} {option.extra.size ?? ''}
+                {(product.size || product.color) && (
+                  <p className="text-sm text-[#4B5563]">
+                    <span className="mr-1">{product.size && product.size}</span>
+                    <span>{product.color && product.color}</span>
                   </p>
-                ))} */}
-                <p className="text-sm text-[#4B5563]">
-                  <span className="mr-1">{product.size && product.size}</span>
-                  <span>{product.color && product.color}</span>
-                </p>
+                )}
                 <p className="text-md font-semibold">
                   {product.price * product.quantity}원{' '}
                   <span className="font-normal text-[#4B5563]">
@@ -136,7 +132,7 @@ export function PurchaseAddress({
             onClick={toggleOpen}
             className="text-right font-semibold text-[#FE508B]"
           >
-            변경하기
+            {!isOpen ? <span>배송지 변경</span> : <X />}
           </button>
         </div>
         {isOpen && (
@@ -186,14 +182,22 @@ export function PurchaseAddress({
 
         <div className="flex gap-2">
           <MapPin />
-          <div className="leading-snug">
-            <p className="font-semibold">{userInfo.name}</p>
-            <p className="text-[#4B5563]">{userInfo.phone}</p>
-            <p className="text-[#4B5563]">
-              [{localAddressInfo.postcode}] {localAddressInfo.address}{' '}
-              {localAddressInfo.detailAddress &&
-                `(${localAddressInfo.detailAddress})`}
+          <div className="leading-relaxed">
+            <p className="font-semibold">
+              {userInfo.name}{' '}
+              <span className="font-light text-[#4B5563]">
+                {userInfo.phone?.replace(/(\d{3})(\d{4})(\d{4})/, `$1-$2-$3`)}
+              </span>
             </p>
+            {localAddressInfo.address ? (
+              <p className="text-[#4B5563]">
+                [{localAddressInfo.postcode}] {localAddressInfo.address}{' '}
+                {localAddressInfo.detailAddress &&
+                  `(${localAddressInfo.detailAddress})`}
+              </p>
+            ) : (
+              <p>배송지를 입력해 주세요.</p>
+            )}
           </div>
         </div>
       </div>
