@@ -159,7 +159,6 @@ export default function Header() {
               isLivePage && 'text-white',
             )}
           >
-            {isCommunityPage && '커뮤니티'}
             {isCommunityWritePage && '피드등록'}
             {isSettingPage && '설정'}
             {isEditPage && '프로필 수정'}
@@ -183,22 +182,6 @@ export default function Header() {
                 <SearchButton />
               </Suspense>
             )}
-            {/* {showCartIcon && (
-              <Link href="/shop/cart" className="relative">
-                <ShoppingCart />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
-            )} */}
-
-            {/* {showCartIcon && (
-              <Link href="/shop/cart" className="relative">
-                <CartIcon />
-              </Link>
-            )} */}
 
             {showCartIcon && (
               <Link href="/shop/cart" className="relative">
@@ -231,6 +214,7 @@ export default function Header() {
                 />
               </>
             )}
+
             {isLivePage && <LiveCalendarBtn />}
           </div>
         </div>
