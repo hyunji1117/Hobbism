@@ -8,7 +8,7 @@ export function MobileFrame({ children }: PropsWithChildren) {
     <CartProvider>
       <div
         id="modal-root"
-        className="frame-guideline relative mx-auto h-screen w-full max-w-[600px]"
+        className="frame-guideline relative mx-auto flex min-h-screen w-full max-w-[600px] flex-col"
       >
         <Header />
         {children}

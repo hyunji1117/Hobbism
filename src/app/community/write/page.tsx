@@ -3,7 +3,7 @@ import WriteForm from '@/components/features/community/community-create/FeedWrit
 
 export default async function WritePage() {
   return (
-    <div className="flex h-[calc(100%-48px)] min-h-[calc(100%-48px)] flex-col p-4">
+    <div className="flex min-h-[calc(100%-48px)] flex-1 flex-col p-4">
       <WriteForm />
     </div>
   );

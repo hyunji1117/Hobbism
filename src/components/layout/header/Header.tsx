@@ -107,6 +107,12 @@ export default function Header() {
   //   </header>
   // );
 
+  const confirmBackLabel = useMemo(() => {
+    if (isCommunityWritePage) return '피드 작성';
+    if (isEditPage) return '프로필 수정';
+    return '';
+  }, [isCommunityWritePage, isEditPage]);
+
   //          render: 로그인 페이지에서는 헤더 숨김 처리          //
   if (isLoginPage) return null;
 
@@ -149,7 +155,9 @@ export default function Header() {
                 className={cn(isLivePage && 'text-white')}
               />
             )}
-            {showConfirmBackButton && <BackButton needConfirm />}
+            {showConfirmBackButton && (
+              <BackButton needConfirm label={confirmBackLabel} />
+            )}
           </div>
 
           {/* 가운데 타이틀 영역 */}

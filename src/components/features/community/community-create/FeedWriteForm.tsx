@@ -164,7 +164,10 @@ export default function FeedWriteForm() {
   }, [accessToken, setValue]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex h-full flex-col">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex h-full min-h-[calc(100%-48px)] flex-1 flex-col"
+    >
       {/* 숨겨진 필드들 */}
       <input type="hidden" name="type" value="community" />
       <input type="hidden" {...register('accessToken')} />
@@ -277,7 +280,7 @@ export default function FeedWriteForm() {
       {content && imageFileList.length !== 0 && watchedTag ? (
         <button
           type="submit"
-          className="my-4 flex h-11 w-full cursor-pointer items-center justify-center rounded-full bg-[#4A4A4A] py-3 text-sm font-medium text-white"
+          className="my-4 mb-4 flex h-11 w-full cursor-pointer items-center justify-center rounded-full bg-[#4A4A4A] py-3 text-sm font-medium text-white"
           onClick={onUploadButtonClickHandler}
         >
           {'등록하기'}

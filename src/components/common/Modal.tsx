@@ -63,7 +63,7 @@ export function ModalPanel({
           }
         }}
         className={cn(
-          'relative rounded-2xl border border-[#D9D9D9] bg-white',
+          'relative max-w-[600px] rounded-2xl border border-[#D9D9D9] bg-white',
           className,
         )}
       >
