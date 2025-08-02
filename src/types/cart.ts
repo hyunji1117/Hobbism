@@ -70,6 +70,7 @@ export interface CartItem {
   id: string;
   name: string;
   price: number;
+  quantity: number;
   productImg?: string;
   extra?: {
     originalPrice: number; // extra 속성 추가
@@ -99,3 +100,8 @@ interface RawCartItem {
     };
   };
 }
+
+export type CartContextType = {
+  cartItems: CartItem[]; // 장바구니 아이템 배열
+  setCartItems: (items: CartItem[]) => void; // 장바구니 아이템을 설정하는 함수
+};
