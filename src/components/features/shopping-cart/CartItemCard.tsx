@@ -4,9 +4,9 @@ import { Minus, Plus, X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
-interface CardItemCardProps {
-  id: number; // 장바구니 아이템 식별 고유 번호 부여
-  productImg: string;
+export interface CardItemCardProps {
+  id: number;
+  mainImages: { path: string }[];
   name: string;
   price: number;
   quantity: number;
@@ -18,32 +18,33 @@ interface CardItemCardProps {
 
 export function CartItemCard({
   id,
-  productImg,
+  mainImages,
   name,
   price,
+  quantity,
   isChecked = false,
   onQuantityChange,
   onRemove,
   onCheck,
 }: CardItemCardProps) {
-  const [quantity, setQuantity] = useState(1);
+  const [localQuantity, setLocalQuantity] = useState(quantity);
 
   const handleCheckedChange = () => {
     onCheck?.(id, !isChecked);
   };
 
   const handleUp = () => {
-    if (quantity < 99) {
-      const newQuantity = quantity + 1;
-      setQuantity(newQuantity);
+    if (localQuantity < 99) {
+      const newQuantity = localQuantity + 1;
+      setLocalQuantity(newQuantity);
       onQuantityChange?.(id, newQuantity);
     }
   };
 
   const handleDown = () => {
-    if (quantity > 1) {
-      const newQuantity = quantity - 1;
-      setQuantity(newQuantity);
+    if (localQuantity > 1) {
+      const newQuantity = localQuantity - 1;
+      setLocalQuantity(newQuantity);
       onQuantityChange?.(id, newQuantity);
     }
   };
@@ -83,7 +84,7 @@ export function CartItemCard({
         {/* 상품 이미지 */}
         <div className="relative bottom-8 ml-8">
           <Image
-            src={productImg}
+            src={mainImages?.[0]?.path || ''}
             alt={name}
             className="rounded-xl border-2"
             width={80}
@@ -109,7 +110,7 @@ export function CartItemCard({
               <Minus size={20} />
             </div>
           </button>
-          <span className="relative bottom-2 px-6">{quantity}</span>
+          <span className="relative bottom-2 px-6">{localQuantity}</span>
           <button
             className="relative bottom-1 cursor-pointer"
             onClick={handleUp}
@@ -131,4 +132,3 @@ export function CartItemCard({
     </>
   );
 }
-export default CartItemCard;
