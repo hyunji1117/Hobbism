@@ -13,6 +13,7 @@ export interface CartItem {
 
 interface CartContextType {
   cartItems: CartItem[];
+  setCartItems: (items: CartItem[]) => void;
   addToCart: (item: Omit<CartItem, 'isChecked'>) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
@@ -44,7 +45,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addToCart = (item: Omit<CartItem, 'isChecked'>) => {
     setCartItems(prev => {
-      const idx = prev.findIndex(i => i.id === item.id); // 옵션이 있다면 id+옵션 조합으로
+      const idx = prev.findIndex(i => i.id === item.id);
       if (idx !== -1) {
         // 이미 담겨있으면
         const n = [...prev];
@@ -97,6 +98,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     <CartContext.Provider
       value={{
         cartItems,
+        setCartItems,
         addToCart,
         removeFromCart,
         clearCart,

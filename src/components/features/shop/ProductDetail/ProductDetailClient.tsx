@@ -10,12 +10,12 @@ import {
 } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
-import { ProductOption } from '@/types/product';
 import { ProductQuantitySelector } from '@/components/features/shop/ProductDetail/ProductDetail';
+import { fetchAddToCart } from '@/data/functions/CartFetch.client';
 
 import { usePurchaseStore } from '@/store/order.store';
 
-// 장바구니 아이콘 컴포넌트 추가
+// 장바구니 아이콘 컴포넌트
 export function CartIcon() {
   const { cartCount } = useCart();
   return (
@@ -47,33 +47,7 @@ export function GoBackButton({ stroke }: { stroke: string }) {
   );
 }
 
-// 장바구니 담기 버튼 컴포넌트 추가
-export function AddToCartBtn({
-  product,
-}: {
-  product: { id: string; name: string; price: number; productImg?: string };
-}) {
-  const { addToCart } = useCart();
-  return (
-    <button
-      onClick={() => {
-        addToCart({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          quantity: 1,
-          productImg: product.productImg || '',
-        });
-        alert('장바구니에 추가되었습니다!');
-      }}
-      className="rounded-md bg-[#FE508B] px-4 py-2 text-white hover:bg-[#e6457b]"
-    >
-      장바구니 담기
-    </button>
-  );
-}
-
-// 상품 상세 하위 로직
+// 상품 상세 구매 액션 로직
 export default function CartActions({
   price,
   options,
@@ -94,41 +68,53 @@ export default function CartActions({
   console.log('item', item);
 
   const router = useRouter();
-  const [selectedOptions, setSelectedOptions] = useState<{
-    size?: number;
-    color?: string;
-  }>({});
+  const [selectedSize, setSelectedSize] = useState<number | undefined>();
+  const [selectedColor, setSelectedColor] = useState<string | undefined>();
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const hasOptions = options && (options.size || options.color);
-  const allOptionsSelected =
-    !hasOptions || (selectedOptions.size && selectedOptions.color);
+  const allOptionsSelected = !hasOptions || (selectedSize && selectedColor);
 
-  const handleOptionChange = (
-    type: 'size' | 'color',
-    value: string | number,
-  ) => {
-    setSelectedOptions(prev => ({ ...prev, [type]: value }));
-  };
-
-  const handleAddToCart = () => {
-    if (!isBottomSheetOpen) {
-      // 바텀시트가 열리지 않은 상태에서는 아무 작업 않도록
-      setIsBottomSheetOpen(true);
+  const handleAddToCart = async () => {
+    // 옵션 검증: 사이즈와 색상이 모두 선택되지 않으면 경고 메시지 표시
+    if (!selectedSize || !selectedColor) {
+      alert('사이즈와 색상을 모두 선택해주세요!');
       return;
     }
 
-    if (!allOptionsSelected) {
-      alert('모든 옵션을 선택해주세요.');
-      return;
-    }
+    setLoading(true);
+    try {
+      // 장바구니 추가 로직
+      const body = {
+        product_id: item.id,
+        quantity,
+        size: selectedSize,
+        color: selectedColor,
+      };
 
-    alert('장바구니에 추가되었습니다!');
-    setIsBottomSheetOpen(false);
+      const res = await fetch('${API_URL}carts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        throw new Error('장바구니 추가 실패');
+      }
+
+      alert('장바구니에 추가되었습니다!');
+      setIsBottomSheetOpen(false);
+    } catch (error) {
+      console.error('장바구니 추가 중 오류 발생:', error);
+      alert('장바구니 추가에 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleBuyNow = () => {
+ const handleBuyNow = () => {
     if (!isBottomSheetOpen) {
       // 바텀시트가 열리지 않은 상태에서는 아무 작업 않도록
       setIsBottomSheetOpen(true);
@@ -168,14 +154,21 @@ export default function CartActions({
       {/* 상품 액션 버튼 */}
       <div className="bt-rounded-[8px] fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-5 py-3">
         <ProductActionButtons
-          onCartClick={handleAddToCart}
-          onBuyNowClick={handleBuyNow}
+          onCartClick={() => setIsBottomSheetOpen(true)}
+          onBuyNowClick={() => {
+            if (!selectedSize || !selectedColor) {
+              alert('사이즈와 색상을 모두 선택해주세요!');
+              return;
+            }
+            router.push('/checkout');
+          }}
           product={{
             id: item.id,
             name: item.name,
             price: item.price,
             productImg: item.productImg || '',
           }}
+
           options={options?.size?.map(size => ({
             id: size.toString(),
             name: `사이즈 ${size}`,
@@ -211,10 +204,8 @@ export default function CartActions({
                   <OptionSelector
                     name="사이즈"
                     options={options.size}
-                    selectedOption={selectedOptions.size?.toString() || ''}
-                    onSelect={value =>
-                      handleOptionChange('size', Number(value))
-                    }
+                    selectedOption={selectedSize?.toString() || ''}
+                    onSelect={value => setSelectedSize(Number(value))}
                   />
                 </div>
               )}
@@ -225,15 +216,15 @@ export default function CartActions({
                   <OptionSelector
                     name="색상"
                     options={options.color}
-                    selectedOption={selectedOptions.color || ''}
-                    onSelect={value => handleOptionChange('color', value)}
+                    selectedOption={selectedColor || ''}
+                    onSelect={value => setSelectedColor(value)}
                   />
                 </div>
               )}
 
               {allOptionsSelected && (
                 <ProductQuantitySelector
-                  selectedOption={`사이즈: ${selectedOptions.size}, 색상: ${selectedOptions.color}`}
+                  selectedOption={`사이즈: ${selectedSize}, 색상: ${selectedColor}`}
                   quantity={quantity}
                   onIncrease={() => setQuantity(prev => prev + 1)}
                   onDecrease={() => setQuantity(prev => Math.max(1, prev - 1))}
@@ -277,4 +268,3 @@ export default function CartActions({
 // NavBar에서 사용할 수 있게 내보내기
 CartActions.GoBackButton = GoBackButton;
 CartActions.CartIcon = CartIcon;
-CartActions.AddToCartBtn = AddToCartBtn;
