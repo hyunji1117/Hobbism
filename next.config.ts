@@ -42,6 +42,12 @@ const nextConfig: NextConfig = {
         hostname: 'ssl.pstatic.net',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '**',
+      },
     ],
   },
 };
