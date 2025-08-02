@@ -11,7 +11,7 @@ export function OrderProducts({ products }: { products: OrderProductType[] }) {
           <div className="relative aspect-square w-20">
             <Image
               fill
-              src={`${API_URL}/${product.image.path}`}
+              src={`${product.image.path}`}
               alt={product.image.name}
               priority={false}
               sizes="(max-width: 768px) 100vw"
