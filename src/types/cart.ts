@@ -19,12 +19,13 @@ export interface ProductListRes {
 export interface CartItem {
   product: {
     _id: number;
-    image: { path: string }[];
+    image: {
+      path: string;
+    };
+    name: string;
+    price: number;
+    quantity: number;
   };
-  mainImages: { path: string }[];
-  name: string;
-  price: number;
-  quantity: number;
   isChecked?: boolean;
 }
 
