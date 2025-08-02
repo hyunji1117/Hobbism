@@ -84,15 +84,17 @@ export default function OrderDetailClient({
               <dd className="text-right">{paymentLabel[payment]}</dd>
 
               <dt>총 상품 금액</dt>
-              <dd className="text-right">{totalOriginalProducts}원</dd>
+              <dd className="text-right">
+                {totalOriginalProducts.toLocaleString()}원
+              </dd>
 
               <dt>할인 금액</dt>
-              <dd className="text-right">-{totalSale}원</dd>
+              <dd className="text-right">-{totalSale.toLocaleString()}원</dd>
             </dl>
 
             <span className="mt-2 flex w-full justify-between border-t border-t-[#EAEAEA] pt-2 font-bold">
               <h3>총 결제 금액</h3>
-              <p>{cost.total}원</p>
+              <p>{cost.total.toLocaleString()}원</p>
             </span>
           </div>
         </div>
