@@ -74,6 +74,7 @@ export default function CartActions({
   const allOptionsSelected = !hasOptions || (selectedSize && selectedColor);
 
   const handleAddToCart = async () => {
+    // 옵션 검증: 사이즈와 색상이 모두 선택되지 않으면 경고 메시지 표시
     if (!selectedSize || !selectedColor) {
       alert('사이즈와 색상을 모두 선택해주세요!');
       return;
