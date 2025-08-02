@@ -25,10 +25,6 @@ export interface OrderedAddress {
   postcode: string;
 }
 
-export interface OrderedPayment {
-  selectedPayment: string;
-}
-
 export interface OrderedCost {
   products: number;
   discount: {
@@ -46,6 +42,6 @@ export interface OrderInfoRes {
     cost: OrderedCost;
     user: OrderedUser;
     address: OrderedAddress;
-    selectedPayment: OrderedPayment;
+    selectedPayment: string;
   };
 }
