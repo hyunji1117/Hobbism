@@ -152,6 +152,13 @@ export default function FeedUpdateForm({ post }: Props) {
 
   const watchedTag = watch('tag');
 
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.style.height = 'auto';
+      contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
+    }
+  }, []);
+
   //          effect: 이미지 변경 시 실행할 함수          //
   useEffect(() => {
     const convertImagesToFiles = async () => {

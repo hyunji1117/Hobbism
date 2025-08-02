@@ -23,7 +23,7 @@ import { Plus, X } from 'lucide-react';
 import { FEED_CATEGORIES } from '@/constant/category';
 import { cn } from '@/lib/utils';
 
-//          interface: 프로필 수정 폼 입력 타입 정의          //
+//          interface: 피드 작성 폼 입력 타입 정의          //
 interface FormValues {
   attach: File[];
   content: string;

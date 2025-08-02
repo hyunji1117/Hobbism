@@ -23,6 +23,10 @@ import 'swiper/css/pagination';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { deletePost } from '@/data/actions/post';
+import { useRouter } from 'next/navigation';
+import { useModalStore } from '@/store/modal.store';
+import DeleteModal from '@/components/common/DeleteModal';
 
 // 카카오 SDK 타입 정의
 interface KakaoSDK {
@@ -76,6 +80,11 @@ export default function CommunityFeed({ post, page }: Props) {
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  //          function: 라우터 함수          //
+  const router = useRouter(); // 라우터 이동용
+  //          function: 오픈 모달 함수          //
+  const openModal = useModalStore(state => state.openModal); // 성공 모달 열기용
+  const clearModals = useModalStore(state => state.clearModals);
   //         event handler: more 버튼 클릭 이벤트 처리          //
   const onMoreButtonClickHandler = () => {
     setShowMore(!showMore);
@@ -85,6 +94,33 @@ export default function CommunityFeed({ post, page }: Props) {
   const handleOutsideClose = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     if (showMore && !showMoreRef.current?.contains(target)) setShowMore(false);
+  };
+
+  const onDeleteModalOpenHandler = () => {
+    openModal(({ onClose }) => (
+      <DeleteModal
+        key="delete-modal"
+        onClose={onClose}
+        onConfirm={onDeleteButtonClickHandler}
+      />
+    ));
+  };
+  //         event handler: 삭제 버튼 클릭 이벤트 처리          //
+  const onDeleteButtonClickHandler = async () => {
+    if (!accessToken) return;
+
+    const formData = new FormData();
+    formData.append('_id', post._id.toString());
+    formData.append('accessToken', accessToken);
+
+    const res = await deletePost(null, formData);
+
+    if (res.ok === 1) {
+      clearModals();
+      router.push('/community');
+    } else {
+      console.error('게시물 삭제 안됨');
+    }
   };
 
   //          effect: 정렬 박스 외부 영역 클릭 시 실행할 함수          //
@@ -138,8 +174,8 @@ export default function CommunityFeed({ post, page }: Props) {
                   <Separator />
                 </div>
                 <button
-                  className="w-fit appearance-none px-8 py-1 leading-none whitespace-nowrap"
-                  // onClick={onDeleteButtonClickHandler}
+                  className="w-fit cursor-pointer appearance-none px-8 py-1 leading-none whitespace-nowrap"
+                  onClick={onDeleteModalOpenHandler}
                 >
                   {'삭제'}
                 </button>
