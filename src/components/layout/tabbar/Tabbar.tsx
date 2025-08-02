@@ -40,8 +40,9 @@ export default function TabBar() {
     ];
     const shouldHide = hidden.some(path => pathname.startsWith(path));
     const shopDetailPath = pathname.match(/^\/shop\/\d+/);
+    const communityUpdatePath = pathname.match(/^\/community\/update\/\d+/);
 
-    setIsHidden(shouldHide || !!shopDetailPath);
+    setIsHidden(shouldHide || !!shopDetailPath || !!communityUpdatePath);
   }, [pathname]);
 
   if (isHidden) return null;

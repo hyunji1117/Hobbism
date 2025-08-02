@@ -1,5 +1,6 @@
 import { getPost } from '@/data/actions/post';
 import CommunityMain from '@/components/features/community/community-main/CommunityMain';
+import CommunityFeed from '@/components/features/community/community-main/CommunityFeed';
 
 interface CommunityDetailPageProps {
   params: Promise<{ id: string }>;
@@ -37,8 +38,8 @@ export default async function CommunityDetailPage({
 
   // CommunityMain 컴포넌트 재사용
   return (
-    <div className="min-h-screen bg-white">
-      <CommunityMain post={res.item} />
+    <div className="flex-1 bg-white">
+      <CommunityFeed post={res.item} page="detail" />
     </div>
   );
 }

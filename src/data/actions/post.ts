@@ -190,10 +190,49 @@ export async function createPost(
 export async function updatePost(
   state: ApiRes<Post> | null,
   formData: FormData,
+  _id: string,
 ): ApiResPromise<Post> {
-  const _id = formData.get('_id') as string;
-  const content = formData.get('content') as string;
-  const accessToken = formData.get('accessToken') as string;
+  let imageUrls: string[] = [];
+  const attachFiles = formData.getAll('attach') as File[];
+  console.log('attach', attachFiles);
+  const accessToken = formData.get('accessToken');
+
+  console.log('accesToken', accessToken);
+
+  if (attachFiles.length > 0) {
+    const fileFormData = new FormData();
+    attachFiles.forEach(file => {
+      fileFormData.append('attach', file);
+    });
+
+    try {
+      const fileRes = await fetch(`${API_URL}/files`, {
+        method: 'POST',
+        headers: {
+          'Client-Id': CLIENT_ID,
+        },
+        body: fileFormData,
+      });
+
+      const fileResult = await fileRes.json();
+
+      if (fileResult.ok) {
+        imageUrls = fileResult.item.map((file: FileUpload) => file.path);
+      }
+    } catch (error) {
+      console.error('파일 업로드 에러:', error);
+      return { ok: 0, message: '이미지 업로드에 실패했습니다.' };
+    }
+  }
+
+  console.log('업로드된 이미지 url들', imageUrls);
+
+  const body = {
+    type: formData.get('type'),
+    content: formData.get('content'),
+    tag: formData.get('tag'),
+    ...(imageUrls.length > 0 && { image: imageUrls }),
+  };
 
   let data: ApiRes<Post>;
 
@@ -205,7 +244,7 @@ export async function updatePost(
         'Client-Id': CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ content }),
+      body: JSON.stringify(body),
     });
 
     data = await res.json();
@@ -215,8 +254,9 @@ export async function updatePost(
   }
 
   if (data.ok) {
-    revalidateTag('posts');
-    revalidateTag(`posts/${_id}`);
+    revalidatePath(`/${body.type}`); // 목록 페이지 캐시 갱신
+    // 메인페이지로 이동 (상세페이지 대신)
+    redirect(`/${body.type}`); // /community로 이동
   }
 
   return data;
