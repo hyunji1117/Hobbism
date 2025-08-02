@@ -26,7 +26,6 @@ export interface CartItem {
     price: number;
     quantity: number;
   };
-  // mainImages: { path: string }[];
   isChecked?: boolean;
 }
 
