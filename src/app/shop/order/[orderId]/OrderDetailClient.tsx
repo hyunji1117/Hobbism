@@ -6,9 +6,7 @@ import { useAuthStore } from '@/store/auth.store';
 import {
   OrderedAddress,
   OrderedCost,
-  OrderedPayment,
   OrderedUser,
-  OrderInfoRes,
   OrderProductType,
 } from '@/types/orders';
 import { useEffect, useState } from 'react';
@@ -24,7 +22,7 @@ export default function OrderDetailClient({
   orderId: number;
   user: OrderedUser;
   address: OrderedAddress;
-  payment: OrderedPayment;
+  payment: string;
   cost: OrderedCost;
   products: OrderProductType[];
 }) {
@@ -37,6 +35,14 @@ export default function OrderDetailClient({
     if (!p.extra.originalPrice) return sum;
     return sum + (p.extra.originalPrice - p.price) * p.quantity;
   }, 0);
+
+  const paymentLabel: Record<string, string> = {
+    card: '신용카드',
+    cash: '무통장입금',
+    simple: '간편결제',
+  };
+
+  console.log('payment', payment);
 
   return (
     <>
@@ -80,6 +86,9 @@ export default function OrderDetailClient({
               결제 내역
             </h2>
             <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-4 py-2 text-sm">
+              <dt>결제 수단</dt>
+              <dd className="text-right">{paymentLabel[payment]}</dd>
+
               <dt>총 상품 금액</dt>
               <dd className="text-right">{totalOriginalProducts}원</dd>
 
