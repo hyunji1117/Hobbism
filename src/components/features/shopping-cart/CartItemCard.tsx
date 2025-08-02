@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 export interface CardItemCardProps {
   id: number;
-  mainImages: { path: string }[];
+  path: string;
   name: string;
   price: number;
   quantity: number;
@@ -18,7 +18,7 @@ export interface CardItemCardProps {
 
 export function CartItemCard({
   id,
-  mainImages,
+  path,
   name,
   price,
   quantity,
@@ -53,6 +53,8 @@ export function CartItemCard({
     onRemove?.(id);
   };
 
+  console.log('name', name);
+
   return (
     <>
       <div className="relative mx-auto h-[6.5rem] w-[21.875rem]">
@@ -84,7 +86,7 @@ export function CartItemCard({
         {/* 상품 이미지 */}
         <div className="relative bottom-8 ml-8">
           <Image
-            src={mainImages?.[0]?.path || ''}
+            src={path || ''}
             alt={name}
             className="rounded-xl border-2"
             width={80}
@@ -95,7 +97,7 @@ export function CartItemCard({
         {/* 상품 정보 */}
         <div className="absolute top-0 left-34">
           <p className="text-lg leading-6 font-semibold">
-            {name.length > 10 ? `${name.slice(0, 10)}...` : name}
+            {name?.length > 10 ? `${name.slice(0, 10)}...` : name}
           </p>
           <p>{price.toLocaleString()}원</p>
         </div>

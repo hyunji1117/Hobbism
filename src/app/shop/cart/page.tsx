@@ -32,11 +32,18 @@ export default function CartPage() {
             ...item,
             product: {
               _id: item.product._id,
-              image: item.mainImages ?? [],
+              image: item.product.image ?? [],
+              name: item.product.name,
+              path: item.product.image.path,
+              price: item.product.price,
+              quantity: item.product.quantity,
             },
             isChecked: false,
           })),
         );
+
+        console.log('data', data);
+        // console.log('name', name);
       } catch (err) {
         console.error('장바구니 데이터를 가져오는 중 오류 발생:', err);
         setError('장바구니 데이터를 불러오는 데 실패했습니다.');
@@ -153,12 +160,12 @@ export default function CartPage() {
       <div>
         {cartItems.map((item, index) => (
           <CartItemCard
-            key={`${item.product._id}-${item.name}-${index}`}
+            key={`${item.product._id}-${item.product.name}-${index}`}
             id={item.product._id}
-            mainImages={item.product.image}
-            name={item.name}
-            price={item.price}
-            quantity={item.quantity}
+            path={item.product.image.path}
+            name={item.product.name}
+            price={item.product.price}
+            quantity={item.product.quantity}
             isChecked={item.isChecked}
             onCheck={handleItemCheck}
           />
