@@ -66,9 +66,23 @@ interface FormValues {
 export function PurchaseAddress({
   userInfo,
   addressInfo,
+  localAddressInfo,
+  setLocalAddressInfo,
 }: {
   userInfo: { name: string; phone: string };
   addressInfo: { address: string; detailAddress: string; postcode: string };
+  localAddressInfo: {
+    address: string;
+    detailAddress: string;
+    postcode: string;
+  };
+  setLocalAddressInfo: React.Dispatch<
+    React.SetStateAction<{
+      address: string;
+      detailAddress: string;
+      postcode: string;
+    }>
+  >;
 }) {
   //          state: 주소 입력 폼 오픈 상태          //
   const [isOpen, setIsOpen] = useState(false);
@@ -77,8 +91,6 @@ export function PurchaseAddress({
   const currentUser = useAuthStore(state => state.user);
   //          state: accessToken 상태          //
   const accessToken = useAuthStore(state => state.accessToken);
-  //           state: localAddress 상태           //
-  const [localAddressInfo, setLocalAddressInfo] = useState(addressInfo);
 
   const { register, setValue, handleSubmit } = useForm<FormValues>({
     defaultValues: {

@@ -24,6 +24,9 @@ export default function PurchaseClient({
 }) {
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
 
+  //           state: localAddress 상태           //
+  const [localAddressInfo, setLocalAddressInfo] = useState(addressInfo);
+
   const accessToken = useAuthStore(state => state.accessToken);
   const [state, formAction, isLoading] = useActionState(createOrder, null);
 
@@ -47,7 +50,12 @@ export default function PurchaseClient({
       <div className="pb-[10vh]">
         <PurchaseProductList />
         <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
-        <PurchaseAddress userInfo={userInfo} addressInfo={addressInfo} />
+        <PurchaseAddress
+          userInfo={userInfo}
+          addressInfo={addressInfo}
+          localAddressInfo={localAddressInfo}
+          setLocalAddressInfo={setLocalAddressInfo}
+        />
         <div className="my-5 h-2 w-full bg-[#F3F4F6]"></div>
         <PaymentSelector
           selected={selectedPayment}
@@ -66,7 +74,7 @@ export default function PurchaseClient({
             return;
           }
 
-          if (!addressInfo.address || !addressInfo.postcode) {
+          if (!localAddressInfo.address || !localAddressInfo.postcode) {
             e.preventDefault();
             toast.error('배송지를 입력해 주세요.');
             return;
@@ -79,16 +87,20 @@ export default function PurchaseClient({
         <input type="hidden" name="name" value={userInfo.name || ''} />
         <input type="hidden" name="phone" value={userInfo.phone || ''} />
         <input type="hidden" name="products" value={JSON.stringify(products)} />
-        <input type="hidden" name="address" value={addressInfo.address || ''} />
+        <input
+          type="hidden"
+          name="address"
+          value={localAddressInfo.address || ''}
+        />
         <input
           type="hidden"
           name="detail"
-          value={addressInfo.detailAddress || ''}
+          value={localAddressInfo.detailAddress || ''}
         />
         <input
           type="hidden"
           name="postcode"
-          value={addressInfo.postcode || ''}
+          value={localAddressInfo.postcode || ''}
         />
 
         <input type="hidden" name="accessToken" value={accessToken || ''} />
