@@ -5,7 +5,9 @@ import {
   ProductDetailInfoProps,
   ProductQuantitySelectorProps,
 } from '@/types/product';
-import { useCart } from '@/components/features/shop/ProductDetail/CartContext'; // 추가
+import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
+// import { useEffect, useState } from 'react';
+// import { fetchCartList } from '@/data/functions/CartFetch.client';
 
 // 상품 상세 정보 컴포넌트
 export const ProductDetailInfo = ({
@@ -33,7 +35,6 @@ export const ProductDetailInfo = ({
     ? recommendData[extra.recommendedBy]
     : { name: '추천', color: 'bg-[#C3C3C3]', textColor: 'text-black' };
 
-  // 원가 기본값 설정
   const originalPrice = extra.originalPrice;
 
   return (
@@ -71,7 +72,7 @@ export const ProductDetailInfo = ({
 };
 
 // 장바구니 담기 버튼 컴포넌트
-function ProductDetail({
+export function ProductDetail({
   product,
 }: {
   product: { id: string; name: string; price: number };
@@ -155,12 +156,7 @@ export const ProductQuantitySelector = ({
 };
 
 // 상품 액션 버튼 컴포넌트
-export const ProductActionButtons = ({
-  onCartClick,
-  onBuyNowClick,
-  product,
-  options,
-}: {
+interface ProductActionButtonsProps {
   onCartClick: () => void;
   onBuyNowClick: () => void;
   product: {
@@ -169,29 +165,30 @@ export const ProductActionButtons = ({
     price: number;
     productImg: string;
   };
-  options?: {
-    id: string;
-    name: string;
-    price: number;
-  }[];
-}) => {
+  options?: { id: string; name: string; price: number }[];
+}
+
+export const ProductActionButtons = ({
+  onCartClick,
+  onBuyNowClick,
+  product,
+  options,
+}: ProductActionButtonsProps) => {
   return (
-    <section className="flex h-[54px] gap-3">
+    <div className="flex justify-between">
       <button
-        type="button"
-        className="w-[40%] cursor-pointer rounded-[8px] bg-[#EAEAEA] text-[16px]"
         onClick={onCartClick}
+        className="w-[48%] rounded-md bg-blue-500 px-4 py-2 text-white"
       >
         장바구니 담기
       </button>
       <button
-        type="button"
-        className="w-[60%] cursor-pointer rounded-[8px] bg-[#FE508B] text-[18px] font-semibold text-white"
         onClick={onBuyNowClick}
+        className="w-[48%] rounded-md bg-green-500 px-4 py-2 text-white"
       >
         구매하기
       </button>
-    </section>
+    </div>
   );
 };
 
@@ -205,7 +202,7 @@ export const TotalPrice = ({
   price: number;
   originalPrice?: number;
 }) => {
-  const totalPrice = quantity * (originalPrice ?? price);
+  const totalPrice = quantity * (price ?? originalPrice);
 
   return (
     <section className="z-20 flex h-[54px] items-center justify-between border-t border-[#EAEAEA] bg-white px-4 pt-4">

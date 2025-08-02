@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { CartItem } from '@/types/cart';
 
 export interface CartItem {
   id: string;
@@ -13,6 +14,8 @@ export interface CartItem {
 
 interface CartContextType {
   cartItems: CartItem[];
+  setCartItems: (items: CartItem[]) => void;
+  updateCartItemQuantity: (id: number, quantity: number) => void;
   addToCart: (item: Omit<CartItem, 'isChecked'>) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
@@ -31,6 +34,16 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
+  const updateCartItemQuantity = (id: number, quantity: number) => {
+    setCartItems(prev =>
+      prev.map(item =>
+        item.product._id === id
+          ? { ...item, product: { ...item.product, quantity } }
+          : item,
+      ),
+    );
+  };
+
   // 로컬스토리지 연동
   useEffect(() => {
     const raw = localStorage.getItem('cartItems');
@@ -44,7 +57,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addToCart = (item: Omit<CartItem, 'isChecked'>) => {
     setCartItems(prev => {
-      const idx = prev.findIndex(i => i.id === item.id); // 옵션이 있다면 id+옵션 조합으로
+      const idx = prev.findIndex(i => i.id === item.id);
       if (idx !== -1) {
         // 이미 담겨있으면
         const n = [...prev];
@@ -97,6 +110,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     <CartContext.Provider
       value={{
         cartItems,
+        setCartItems,
+        updateCartItemQuantity,
         addToCart,
         removeFromCart,
         clearCart,
@@ -116,7 +131,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const useCart = () => {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error('useCart must be used within CartProvider');
-  return ctx;
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart는 CartProvider가 있어야 합니다.');
+  }
+  return context;
 };

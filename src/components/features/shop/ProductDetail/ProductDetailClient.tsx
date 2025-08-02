@@ -10,10 +10,11 @@ import {
 } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
-import { ProductOption } from '@/types/product';
 import { ProductQuantitySelector } from '@/components/features/shop/ProductDetail/ProductDetail';
+import { fetchAddToCart } from '@/data/functions/CartFetch.client';
+import { usePurchaseStore } from '@/store/order.store';
 
-// 장바구니 아이콘 컴포넌트 추가
+// 장바구니 아이콘 컴포넌트
 export function CartIcon() {
   const { cartCount } = useCart();
   return (
@@ -45,41 +46,15 @@ export function GoBackButton({ stroke }: { stroke: string }) {
   );
 }
 
-// 장바구니 담기 버튼 컴포넌트 추가
-export function AddToCartBtn({
-  product,
-}: {
-  product: { id: string; name: string; price: number; productImg?: string };
-}) {
-  const { addToCart } = useCart();
-  return (
-    <button
-      onClick={() => {
-        addToCart({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          quantity: 1,
-          productImg: product.productImg || '',
-        });
-        alert('장바구니에 추가되었습니다!');
-      }}
-      className="rounded-md bg-[#FE508B] px-4 py-2 text-white hover:bg-[#e6457b]"
-    >
-      장바구니 담기
-    </button>
-  );
-}
-
-// 상품 상세 하위 로직
-export default function CartActions({
+// 상품 상세 구매 액션 로직
+export default function CartAction({
   price,
   options,
   discountRate,
   item,
 }: {
   price: number;
-  options: { size: number[]; color: string[] };
+  options: { size: number[] | string[]; color: string[] };
   discountRate: number;
   item: {
     id: string;
@@ -89,39 +64,49 @@ export default function CartActions({
     originalPrice?: number;
   };
 }) {
+  console.log('item', item);
+
   const router = useRouter();
-  const [selectedOptions, setSelectedOptions] = useState<{
-    size?: number;
-    color?: string;
-  }>({});
+  const [selectedSize, setSelectedSize] = useState<number | undefined>();
+  const [selectedColor, setSelectedColor] = useState<string | undefined>();
+  const { updateCartItemQuantity } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const hasOptions = options && (options.size || options.color);
-  const allOptionsSelected =
-    !hasOptions || (selectedOptions.size && selectedOptions.color);
+  const allOptionsSelected = !hasOptions || (selectedSize && selectedColor);
 
-  const handleOptionChange = (
-    type: 'size' | 'color',
-    value: string | number,
-  ) => {
-    setSelectedOptions(prev => ({ ...prev, [type]: value }));
-  };
+  const handleAddToCart = async () => {
+    if (isBottomSheetOpen) {
+      // 바텀시트가 열려 있는 상태에서 옵션 검증 수행
+      if (!selectedSize || !selectedColor) {
+        alert('사이즈와 색상을 모두 선택해주세요!');
+        return;
+      }
 
-  const handleAddToCart = () => {
-    if (!isBottomSheetOpen) {
-      // 바텀시트가 열리지 않은 상태에서는 아무 작업 않도록
+      setLoading(true);
+      try {
+        const response = await fetchAddToCart({
+          product_id: Number(item.id),
+          quantity,
+          size: selectedSize.toString(),
+          color: selectedColor,
+        });
+
+        console.log('장바구니 추가 성공 응답:', response);
+
+        alert('장바구니에 상품이 추가되었습니다!');
+        setIsBottomSheetOpen(false);
+      } catch (error) {
+        console.error('장바구니 추가 중 오류 발생:', error);
+        alert('장바구니 추가에 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
       setIsBottomSheetOpen(true);
-      return;
     }
-
-    if (!allOptionsSelected) {
-      alert('모든 옵션을 선택해주세요.');
-      return;
-    }
-
-    alert('장바구니에 추가되었습니다!');
-    setIsBottomSheetOpen(false);
   };
 
   const handleBuyNow = () => {
@@ -130,31 +115,32 @@ export default function CartActions({
       setIsBottomSheetOpen(true);
       return;
     }
-    if (!allOptionsSelected) {
+    if (!selectedSize || !selectedColor) {
       alert('모든 옵션을 선택해주세요.');
       return;
     }
 
-    alert('결제 페이지로 이동합니다!');
     setIsBottomSheetOpen(false);
 
-    const selectedOptionDetails = {
-      size: selectedOptions.size,
-      color: selectedOptions.color,
+    const purchaseData = {
+      id: item.id,
+      name: item.name,
+      originalPrice: item.originalPrice,
+      price: item.price,
+      quantity,
+      size: selectedSize,
+      color: selectedColor,
+      productImg: item.productImg || '',
     };
 
-    // router.push({
-    //   pathname: '/checkout',
-    //   query: {
-    //     id: item.id,
-    //     name: item.name,
-    //     price: item.price,
-    //     quantity,
-    //     options: JSON.stringify(selectedOptionDetails),
-    //   },
-    // });
+    console.log('purchaseData', purchaseData);
+
+    // 구매 데이터 저장 및 페이지 이동
+    usePurchaseStore.getState().setPurchaseData([purchaseData]);
+    router.push(`/shop/purchase`);
   };
 
+  // swipe down 시 바텀시트 닫기
   const swipeHandlers = useSwipeable({
     onSwipedDown: () => setIsBottomSheetOpen(false),
     trackMouse: true,
@@ -173,7 +159,7 @@ export default function CartActions({
             price: item.price,
             productImg: item.productImg || '',
           }}
-          options={options.size?.map(size => ({
+          options={options?.size?.map(size => ({
             id: size.toString(),
             name: `사이즈 ${size}`,
             price: item.price,
@@ -183,15 +169,23 @@ export default function CartActions({
 
       {/* 바텀시트 어두운 배경 */}
       {isBottomSheetOpen && (
-        <div className="fixed inset-0 z-10 flex items-center justify-center">
-          <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
-        </div>
+        <>
+          {/* 어두운 배경: 클릭 시 바텀시트 닫힘 */}
+          <div
+            className="fixed inset-0 z-10 bg-black opacity-50"
+            onClick={() => setIsBottomSheetOpen(false)}
+          />
+          <div
+            {...swipeHandlers}
+            className="fixed bottom-[78px] z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg"
+            onClick={e => e.stopPropagation()}
+          ></div>
+        </>
       )}
 
       {/* 바텀시트 */}
       {isBottomSheetOpen && (
         <div
-          {...swipeHandlers}
           className={`fixed z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg ${
             hasOptions ? 'bottom-[78px]' : 'bottom-[78px]'
           }`}
@@ -208,10 +202,8 @@ export default function CartActions({
                   <OptionSelector
                     name="사이즈"
                     options={options.size}
-                    selectedOption={selectedOptions.size?.toString() || ''}
-                    onSelect={value =>
-                      handleOptionChange('size', Number(value))
-                    }
+                    selectedOption={selectedSize?.toString() || ''}
+                    onSelect={value => setSelectedSize(Number(value))}
                   />
                 </div>
               )}
@@ -222,15 +214,15 @@ export default function CartActions({
                   <OptionSelector
                     name="색상"
                     options={options.color}
-                    selectedOption={selectedOptions.color || ''}
-                    onSelect={value => handleOptionChange('color', value)}
+                    selectedOption={selectedColor || ''}
+                    onSelect={value => setSelectedColor(value)}
                   />
                 </div>
               )}
 
               {allOptionsSelected && (
                 <ProductQuantitySelector
-                  selectedOption={`사이즈: ${selectedOptions.size}, 색상: ${selectedOptions.color}`}
+                  selectedOption={`사이즈: ${selectedSize}, 색상: ${selectedColor}`}
                   quantity={quantity}
                   onIncrease={() => setQuantity(prev => prev + 1)}
                   onDecrease={() => setQuantity(prev => Math.max(1, prev - 1))}
@@ -272,6 +264,5 @@ export default function CartActions({
 }
 
 // NavBar에서 사용할 수 있게 내보내기
-CartActions.GoBackButton = GoBackButton;
-CartActions.CartIcon = CartIcon;
-CartActions.AddToCartBtn = AddToCartBtn;
+CartAction.GoBackButton = GoBackButton;
+CartAction.CartIcon = CartIcon;

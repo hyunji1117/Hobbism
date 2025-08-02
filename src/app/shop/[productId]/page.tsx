@@ -8,6 +8,7 @@ import CartAction, {
   GoBackButton,
 } from '@/components/features/shop/ProductDetail/ProductDetailClient';
 import { ProductOption } from '@/types/product';
+import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
 
 export default async function ProductPage({
   params,
@@ -29,12 +30,8 @@ export default async function ProductPage({
   const mainImage = product.mainImages[0];
   const detailImage = product.content[0];
 
-  const mainImageUrl = mainImage
-    ? `https://fesp-api.koyeb.app/market/${mainImage.path}`
-    : '';
-  const detailImageUrl = detailImage
-    ? `https://fesp-api.koyeb.app/market/${detailImage.path}`
-    : '';
+  const mainImageUrl = mainImage ? `${mainImage.path}` : '';
+  const detailImageUrl = detailImage ? `${detailImage.path}` : '';
 
   const options = Array.isArray(product.extra.options)
     ? product.extra.options
@@ -89,6 +86,7 @@ export default async function ProductPage({
           name: product.name,
           price: product.price,
           productImg: mainImageUrl,
+          originalPrice: product.extra?.originalPrice,
         }}
       />
 

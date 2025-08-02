@@ -26,10 +26,12 @@ export interface Product {
     recommendedBy: string;
     isLiveSpecial: boolean;
     discountRate: number;
-    // discountedPrice: number;
-    // 원가
+    options: {
+      size: number[] | string[];
+      color: string[];
+    };
     originalPrice: number;
-    options: ProductOption[];
+    // options: ProductOption[];
     live: {
       start: string;
       end: string;
@@ -63,7 +65,7 @@ export interface ProductOption {
   name: string;
   values: string | number;
   options: {
-    size: number[];
+    size: number[] | string[];
     color: string[];
   };
 }

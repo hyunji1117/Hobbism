@@ -35,6 +35,12 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
     setLoading(false);
   };
 
+  //              effect: fetchLive 호출          //
+  const fetchLive = useLiveStore(state => state.fetchLive);
+  useEffect(() => {
+    fetchLive();
+  }, []);
+
   //        effect: IntersectionObserver로 무한 트리거        //
   useEffect(() => {
     const target = observerRef.current;
@@ -63,12 +69,6 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
   useEffect(() => {
     loadingProducts(page); //page가 바뀔 때마다 해당 페이지 게시물 로드
   }, [page]);
-
-  //              effect: fetchLive 호출          //
-  const fetchLive = useLiveStore(state => state.fetchLive);
-  useEffect(() => {
-    fetchLive();
-  }, []);
 
   //       state: 선택된 카테고리 상태       //
   const [selectedCategory, setSelectedCategory] = useState('ALL');

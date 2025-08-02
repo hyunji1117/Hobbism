@@ -56,15 +56,12 @@ export async function fetchProducts(page: number): Promise<Product[]> {
 export async function fetchProductDetail(
   productId: string,
 ): Promise<{ item: Product }> {
-  const res = await fetch(
-    `https://fesp-api.koyeb.app/market/products/${productId}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Client-Id': CLIENT_ID,
-      },
+  const res = await fetch(`${API_URL}/products/${productId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Client-Id': CLIENT_ID,
     },
-  );
+  });
   const data = await res.json();
   console.log('Fetched product detail:', data);
   return data;

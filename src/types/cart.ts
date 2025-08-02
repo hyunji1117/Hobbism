@@ -15,12 +15,37 @@ export interface ProductListRes {
   };
 }
 
-// 장바구니 상품 수량 수정
-export interface CartQuantityUpdateRes {
-  ok: number;
-  item: {
+// 장바구니 상품 타입 정의
+export interface CartItem {
+  product: {
+    _id: number;
+    image: {
+      path: string;
+    };
+    name: string;
+    price: number;
     quantity: number;
   };
+  isChecked?: boolean;
+}
+
+// CartItemCard 컴포넌트
+export interface CardItemCardProps {
+  id: number;
+  mainImages: { path: string }[];
+  name: string;
+  price: number;
+  quantity: number;
+  isChecked?: boolean;
+  onQuantityChange?: (id: number, quantity: number) => void;
+  onRemove?: (id: number) => void;
+  onCheck?: (id: number, checked: boolean) => void;
+}
+
+// 장바구니 목록 죄회
+export interface CartListRes {
+  ok: number;
+  item: CartItem[];
 }
 
 // 장바구니 상품 여러건 삭제
@@ -44,43 +69,12 @@ export interface AddToCartRes {
   };
 }
 
-// 장바구니 상품 여러건 삭제
-// export interface CartItem {
-//   id: number;
-//   item: {
-//     _id: number;
-//     name: string;
-//     price: number;
-//     quantity: number;
-//     buyQuantity: number;
-//     mainImages: {
-//       path: string;
-//     };
-//     extra: {
-//       originalPrice: number;
-//       options: {
-//         size: number[] | string[];
-//         color: string[];
-//       };
-//     };
-//   };
-//   isChecked?: boolean;
-// }
-export interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  productImg?: string;
-  extra?: {
-    originalPrice: number; // extra 속성 추가
-  };
-  originalPrice: number;
-}
-
-// 장바구니 목록 죄회
-export interface CartListRes {
+// 장바구니 상품 수량 수정
+export interface CartQuantityUpdateRes {
   ok: number;
-  item: CartItem[];
+  item: {
+    quantity: number;
+  };
 }
 
 interface RawCartItem {
@@ -99,3 +93,8 @@ interface RawCartItem {
     };
   };
 }
+
+export type CartContextType = {
+  cartItems: CartItem[];
+  setCartItems: (items: CartItem[]) => void;
+};
