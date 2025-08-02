@@ -13,6 +13,8 @@ import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
 import { ProductQuantitySelector } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { fetchAddToCart } from '@/data/functions/CartFetch.client';
 
+import { usePurchaseStore } from '@/store/order.store';
+
 // 장바구니 아이콘 컴포넌트
 export function CartIcon() {
   const { cartCount } = useCart();
@@ -53,7 +55,7 @@ export default function CartActions({
   item,
 }: {
   price: number;
-  options: { size: number[]; color: string[] };
+  options?: { size?: number[]; color?: string[] };
   discountRate: number;
   item: {
     id: string;
@@ -63,6 +65,8 @@ export default function CartActions({
     originalPrice?: number;
   };
 }) {
+  console.log('item', item);
+
   const router = useRouter();
   const [selectedSize, setSelectedSize] = useState<number | undefined>();
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
@@ -110,25 +114,34 @@ export default function CartActions({
     }
   };
 
-  const handleBuyNow = () => {
-    alert('결제 페이지로 이동합니다!');
+ const handleBuyNow = () => {
+    if (!isBottomSheetOpen) {
+      // 바텀시트가 열리지 않은 상태에서는 아무 작업 않도록
+      setIsBottomSheetOpen(true);
+      return;
+    }
+    if (!allOptionsSelected) {
+      alert('모든 옵션을 선택해주세요.');
+      return;
+    }
+
     setIsBottomSheetOpen(false);
 
-    const selectedOptionDetails = {
-      size: selectedSize,
-      color: selectedColor,
+    const purchaseData = {
+      id: item.id,
+      name: item.name,
+      originalPrice: item.originalPrice,
+      price: item.price,
+      quantity,
+      size: selectedOptions.size,
+      color: selectedOptions.color,
+      productImg: item.productImg || '',
     };
 
-    // router.push({
-    //   pathname: '/checkout',
-    //   query: {
-    //     id: item.id,
-    //     name: item.name,
-    //     price: item.price,
-    //     quantity,
-    //     options: JSON.stringify(selectedOptionDetails),
-    //   },
-    // });
+    console.log('purchaseData', purchaseData);
+
+    usePurchaseStore.getState().setPurchaseData([purchaseData]);
+    router.push(`/shop/purchase`);
   };
 
   const swipeHandlers = useSwipeable({
@@ -155,13 +168,12 @@ export default function CartActions({
             price: item.price,
             productImg: item.productImg || '',
           }}
-          options={
-            options?.size?.map(size => ({
-              id: size.toString(),
-              name: `사이즈 ${size}`,
-              price: item.price,
-            })) || []
-          }
+
+          options={options?.size?.map(size => ({
+            id: size.toString(),
+            name: `사이즈 ${size}`,
+            price: item.price,
+          }))}
         />
       </div>
 

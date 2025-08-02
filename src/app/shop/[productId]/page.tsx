@@ -85,6 +85,7 @@ export default async function ProductPage({
           name: product.name,
           price: product.price,
           productImg: mainImageUrl,
+          originalPrice: product.extra?.originalPrice,
         }}
       />
 
