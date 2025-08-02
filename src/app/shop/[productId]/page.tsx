@@ -8,6 +8,7 @@ import CartAction, {
   GoBackButton,
 } from '@/components/features/shop/ProductDetail/ProductDetailClient';
 import { ProductOption } from '@/types/product';
+import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
 
 export default async function ProductPage({
   params,

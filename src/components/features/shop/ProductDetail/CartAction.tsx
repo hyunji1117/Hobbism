@@ -1,213 +1,3 @@
-// 'use client';
-
-// import { useState, useEffect } from 'react';
-// import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
-// import { ProductQuantitySelector } from '@/components/features/shop/ProductDetail/ProductDetail';
-// import { useSwipeable } from 'react-swipeable';
-// import {
-//   ProductActionButtons,
-//   TotalPrice,
-// } from '@/components/features/shop/ProductDetail/ProductDetail';
-// import { ProductOption } from '@/types/product';
-// import {
-//   fetchAddToCart,
-//   fetchCartList,
-// } from '@/data/functions/CartFetch.client';
-
-// export default function CartAction({
-//   originalPrice,
-//   item,
-//   options,
-//   discountRate,
-// }: {
-//   originalPrice: number;
-//   item: { id: string; name: string; price: number; productImg?: string };
-//   options: { name: string; values: string[] }[];
-//   discountRate: number;
-// }) {
-//   const [selectedOptions, setSelectedOptions] = useState<{
-//     [key: string]: string;
-//   }>({});
-//   const [quantity, setQuantity] = useState(1);
-//   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-//   const [loading, setLoading] = useState(false);
-
-//   const hasOptions = Array.isArray(options) && options.length > 0;
-//   const allOptionsSelected =
-//     !hasOptions || options.every(opt => !!selectedOptions[opt.name]);
-
-//   const handleOptionChange = (name: string, value: string) => {
-//     setSelectedOptions(prev => ({ ...prev, [name]: value }));
-//   };
-
-//   const cleanOptions = Object.fromEntries(
-//     Object.entries(selectedOptions).filter(([_, v]) => !!v),
-//   );
-//   const body = {
-//     product_id: Number(item.id),
-//     quantity,
-//     ...cleanOptions,
-//   };
-
-//   const handleAddToCart = async () => {
-//     // 모든 옵션이 선택되었는지 확인
-//     if (!allOptionsSelected) {
-//       alert('모든 옵션을 선택해주세요!');
-//       return;
-//     }
-
-//     setLoading(true);
-//     try {
-//       // 서버에 전송할 데이터 구성
-//       const body = {
-//         product_id: Number(item.id), // 상품 ID
-//         quantity, // 수량
-//         size: selectedOptions['size'] || '', // 선택된 사이즈
-//         color: selectedOptions['color'] || '', // 선택된 색상
-//       };
-
-//       // API 요청
-//       await fetchAddToCart(body);
-
-//       // 장바구니 갱신
-//       const updatedCart = await fetchCartList(1);
-//       console.log('장바구니 갱신 완료:', updatedCart);
-
-//       alert('장바구니에 상품이 추가되었습니다!');
-//     } catch (error: unknown) {
-//       if (error instanceof Error) {
-//         console.error('장바구니 추가 중 오류 발생:', error);
-//         alert(error.message || '장바구니 추가에 실패했습니다.');
-//       } else {
-//         console.error('알 수 없는 오류 발생:', error);
-//         alert('장바구니 추가에 실패했습니다.');
-//       }
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const swipeHandlers = useSwipeable({
-//     onSwipedDown: () => setIsBottomSheetOpen(false),
-//     trackMouse: true,
-//   });
-
-//   return (
-//     <>
-//       {/* 상품 액션 버튼 */}
-//       <div className="bt-rounded-[8px] fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-5 py-3">
-//         <ProductActionButtons
-//           onCartClick={() => {
-//             setIsBottomSheetOpen(true);
-//             setQuantity(1);
-//           }}
-//           onBuyNowClick={() => {
-//             alert('구매하기 기능은 아직 구현되지 않았습니다.');
-//           }}
-//           product={{
-//             id: item.id,
-//             name: item.name,
-//             price: item.price,
-//             productImg: item.productImg || '',
-//           }}
-//           options={options.map(opt => ({
-//             id: opt.name,
-//             name: opt.name,
-//             price: item.price,
-//           }))}
-//         />
-//       </div>
-
-//       {/* 바텀시트 어두운 배경 */}
-//       {isBottomSheetOpen && (
-//         <div className="fixed inset-0 z-10 flex items-center justify-center">
-//           <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
-//         </div>
-//       )}
-
-//       {/* 바텀시트 */}
-//       {isBottomSheetOpen && (
-//         <div
-//           {...swipeHandlers}
-//           className={`fixed z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg ${
-//             hasOptions ? 'bottom-[78px]' : 'bottom-[78px]'
-//           }`}
-//         >
-//           <div className="flex justify-center">
-//             <div className="mt-2.5 h-[4px] w-[109px] rounded-full bg-[#3D3D3D]" />
-//           </div>
-
-//           {hasOptions ? (
-//             <>
-//               {options.map(opt => (
-//                 <div key={opt.name} className="bg-white px-5 pt-3.5">
-//                   <OptionSelector
-//                     name={opt.name}
-//                     options={opt.values}
-//                     selectedOption={selectedOptions[opt.name] || ''}
-//                     onSelect={value => handleOptionChange(opt.name, value)}
-//                   />
-//                 </div>
-//               ))}
-
-//               {allOptionsSelected && (
-//                 <ProductQuantitySelector
-//                   selectedOption={item.name}
-//                   quantity={quantity}
-//                   onIncrease={() => setQuantity(prev => prev + 1)}
-//                   onDecrease={() => setQuantity(prev => Math.max(1, prev - 1))}
-//                   price={item.price}
-//                   originalPrice={originalPrice}
-//                   item={item}
-//                 />
-//               )}
-//               {allOptionsSelected && (
-//                 <TotalPrice
-//                   quantity={quantity}
-//                   price={item.price}
-//                   originalPrice={originalPrice}
-//                 />
-//               )}
-//             </>
-//           ) : (
-//             <>
-//               <ProductQuantitySelector
-//                 selectedOption={item.name}
-//                 quantity={quantity}
-//                 onIncrease={() => setQuantity(prev => prev + 1)}
-//                 onDecrease={() => setQuantity(prev => Math.max(1, prev - 1))}
-//                 price={item.price}
-//                 originalPrice={originalPrice}
-//                 item={item}
-//               />
-//               <TotalPrice
-//                 quantity={quantity}
-//                 price={item.price}
-//                 originalPrice={originalPrice}
-//               />
-//             </>
-//           )}
-
-//           {/* 장바구니 담기 버튼 */}
-//           <div className="px-5 py-3">
-//             <button
-//               onClick={handleAddToCart}
-//               disabled={loading || !allOptionsSelected}
-//               className={`w-full rounded py-3 text-lg font-semibold text-white ${
-//                 loading || !allOptionsSelected
-//                   ? 'cursor-not-allowed bg-gray-400'
-//                   : 'bg-pink-500 hover:bg-pink-600'
-//               }`}
-//             >
-//               {loading ? '추가 중...' : '장바구니 담기'}
-//             </button>
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// }
-
 'use client';
 
 import { useState } from 'react';
@@ -311,22 +101,23 @@ export default function CartAction({
     }
   };
 
-  // const swipeHandlers = useSwipeable({
-  //   onSwipedDown: () => setIsBottomSheetOpen(false),
-  //   trackMouse: true,
-  // });
+  const swipeHandlers = useSwipeable({
+    onSwipedDown: () => setIsBottomSheetOpen(false),
+    trackMouse: true,
+  });
 
   return (
     <>
       {/* 하단 고정 상품 액션 버튼 */}
       <div className="fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-5 py-3">
+        {/* TODO 추후 수정 예정 */}
         <ProductActionButtons
           onCartClick={async () => {
             // 옵션 선택 여부 확인
-            if (!allOptionsSelected) {
-              alert('사이즈, 색상 모두 선택 해주세요.');
-              return;
-            }
+            // if (!allOptionsSelected) {
+            //   alert('사이즈, 색상 모두 선택 해주세요.');
+            //   return;
+            // }
 
             // 수량 확인
             if (quantity < 1) {
@@ -406,7 +197,7 @@ export default function CartAction({
       {/* 바텀시트 옵션/수량/담기버튼 */}
       {isBottomSheetOpen && (
         <div
-          // {...swipeHandlers}
+          {...swipeHandlers}
           className="fixed bottom-[78px] z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg"
         >
           <div className="flex justify-center">
