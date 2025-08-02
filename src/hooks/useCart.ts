@@ -9,7 +9,7 @@ export interface CartItem {
 }
 
 export function useCart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]); // 초기값을 빈 배열로 설정
 
   const addToCart = (item: CartItem) => {
     setCartItems(prevItems => {

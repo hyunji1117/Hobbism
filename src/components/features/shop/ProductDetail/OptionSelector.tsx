@@ -15,6 +15,8 @@ export const OptionSelector = ({
   selectedOption: string;
   onSelect: (selectedOption: string) => void;
 }) => {
+  console.log(name, options); // "사이즈", [260, 270, ...] / "색상", ["brown", ...]
+
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {

@@ -102,6 +102,7 @@ export const authOptions: NextAuthOptions = {
               loginData = {
                 providerAccountId: token.extra?.providerAccountId,
               };
+              console.log('account id: ', token.extra?.providerAccountId);
             }
 
             const loginRes = await fetch(loginUrl, {
