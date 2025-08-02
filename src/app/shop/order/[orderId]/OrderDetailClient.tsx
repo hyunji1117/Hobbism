@@ -1,15 +1,12 @@
 'use client';
 
 import { OrderProducts } from '@/components/features/shopping-order/detail/OrderProducts';
-import { fetchOrderDetail } from '@/data/functions/OrdersFetch';
-import { useAuthStore } from '@/store/auth.store';
 import {
   OrderedAddress,
   OrderedCost,
   OrderedUser,
   OrderProductType,
 } from '@/types/orders';
-import { useEffect, useState } from 'react';
 
 export default function OrderDetailClient({
   orderId,

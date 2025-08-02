@@ -1,17 +1,12 @@
 'use client';
 
-import {
-  PaymentSelector,
-  PaymentSummary,
-  PurchaseAddress,
-  PurchaseProductList,
-} from '@/app/shop/purchase/purchaseComponents';
-import { OrderProducts } from '@/components/features/shopping-order/detail/OrderProducts';
+import { PaymentSelector } from '@/components/features/shopping-order/detail/purchase/PaymentSelector';
+import { PaymentSummary } from '@/components/features/shopping-order/detail/purchase/PaymentSummary';
+import { PurchaseAddress } from '@/components/features/shopping-order/detail/purchase/PurchaseAddress';
+import { PurchaseProductList } from '@/components/features/shopping-order/detail/purchase/PurchaseProductList';
 import { createOrder } from '@/data/actions/orders';
 import { useAuthStore } from '@/store/auth.store';
 import { usePurchaseStore } from '@/store/order.store';
-import { Banknote, CreditCard, MapPin, WalletCards } from 'lucide-react';
-import Image from 'next/image';
 import { useActionState, useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -83,10 +78,12 @@ export default function PurchaseClient({
           console.log('폼 제출');
         }}
       >
+        {/* 구매 상품 */}
         <input type="hidden" name="products" value={JSON.stringify(products)} />
+        {/* 유저 정보: 이름, 휴대폰 */}
         <input type="hidden" name="name" value={userInfo.name || ''} />
         <input type="hidden" name="phone" value={userInfo.phone || ''} />
-        <input type="hidden" name="products" value={JSON.stringify(products)} />
+        {/* 주소 정보: 주소, 상세 주소, 우편번호 */}
         <input
           type="hidden"
           name="address"
@@ -102,9 +99,9 @@ export default function PurchaseClient({
           name="postcode"
           value={localAddressInfo.postcode || ''}
         />
-
+        {/* accessToken */}
         <input type="hidden" name="accessToken" value={accessToken || ''} />
-
+        {/* 결제방식 */}
         <input
           type="hidden"
           name="selectedPayment"

@@ -14,7 +14,6 @@ export default async function orderCompletedPage({
 }) {
   const { orderId } = await params;
 
-  console.log('orderId', orderId);
   return (
     <section className="mx-3.5 mt-19">
       <div className="absolute top-12 left-1/2 aspect-[1.4/1] w-[65%] -translate-x-1/2">

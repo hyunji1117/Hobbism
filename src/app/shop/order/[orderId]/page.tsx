@@ -1,8 +1,6 @@
 import OrderDetailClient from '@/app/shop/order/[orderId]/OrderDetailClient';
-import { getUserAttribute } from '@/data/actions/user';
 import { fetchOrderDetail } from '@/data/functions/OrdersFetch';
 import { authOptions } from '@/lib/auth';
-import { OrderInfoRes } from '@/types/orders';
 import { getServerSession } from 'next-auth';
 
 export default async function orderDetailPage({
