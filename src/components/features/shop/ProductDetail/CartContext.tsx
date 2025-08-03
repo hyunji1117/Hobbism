@@ -6,8 +6,9 @@ import Image from 'next/image';
 
 // CartContext 타입 정의
 interface CartContextType {
+  cartItems: any[];
+  setCartItems: (items: any[]) => void;
   cartCount: number;
-  setCartCount: (count: number) => void;
 }
 
 // CartContext 생성
@@ -24,10 +25,16 @@ export const useCart = () => {
 
 // CartProvider 컴포넌트 정의
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState<any[]>([]);
 
   return (
-    <CartContext.Provider value={{ cartCount, setCartCount }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        setCartItems,
+        cartCount: cartItems.length,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import { fetchCartList } from '@/data/functions/CartFetch.client';
 import { CartContextType } from '@/types/cart';
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
+// import { useCart } from '@/hooks/useCart';
 import { useCartStore } from '@/store/cartStore';
 
 //          component: 헤더 컴포넌트          //
@@ -98,23 +99,21 @@ export default function Header() {
   const showCartIcon = isShopPage || isProductPage; // 쇼핑카트 아이콘 노출 조건
 
   //          state: 장바구니 아이콘의 상품 개수 가져오기            //
-  // const { cartCount } = useCart();
-  // const { cartItems } = useCart();
+  const { cartItems } = useCart(); // 장바구니 아이템 가져오기
+  const cartCount = cartItems.length; // 장바구니 상품 개수 계산
+  const { setCartItems } = useCart();
 
-  const { cartItems, setCartItems } = useCart();
-  const cartCount = useCartStore(state => state.cartCount);
-
-  // useEffect(() => {
-  //   const fetchAndSetCart = async () => {
-  //     try {
-  //       const res = await fetchCartList(1, 10);
-  //       setCartItems(res.item);
-  //     } catch (err) {
-  //       console.error('장바구니 목록 불러오기 실패', err);
-  //     }
-  //   };
-  //   fetchAndSetCart();
-  // }, [setCartItems]);
+  useEffect(() => {
+    const fetchAndSetCart = async () => {
+      try {
+        const res = await fetchCartList(1, 10);
+        setCartItems(res.item);
+      } catch (err) {
+        console.error('장바구니 목록 불러오기 실패', err);
+      }
+    };
+    fetchAndSetCart();
+  }, [setCartItems]);
 
   //          render: 로그인 페이지에서는 헤더 숨김 처리          //
   if (isLoginPage) return null;
@@ -194,17 +193,19 @@ export default function Header() {
             )}
 
             {showCartIcon && (
-              <Link href="/shop/cart" className="relative">
-                <CartIcon />
-                {cartCount > 0 && (
-                  <span
-                    className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white"
-                    style={{ minWidth: 20 }}
-                  >
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
+              <div className="absolute right-4 flex items-center gap-6">
+                <Link href="/shop/cart" className="relative">
+                  <CartIcon />
+                  {cartCount > 0 && (
+                    <span
+                      className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white"
+                      style={{ minWidth: 20 }}
+                    >
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
+              </div>
             )}
 
             {isUserPage && isMypage && <SettingButton />}
