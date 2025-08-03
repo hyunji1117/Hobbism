@@ -216,6 +216,8 @@ export default function CommunityFeed({
             src={getUserImageUrl(post.user.image)}
             alt={post.user.name}
             fill
+            sizes="600"
+            priority
           />
         </Link>
         <div className="flex flex-1 flex-col gap-1.5">
@@ -282,6 +284,8 @@ export default function CommunityFeed({
                   src={img}
                   alt={`피드 이미지 ${idx + 1}`}
                   fill
+                  sizes="600"
+                  priority
                   className="rounded-lg object-cover object-center"
                 />
                 <div className="absolute top-4 right-4 rounded-full bg-white/70 px-2 text-sm text-[#999999]">
