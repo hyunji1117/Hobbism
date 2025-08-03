@@ -17,7 +17,7 @@ export default function LiveData() {
   return (
     <>
       {liveToShowArray.map(live => (
-        <div key={live._id} className="snap-start">
+        <div key={live._id}>
           <LiveContent live={live} />
         </div>
       ))}
