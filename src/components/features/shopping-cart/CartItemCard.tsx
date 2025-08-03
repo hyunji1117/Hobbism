@@ -15,9 +15,11 @@ export interface CardItemCardProps {
   onQuantityChange?: (id: number, quantity: number) => void;
   onRemove?: (id: number) => void;
   onCheck?: (id: number, checked: boolean) => void;
+  cartId: number;
 }
 
 export function CartItemCard({
+  cartId,
   id,
   path,
   name,
@@ -67,7 +69,7 @@ export function CartItemCard({
   const handleRemove = () => {
     onRemove?.(id);
   };
-  
+
   return (
     <>
       <div className="relative mx-auto h-[6.5rem] w-[21.875rem]">

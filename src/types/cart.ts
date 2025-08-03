@@ -15,7 +15,6 @@ export interface ProductListRes {
   };
 }
 
-// 장바구니 상품 타입 정의
 export interface CartItem {
   product: {
     _id: number;
@@ -32,8 +31,9 @@ export interface CartItem {
     };
   };
   // mainImages: { path: string }[];
-  };
   isChecked?: boolean;
+  _id: number;
+  quantity: number;
 }
 
 // CartItemCard 컴포넌트

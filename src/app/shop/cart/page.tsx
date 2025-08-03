@@ -17,7 +17,6 @@ import Link from 'next/link';
 import { usePurchaseStore } from '@/store/order.store';
 import { useRouter } from 'next/navigation';
 
-
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isAllChecked, setIsAllChecked] = useState(false);
@@ -33,26 +32,25 @@ export default function CartPage() {
         const data = await fetchCartList(1, 10);
         setCartItems(
           data.item.map(item => ({
+            ...item,
             product: {
               _id: item.product._id,
               image: item.product.image ?? [],
               name: item.product.name,
+              path: item.product.image.path,
               price: item.product.price,
               quantity: item.product.quantity,
-              size: item.product.size,
-              color: item.product.color,
-              extra: {
-                originalPrice: item.product.extra.originalPrice,
+              size: item.product.size ?? '',
+              color: item.product.color ?? '',
+              extra: item.product.extra ?? {
+                originalPrice: item.product.price,
               },
             },
-            quantity: item.quantity, // quantity를 직접 추가
             isChecked: false,
             cartId: item._id,
+            quantity: item.quantity,
           })),
         );
-
-        console.log('data', data);
-        // console.log('name', name);
       } catch (err) {
         console.error('장바구니 데이터를 가져오는 중 오류 발생:', err);
         setError('장바구니 데이터를 불러오는 데 실패했습니다.');
@@ -107,13 +105,12 @@ export default function CartPage() {
   const handleOpenPaymentSheet = () => {
     setIsPaymentSheetOpen(true);
   };
- 
+
   // ------------------- 충돌
   //  try {
-      // API call to delete selected items
+  // API call to delete selected items
   //    await fetchDeleteAllCarts(selectedItems); // API 호출
 
-    
   const handelAddBuy = () => {
     const selectedItems = cartItems.filter(item => item.isChecked);
 
@@ -122,7 +119,7 @@ export default function CartPage() {
       name: item.product.name,
       originalPrice: item.product.extra.originalPrice,
       price: item.product.price,
-      quantity: item.product.quantity,
+      quantity: item.quantity,
       size: item.product.size,
       color: item.product.color,
       productImg: item.product.image.path || '',
@@ -227,7 +224,6 @@ export default function CartPage() {
           결제하기
         </button>
       </div>
-
     </div>
   );
 }
