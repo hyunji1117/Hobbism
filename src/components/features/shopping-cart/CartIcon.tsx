@@ -44,7 +44,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
 
 export function CartIcon() {
-  const { cartCount } = useCart(); // useCart에서 cartCount 가져오기
+  const { cartCount } = useCart();
 
   return (
     <div className="relative">

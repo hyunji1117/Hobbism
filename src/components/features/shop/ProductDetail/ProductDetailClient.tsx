@@ -12,6 +12,7 @@ import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionS
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
 import { ProductQuantitySelector } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { fetchAddToCart } from '@/data/functions/CartFetch.client';
+
 import { usePurchaseStore } from '@/store/order.store';
 
 // 장바구니 아이콘 컴포넌트
@@ -69,7 +70,6 @@ export default function CartAction({
   const router = useRouter();
   const [selectedSize, setSelectedSize] = useState<number | undefined>();
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
-  const { updateCartItemQuantity } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -80,20 +80,18 @@ export default function CartAction({
   const handleAddToCart = async () => {
     if (isBottomSheetOpen) {
       // 바텀시트가 열려 있는 상태에서 옵션 검증 수행
-      if (!selectedSize || !selectedColor) {
+      if (hasOptions && (!selectedSize || !selectedColor)) {
         alert('사이즈와 색상을 모두 선택해주세요!');
         return;
       }
-
       setLoading(true);
       try {
         const response = await fetchAddToCart({
           product_id: Number(item.id),
           quantity,
-          size: selectedSize.toString(),
+          size: selectedSize?.toString(),
           color: selectedColor,
         });
-
         console.log('장바구니 추가 성공 응답:', response);
 
         alert('장바구니에 상품이 추가되었습니다!');
@@ -115,7 +113,7 @@ export default function CartAction({
       setIsBottomSheetOpen(true);
       return;
     }
-    if (!selectedSize || !selectedColor) {
+    if (hasOptions && (!selectedSize || !selectedColor)) {
       alert('모든 옵션을 선택해주세요.');
       return;
     }
@@ -140,12 +138,6 @@ export default function CartAction({
     router.push(`/shop/purchase`);
   };
 
-  // swipe down 시 바텀시트 닫기
-  const swipeHandlers = useSwipeable({
-    onSwipedDown: () => setIsBottomSheetOpen(false),
-    trackMouse: true,
-  });
-
   return (
     <>
       {/* 상품 액션 버튼 */}
@@ -169,23 +161,15 @@ export default function CartAction({
 
       {/* 바텀시트 어두운 배경 */}
       {isBottomSheetOpen && (
-        <>
-          {/* 어두운 배경: 클릭 시 바텀시트 닫힘 */}
-          <div
-            className="fixed inset-0 z-10 bg-black opacity-50"
-            onClick={() => setIsBottomSheetOpen(false)}
-          />
-          <div
-            {...swipeHandlers}
-            className="fixed bottom-[78px] z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg"
-            onClick={e => e.stopPropagation()}
-          ></div>
-        </>
+        <div className="fixed inset-0 z-10 flex items-center justify-center">
+          <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
+        </div>
       )}
 
       {/* 바텀시트 */}
       {isBottomSheetOpen && (
         <div
+          // {...swipeHandlers}
           className={`fixed z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg ${
             hasOptions ? 'bottom-[78px]' : 'bottom-[78px]'
           }`}
