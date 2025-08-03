@@ -1,6 +1,9 @@
 'use client';
 
-import { deleteCartItem } from '@/data/functions/CartFetch.client';
+import {
+  fetchUpdateCartItemQuantity,
+  deleteCartItem,
+} from '@/data/functions/CartFetch.client';
 import { Minus, Plus, X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -33,41 +36,53 @@ export function CartItemCard({
   const [localQuantity, setLocalQuantity] = useState(quantity);
   const [localChecked, setLocalChecked] = useState(isChecked);
 
-  const handleCheckedChange = async () => {
+  // 개별 체크박스 상태 변경
+  const handleCheckedChange = () => {
     const newChecked = !localChecked;
     setLocalChecked(newChecked);
-
-    if (!newChecked) {
-      try {
-        await deleteCartItem(id);
-        onRemove?.(id);
-      } catch (error) {
-        console.error('삭제 실패:', error);
-        alert('삭제에 실패했습니다. 다시 시도해주세요.');
-      }
-    } else {
-      onCheck?.(id, newChecked);
-    }
+    onCheck?.(id, newChecked); // 부모 컴포넌트에 체크 상태 전달
   };
 
-  const handleUp = () => {
+  // 수량 증가
+  const handleUp = async () => {
     if (localQuantity < 99) {
       const newQuantity = localQuantity + 1;
-      setLocalQuantity(newQuantity);
-      onQuantityChange?.(id, newQuantity);
+      try {
+        await fetchUpdateCartItemQuantity(id, newQuantity);
+        setLocalQuantity(newQuantity);
+        onQuantityChange?.(id, newQuantity);
+      } catch (error) {
+        console.error('수량 증가 중 오류 발생:', error);
+        alert('수량 변경에 실패했습니다. 다시 시도해주세요.');
+      }
     }
   };
 
-  const handleDown = () => {
+  // 수량 감소
+  const handleDown = async () => {
     if (localQuantity > 1) {
       const newQuantity = localQuantity - 1;
-      setLocalQuantity(newQuantity);
-      onQuantityChange?.(id, newQuantity);
+      try {
+        await fetchUpdateCartItemQuantity(id, newQuantity);
+        setLocalQuantity(newQuantity);
+        onQuantityChange?.(id, newQuantity);
+      } catch (error) {
+        console.error('수량 감소 중 오류 발생:', error);
+        alert('수량 변경에 실패했습니다. 다시 시도해주세요.');
+      }
     }
   };
 
-  const handleRemove = () => {
-    onRemove?.(id);
+  // 상품 삭제
+  const handleRemove = async () => {
+    try {
+      await deleteCartItem(id); // API 호출
+      onRemove?.(id); // 부모 컴포넌트에 삭제된 상품 ID 전달
+      alert('삭제 되었습니다.');
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      alert('삭제에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   return (
@@ -140,7 +155,7 @@ export function CartItemCard({
 
         {/* 삭제 아이콘 */}
         <div className="absolute top-2 right-0">
-          <button className="cursor-pointer" onClick={handleCheckedChange}>
+          <button className="cursor-pointer" onClick={handleRemove}>
             <X size={18} />
           </button>
         </div>

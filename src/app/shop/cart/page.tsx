@@ -1,17 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchCartList } from '@/data/functions/CartFetch.client';
+import {
+  fetchCartList,
+  fetchUpdateCartItemQuantity,
+} from '@/data/functions/CartFetch.client';
 import { CartItem } from '@/types/cart';
 import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
-import {
-  Banknote,
-  ChevronLeft,
-  CreditCard,
-  MapPin,
-  WalletCards,
-  X,
-} from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePurchaseStore } from '@/store/order.store';
@@ -20,11 +16,12 @@ import { useRouter } from 'next/navigation';
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isAllChecked, setIsAllChecked] = useState(false);
-  const [ispaymentSheetOpen, setIsPaymentSheetOpen] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // 장바구니 데이터 로드
   useEffect(() => {
     const loadCartItems = async () => {
       try {
@@ -39,7 +36,6 @@ export default function CartPage() {
               name: item.product.name,
               path: item.product.image.path,
               price: item.product.price,
-              quantity: item.product.quantity,
               size: item.product.size ?? '',
               color: item.product.color ?? '',
               extra: item.product.extra ?? {
@@ -62,6 +58,18 @@ export default function CartPage() {
     loadCartItems();
   }, []);
 
+  // 총 결제 금액 계산
+  useEffect(() => {
+    const calculateTotalPrice = () => {
+      const total = cartItems
+        .filter(item => item.isChecked)
+        .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+      setTotalPrice(total);
+    };
+
+    calculateTotalPrice();
+  }, [cartItems]);
+
   if (isLoading) return <p className="py-10 text-center">로딩 중...</p>;
   if (error) return <p className="py-10 text-center text-red-500">{error}</p>;
   if (cartItems.length === 0) {
@@ -69,11 +77,12 @@ export default function CartPage() {
   }
 
   const handleAllSelect = () => {
-    setIsAllChecked(!isAllChecked);
+    const newCheckedState = !isAllChecked;
+    setIsAllChecked(newCheckedState);
     setCartItems(prev =>
       prev.map(item => ({
         ...item,
-        isChecked: !isAllChecked,
+        isChecked: newCheckedState,
       })),
     );
   };
@@ -90,26 +99,20 @@ export default function CartPage() {
     });
   };
 
-  const handleSelectedRemove = () => {
-    const selectedItems = cartItems.filter(item => item.isChecked);
-
-    if (selectedItems.length === 0) {
-      alert('삭제할 상품을 선택해주세요.');
-      return;
-    } else {
-      setCartItems(prev => prev.filter(item => !item.isChecked));
-      setIsAllChecked(false);
+  const handleQuantityChange = async (id: number, quantity: number) => {
+    try {
+      const updatedItem = await fetchUpdateCartItemQuantity(id, quantity);
+      setCartItems(prevItems =>
+        prevItems.map(item =>
+          item.product._id === id
+            ? { ...item, quantity: updatedItem.quantity }
+            : item,
+        ),
+      );
+    } catch (error) {
+      console.error('수량 변경 중 오류 발생:', error);
     }
   };
-
-  const handleOpenPaymentSheet = () => {
-    setIsPaymentSheetOpen(true);
-  };
-
-  // ------------------- 충돌
-  //  try {
-  // API call to delete selected items
-  //    await fetchDeleteAllCarts(selectedItems); // API 호출
 
   const handelAddBuy = () => {
     const selectedItems = cartItems.filter(item => item.isChecked);
@@ -134,13 +137,6 @@ export default function CartPage() {
 
   return (
     <div className="flex flex-col">
-      {/* 상단 */}
-      <div className="mt-10">
-        <Link href="/shop" className="relative top-7 left-4">
-          <ChevronLeft size={24} />
-        </Link>
-        <p className="text-center text-lg leading-6 font-semibold">장바구니</p>
-      </div>
       <hr className="mt-10" />
 
       {/* 전체 선택 */}
@@ -171,12 +167,6 @@ export default function CartPage() {
         <span className="relative top-3 left-14 text-lg leading-6 font-semibold">
           전체 선택
         </span>
-        <button
-          className="absolute top-3 right-5 text-[#FE5088]"
-          onClick={handleSelectedRemove}
-        >
-          선택삭제
-        </button>
       </div>
       <hr className="my-6" />
 
@@ -190,9 +180,12 @@ export default function CartPage() {
             path={item.product.image.path}
             name={item.product.name}
             price={item.product.price}
-            quantity={item.quantity} // 수정된 부분
+            quantity={item.quantity}
             isChecked={item.isChecked}
-            onCheck={handleItemCheck}
+            onCheck={checked => handleItemCheck(item.product._id, checked)}
+            onQuantityChange={quantity =>
+              handleQuantityChange(item.product._id, quantity)
+            }
           />
         ))}
       </div>
@@ -201,7 +194,9 @@ export default function CartPage() {
       <div className="my-6 ml-4 flex flex-col gap-y-4">
         <div>
           <span className="text-[#4B5563]">총 상품금액</span>
-          <span className="absolute right-4 font-medium">192,000원</span>
+          <span className="absolute right-4 font-medium">
+            {totalPrice.toLocaleString()}원
+          </span>
         </div>
         <div>
           <span className="text-[#4B5563]">배송비</span>
@@ -210,7 +205,7 @@ export default function CartPage() {
         <div>
           <span className="text-lg leading-6 font-semibold">총 결제금액</span>
           <span className="absolute right-4 text-lg leading-6 font-semibold text-[#6E67DA]">
-            192,000원
+            {totalPrice.toLocaleString()}원
           </span>
         </div>
       </div>
