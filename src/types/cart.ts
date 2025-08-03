@@ -25,6 +25,13 @@ export interface CartItem {
     name: string;
     price: number;
     quantity: number;
+    size: string | number;
+    color: string;
+    extra: {
+      originalPrice: number;
+    };
+  };
+  // mainImages: { path: string }[];
   };
   isChecked?: boolean;
 }

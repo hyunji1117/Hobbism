@@ -64,6 +64,10 @@ export function CartItemCard({
     }
   };
 
+  const handleRemove = () => {
+    onRemove?.(id);
+  };
+  
   return (
     <>
       <div className="relative mx-auto h-[6.5rem] w-[21.875rem]">
