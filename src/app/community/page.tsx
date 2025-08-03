@@ -11,8 +11,6 @@ export default async function CommunityPage() {
 
   if (res.ok !== 1) return null;
 
-  console.log('피드 전체목록', res.item);
-
   const session = await getServerSession(authOptions);
 
   if (!session?.user?._id || !session.accessToken) {
