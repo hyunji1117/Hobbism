@@ -26,7 +26,7 @@ export function PaymentSummary() {
           {totals.originalTotal.toLocaleString()}원
         </dd>
         <dt>할인 금액</dt>
-        <dd className="text-right">{totals.sale.toLocaleString()}원</dd>
+        <dd className="text-right">-{totals.sale.toLocaleString()}원</dd>
       </dl>
     </div>
   );
