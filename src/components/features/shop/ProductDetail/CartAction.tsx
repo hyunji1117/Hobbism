@@ -101,11 +101,6 @@ export default function CartAction({
     }
   };
 
-  const swipeHandlers = useSwipeable({
-    onSwipedDown: () => setIsBottomSheetOpen(false),
-    trackMouse: true,
-  });
-
   return (
     <>
       {/* 하단 고정 상품 액션 버튼 */}
@@ -114,10 +109,10 @@ export default function CartAction({
         <ProductActionButtons
           onCartClick={async () => {
             // 옵션 선택 여부 확인
-            // if (!allOptionsSelected) {
-            //   alert('사이즈, 색상 모두 선택 해주세요.');
-            //   return;
-            // }
+            if (!allOptionsSelected) {
+              alert('사이즈, 색상 모두 선택 해주세요.');
+              return;
+            }
 
             // 수량 확인
             if (quantity < 1) {
@@ -187,19 +182,9 @@ export default function CartAction({
         />
       </div>
 
-      {/* 모달 뒷배경 */}
-      {isBottomSheetOpen && (
-        <div className="fixed inset-0 z-10">
-          <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
-        </div>
-      )}
-
       {/* 바텀시트 옵션/수량/담기버튼 */}
       {isBottomSheetOpen && (
-        <div
-          {...swipeHandlers}
-          className="fixed bottom-[78px] z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg"
-        >
+        <div className="fixed bottom-[78px] z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg">
           <div className="flex justify-center">
             <div className="mt-2.5 h-[4px] w-[109px] rounded-full bg-[#3D3D3D]" />
           </div>
