@@ -28,3 +28,18 @@ export async function OrderFetch(
 
   return res.json();
 }
+
+// 상품 구매 목록 조회
+export async function OrderListFetch() {
+  const res = await fetch(`${API_URL}/orders`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Client-Id': CLIENT_ID,
+    },
+  });
+  if (!res.ok) {
+    throw new Error('주문 목록 조회에 실패했습니다.');
+  }
+
+  return res.json();
+}
