@@ -1,9 +1,39 @@
 'use client';
 
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { Minus, Plus, X } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
 
+// CartContext 타입 정의
+interface CartContextType {
+  cartCount: number;
+  setCartCount: (count: number) => void;
+}
+
+// CartContext 생성
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+// useCart 훅 정의
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+};
+
+// CartProvider 컴포넌트 정의
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [cartCount, setCartCount] = useState(0);
+
+  return (
+    <CartContext.Provider value={{ cartCount, setCartCount }}>
+      {children}
+    </CartContext.Provider>
+  );
+};
+
+// CartItemCardProps 타입 정의
 export interface CardItemCardProps {
   id: number;
   path: string;
@@ -16,6 +46,7 @@ export interface CardItemCardProps {
   onCheck?: (id: number, checked: boolean) => void;
 }
 
+// CartItemCard 컴포넌트 정의
 export function CartItemCard({
   id,
   path,
