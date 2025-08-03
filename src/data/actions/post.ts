@@ -142,8 +142,6 @@ export async function createPost(
     }
   }
 
-  console.log('업로드된 이미지 url들', imageUrls);
-
   // 2단계: 게시글 등록
   const body = {
     type: formData.get('type'),
@@ -151,8 +149,6 @@ export async function createPost(
     tag: formData.get('tag'),
     ...(imageUrls.length > 0 && { image: imageUrls }),
   };
-
-  console.log('피드 등록 바디 데이터', body);
 
   let data: ApiRes<Post>;
 
@@ -168,7 +164,6 @@ export async function createPost(
     });
 
     data = await res.json();
-    console.log('피드등록 완료 데이터', data);
   } catch (error) {
     console.error(error);
     return { ok: 0, message: '일시적인 네트워크 문제로 등록에 실패했습니다.' };

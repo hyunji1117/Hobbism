@@ -3,6 +3,9 @@ import CommunityMain from '@/components/features/community/community-main/Commun
 import CommunityFeed from '@/components/features/community/community-main/CommunityFeed';
 import CommunityComment from '@/components/features/community/community-comment/CommunityComment';
 import { fetchReplies } from '@/data/functions/CommunityFetch';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { getBookmarks } from '@/data/actions/bookmark';
 
 interface CommunityDetailPageProps {
   params: Promise<{ id: string }>;
@@ -17,9 +20,30 @@ export default async function CommunityDetailPage({
   // 게시글 데이터 조회
   const res = await getPost(postId);
 
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?._id || !session.accessToken) {
+    throw new Error('로그인이 필요합니다');
+  }
+
+  const userId = session.user._id;
   const commentRes = await fetchReplies(postId);
 
-  console.log('commentres', commentRes);
+  if (commentRes.ok !== 1) return null;
+  const myCommentIds =
+    commentRes.ok === 1
+      ? commentRes.item.filter(c => c.user._id === userId).map(c => c._id)
+      : [];
+
+  const bookmarkRes = await getBookmarks('post', session.accessToken);
+
+  if (bookmarkRes.ok !== 1) return null;
+  const userBookmark = bookmarkRes.item;
+
+  const bookmark = userBookmark.find(b => b.post._id === postId);
+
+  const isBookmarked = !!bookmark;
+  const bookmark_id = bookmark?._id;
 
   if (!res.ok || !res.item) {
     return (
@@ -47,8 +71,17 @@ export default async function CommunityDetailPage({
   // CommunityMain 컴포넌트 재사용
   return (
     <div className="flex-1 bg-white">
-      <CommunityFeed post={res.item} page="detail" />
-      <CommunityComment commentList={commentRes.item} post_id={id} />
+      <CommunityFeed
+        post={res.item}
+        page="detail"
+        isBookmarked={isBookmarked}
+        bookmark_id={bookmark_id}
+      />
+      <CommunityComment
+        commentList={commentRes.item}
+        post_id={id}
+        myCommentIds={myCommentIds}
+      />
     </div>
   );
 }

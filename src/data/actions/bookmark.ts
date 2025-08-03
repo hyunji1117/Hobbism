@@ -146,10 +146,16 @@ export async function getBookmark(
   }
 }
 
-export async function getBookmarks(
-  type: 'product' | 'user' | 'post',
+type BookmarkMap = {
+  product: Bookmark;
+  user: Bookmark;
+  post: BookmarkPost;
+};
+
+export async function getBookmarks<T extends keyof BookmarkMap>(
+  type: T,
   accessToken: string,
-): ApiResPromise<Bookmark[]> {
+): ApiResPromise<BookmarkMap[T][]> {
   try {
     const res = await fetch(`${API_URL}/bookmarks/${type}`, {
       method: 'GET',
