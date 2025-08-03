@@ -13,11 +13,11 @@ export interface BookmarkPost {
   createAt: string;
   post: {
     image: string[];
-    title: string;
     type: string;
     user: Pick<User, '_id' | 'image' | 'name'>;
     _id: number;
   };
+  user_id: number;
   _id: number;
 }
 

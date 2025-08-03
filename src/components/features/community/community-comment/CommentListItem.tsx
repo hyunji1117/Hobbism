@@ -9,9 +9,10 @@ import { Ellipsis } from 'lucide-react';
 
 interface Props {
   comment: PostReply;
+  mine: boolean;
 }
 
-export default function CommentListItem({ comment }: Props) {
+export default function CommentListItem({ comment, mine = false }: Props) {
   //          function: 작성일 경과시간 함수          //
   const getElapsedTime = () => {
     const now = dayjs();
@@ -44,9 +45,11 @@ export default function CommentListItem({ comment }: Props) {
           <div className="text-sm text-[#808080]">{getElapsedTime()}</div>
         </div>
         {/* 수정 삭제 버튼 */}
-        <div>
-          <Ellipsis className="text-[#4A4A4A]" size={20} />
-        </div>
+        {mine && (
+          <div>
+            <Ellipsis className="text-[#4A4A4A]" size={20} />
+          </div>
+        )}
       </div>
       <div>
         <div className="whitespace-pre-wrap text-[#4A4A4A]">

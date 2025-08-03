@@ -1,21 +1,25 @@
 'use client';
+
 import Pagination from '@/components/common/Pagination';
 import CommentForm from '@/components/features/community/community-comment/CommentForm';
 import CommentListItem from '@/components/features/community/community-comment/CommentListItem';
 import { Separator } from '@/components/ui/separator';
 import { fetchReplies } from '@/data/functions/CommunityFetch';
 import usePagination from '@/hooks/pageination.hook';
-import { Comment, PostReply } from '@/types';
-import { getUserImageUrl } from '@/utils';
-import { CircleArrowUp } from 'lucide-react';
-import Image from 'next/image';
+import { PostReply } from '@/types';
+
 import { useEffect, useState } from 'react';
 
 interface Props {
   commentList: PostReply[];
   post_id: string;
+  myCommentIds: number[];
 }
-export default function CommunityComment({ commentList, post_id }: Props) {
+export default function CommunityComment({
+  commentList,
+  post_id,
+  myCommentIds,
+}: Props) {
   const [comments, setComments] = useState<PostReply[]>(commentList);
   const {
     currentPage,
@@ -32,11 +36,10 @@ export default function CommunityComment({ commentList, post_id }: Props) {
     setTotalList(comments);
   }, [comments, setTotalList]);
 
-  // 댓글 다시 불러오는 함수
   const refreshComments = async () => {
     const res = await fetchReplies(Number(post_id));
     if (res.ok !== 1) return null;
-    setComments(res.item); // 댓글 목록 상태 업데이트
+    setComments(res.item);
   };
 
   return (
@@ -48,7 +51,11 @@ export default function CommunityComment({ commentList, post_id }: Props) {
         </div>
         <div className="flex flex-col gap-4">
           {viewList.map(comment => (
-            <CommentListItem key={comment._id} comment={comment} />
+            <CommentListItem
+              key={comment._id}
+              comment={comment}
+              mine={myCommentIds.includes(comment._id)}
+            />
           ))}
         </div>
       </div>

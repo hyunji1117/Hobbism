@@ -11,10 +11,9 @@ import {
   ChevronRight,
   EllipsisVertical,
   MessageCircle,
-  MoreHorizontal,
   SquareArrowOutUpRight,
 } from 'lucide-react';
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper/types';
 import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -27,6 +26,7 @@ import { deletePost } from '@/data/actions/post';
 import { useRouter } from 'next/navigation';
 import { useModalStore } from '@/store/modal.store';
 import DeleteModal from '@/components/common/DeleteModal';
+import { deleteBookmark, postBookmark } from '@/data/actions/bookmark';
 
 // 카카오 SDK 타입 정의
 interface KakaoSDK {
@@ -64,9 +64,16 @@ declare global {
 interface Props {
   post: Post;
   page: 'main' | 'detail';
+  isBookmarked: boolean;
+  bookmark_id?: number;
 }
 
-export default function CommunityFeed({ post, page }: Props) {
+export default function CommunityFeed({
+  post,
+  page,
+  isBookmarked,
+  bookmark_id,
+}: Props) {
   const { user, accessToken } = useAuthStore();
   const isOwner = user?._id === post.user._id;
   const imageList = Array.isArray(post.image) ? post.image : [post.image];
@@ -76,6 +83,8 @@ export default function CommunityFeed({ post, page }: Props) {
 
   //          state: more 버튼 상태          //
   const [showMore, setShowMore] = useState<boolean>(false);
+
+  const [isBookmark, setBookmark] = useState<boolean>(isBookmarked);
 
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -122,6 +131,71 @@ export default function CommunityFeed({ post, page }: Props) {
       console.error('게시물 삭제 안됨');
     }
   };
+
+  //          event handler: 북마크 버튼 클릭 이벤트 처리          //
+  const onBookmarkButtonClickHandler = async () => {
+    try {
+      if (!accessToken) return;
+
+      if (isBookmark && bookmark_id) {
+        // 팔로우 취소 → 북마크 삭제
+
+        const res = await deleteBookmark(bookmark_id, accessToken);
+
+        if (res.ok === 1) {
+          console.log('삭제됨');
+          setBookmark(false);
+        }
+      } else {
+        // 팔로우 → 북마크 추가
+        const res = await postBookmark('post', post._id, accessToken);
+        if (res.ok === 1) {
+          console.log('추가됨');
+
+          setBookmark(true);
+        }
+      }
+    } catch (err) {
+      console.error('팔로우 상태 변경 실패:', err);
+    }
+  };
+
+  //          event handler: 팔로우 토큰 버튼 클릭 이벤트 처리          //
+  const handleToggleFollow = async () => {};
+
+  const handleShareToKakao = () => {
+    window.Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: `${post.user.name}님의 게시물`,
+        description: post.content,
+        imageUrl: `${post.image?.[0]}`,
+        link: {
+          mobileWebUrl: window.location.href,
+          webUrl: window.location.href,
+        },
+      },
+      buttons: [
+        {
+          title: '자세히 보기',
+          link: {
+            mobileWebUrl: window.location.href,
+            webUrl: window.location.href,
+          },
+        },
+      ],
+    });
+  };
+
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      window.Kakao &&
+      !window.Kakao.isInitialized()
+    ) {
+      window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_APP_KEY || '');
+    }
+  }, []);
 
   //          effect: 정렬 박스 외부 영역 클릭 시 실행할 함수          //
   useEffect(() => {
@@ -182,26 +256,6 @@ export default function CommunityFeed({ post, page }: Props) {
               </div>
             )}
           </div>
-        )}
-      </div>
-
-      {/* 본문 영역 */}
-      <div className="px-4 pb-2">
-        <p
-          className={cn(
-            'whitespace-pre-wrap text-[#4A4A4A]',
-            page === 'main' ? 'line-clamp-3' : '',
-          )}
-        >
-          {post.content}
-        </p>
-        {page === 'main' && (
-          <Link
-            href={`/community/${post._id}`}
-            className="inline-block text-sm text-[#98B87E] underline"
-          >
-            자세히 보기
-          </Link>
         )}
       </div>
 
@@ -272,15 +326,47 @@ export default function CommunityFeed({ post, page }: Props) {
             <span className="font-semibold">{post.repliesCount}</span>
           </Link>
           <button className="cursor-pointer">
-            <SquareArrowOutUpRight size={24} className="" />
+            <SquareArrowOutUpRight
+              size={24}
+              className=""
+              onClick={handleShareToKakao}
+            />
           </button>
         </div>
 
         {/* 우측 북마크 아이콘 */}
-        <button className="cursor-pointer">
-          <Bookmark size={24} className="text-[#98B87E]" fill="#98B87E" />
+        <button
+          className="cursor-pointer"
+          onClick={onBookmarkButtonClickHandler}
+        >
+          <Bookmark
+            size={24}
+            className={'text-[#98B87E]'}
+            fill={isBookmark ? '#98B87E' : 'none'}
+          />
         </button>
       </div>
+
+      {/* 본문 영역 */}
+      <div className="px-4 pb-2">
+        <p
+          className={cn(
+            'whitespace-pre-wrap text-[#4A4A4A]',
+            page === 'main' ? 'line-clamp-3' : '',
+          )}
+        >
+          {post.content}
+        </p>
+        {page === 'main' && (
+          <Link
+            href={`/community/${post._id}`}
+            className="inline-block text-sm text-[#98B87E] underline"
+          >
+            자세히 보기
+          </Link>
+        )}
+      </div>
+
       <div className="px-4 pt-3">
         <Separator />
       </div>
