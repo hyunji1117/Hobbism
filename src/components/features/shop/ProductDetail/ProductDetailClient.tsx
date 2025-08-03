@@ -114,7 +114,7 @@ export default function CartAction({
       return;
     }
     if (hasOptions && (!selectedSize || !selectedColor)) {
-      alert('모든 옵션을 선택해주세요.');
+      alert('사이즈와 색상을 모두 선택해주세요!');
       return;
     }
 
@@ -137,6 +137,12 @@ export default function CartAction({
     usePurchaseStore.getState().setPurchaseData([purchaseData]);
     router.push(`/shop/purchase`);
   };
+
+  // 바텀시트 화면을 아래로 스와이프 기능
+  const swipeHandlers = useSwipeable({
+    onSwipedDown: () => setIsBottomSheetOpen(false),
+    trackMouse: true,
+  });
 
   return (
     <>
@@ -161,7 +167,10 @@ export default function CartAction({
 
       {/* 바텀시트 어두운 배경 */}
       {isBottomSheetOpen && (
-        <div className="fixed inset-0 z-10 flex items-center justify-center">
+        <div
+          className="fixed inset-0 z-10 flex items-center justify-center"
+          onClick={() => setIsBottomSheetOpen(false)}
+        >
           <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
         </div>
       )}
@@ -169,7 +178,7 @@ export default function CartAction({
       {/* 바텀시트 */}
       {isBottomSheetOpen && (
         <div
-          // {...swipeHandlers}
+          {...swipeHandlers}
           className={`fixed z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg ${
             hasOptions ? 'bottom-[78px]' : 'bottom-[78px]'
           }`}
