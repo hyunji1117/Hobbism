@@ -4,9 +4,9 @@ import { CartProvider } from '@/components/features/shop/ProductDetail/CartConte
 import { ProductDetailInfo } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { fetchProductDetail } from '@/data/functions/ProductFetch';
 import CartAction, {
-  CartIcon,
   GoBackButton,
 } from '@/components/features/shop/ProductDetail/ProductDetailClient';
+import { CartIcon } from '@/components/features/shopping-cart/CartIcon';
 import { ProductOption } from '@/types/product';
 import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
 
