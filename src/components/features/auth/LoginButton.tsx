@@ -1,18 +1,21 @@
-import Image from 'next/image';
+import { cn } from '@/lib/utils';
+import { PropsWithChildren, ReactNode } from 'react';
 
 interface LoginButtonProps {
-  children: string;
   onClick?: () => void;
-  iconSrc: string;
-  width: number;
-  height: number;
-  className: string
+  className: string;
 }
 
-export function LoginButton({children, onClick, iconSrc, width, height, className}: LoginButtonProps) {
+export function LoginButton({
+  children,
+  onClick,
+  className,
+}: PropsWithChildren<LoginButtonProps>) {
   return (
-    <button onClick={onClick} className={className}>
-      <Image src={iconSrc} alt={`${children} icon`} width={width} height={height}></Image>
+    <button
+      onClick={onClick}
+      className={cn(className, 'w-full cursor-pointer')}
+    >
       {children}
     </button>
   );
