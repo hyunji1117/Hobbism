@@ -13,7 +13,7 @@ export default function AdBannerModal() {
   const { user } = useAuthStore();
   const hideUntil =
     typeof window !== 'undefined'
-      ? localStorage.getItem(`hideRandomModal_${user?._id}`)
+      ? localStorage.getItem(`hideAd_${user?._id}`)
       : null;
   const now = Date.now();
   // hideUntil이 없거나 현재 시간이 저장된 만료시간을 넘었으면 다시 보여줌
@@ -27,11 +27,7 @@ export default function AdBannerModal() {
   // 페이지 진입 후 2초 뒤에 광고 모달 열림
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
-    if (
-      pathname === '/shop' ||
-      pathname === '/character' ||
-      pathname === '/community'
-    ) {
+    if (pathname === '/shop') {
       timer = setTimeout(() => setTimerActive(true), 2000);
     } else {
       setTimerActive(false);
