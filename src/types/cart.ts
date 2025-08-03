@@ -32,6 +32,7 @@ export interface CartItem {
     };
   };
   // mainImages: { path: string }[];
+  };
   isChecked?: boolean;
 }
 

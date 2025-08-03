@@ -14,31 +14,6 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
 const accessToken = useAuthStore.getState().accessToken;
 
 // 장바구니 목록 조회(로그인)
-// export async function fetchCartList(page: number): Promise<Product[]> {
-//   const res = await fetch(`${API_URL}/carts?page=${page}&limit=10`, {
-//     method: 'GET',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Client-Id': CLIENT_ID,
-//       Authorization: `Bearer ${accessToken}`,
-//     },
-//     next: {
-//       tags: ['cart'],
-//       revalidate: 10,
-//     },
-//     cache: 'force-cache',
-//   });
-
-//   const data: ProductListRes = await res.json();
-//   if (!data.ok || !Array.isArray(data.item)) {
-//     console.error('서버 응답 오류', data);
-//     return [];
-//   }
-
-//   return data.item;
-// }
-
-// 장바구니 목록 조회(로그인)
 export async function fetchCartList(
   page: number = 1,
   limit: number = 10,
@@ -140,7 +115,7 @@ export async function fetchAddToCart({
 }
 
 // 장바구니 여러건 삭제
-export async function fetchdeleteCartsItems(
+export async function fetchDeleteAllCarts(
   cartIds: number[],
 ): Promise<DeleteCartsRes> {
   const res = await fetch(`${API_URL}/carts`, {
@@ -173,8 +148,15 @@ export async function deleteCartItem(id: number): Promise<DeleteCartsRes> {
     },
     cache: 'no-store',
   });
-  if (!res.ok) throw new Error('삭제 실패');
-  return await res.json();
+
+  const responseData = await res.json();
+  console.log('서버 응답 데이터:', responseData); // 서버 응답 데이터 확인
+
+  if (!res.ok) {
+    console.error('삭제 실패:', res.status, res.statusText);
+    throw new Error('삭제 실패');
+  }
+  return responseData;
 }
 
 // 장바구니 상품 수량 수정

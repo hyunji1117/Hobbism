@@ -1,30 +1,27 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchCartList } from '@/data/functions/CartFetch.client';
+import {
+  fetchCartList,
+  fetchDeleteAllCarts,
+} from '@/data/functions/CartFetch.client';
 import { CartItem } from '@/types/cart';
 import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
-import {
-  Banknote,
-  ChevronLeft,
-  CreditCard,
-  MapPin,
-  WalletCards,
-  X,
-} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePurchaseStore } from '@/store/order.store';
 import { useRouter } from 'next/navigation';
 
+
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]); // Track selected items
   const [isAllChecked, setIsAllChecked] = useState(false);
-  const [ispaymentSheetOpen, setIsPaymentSheetOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // Load cart items on component mount
   useEffect(() => {
     const loadCartItems = async () => {
       try {
@@ -69,41 +66,66 @@ export default function CartPage() {
     return <p className="py-10 text-center">장바구니가 비어 있습니다.</p>;
   }
 
+  // Handle "전체 선택" button click
   const handleAllSelect = () => {
-    setIsAllChecked(!isAllChecked);
-    setCartItems(prev =>
-      prev.map(item => ({
-        ...item,
-        isChecked: !isAllChecked,
-      })),
-    );
-  };
+    const newIsAllChecked = !isAllChecked; // Toggle the current state
+    setIsAllChecked(newIsAllChecked); // Update the "전체 선택" state
 
-  const handleItemCheck = (id: number, checked: boolean) => {
-    setCartItems(prev => {
-      const updatedItems = prev.map(item =>
-        item.product._id === id ? { ...item, isChecked: checked } : item,
-      );
+    // Update all items' `isChecked` state and manage selectedItems
+    const updatedCartItems = cartItems.map(item => ({
+      ...item,
+      isChecked: newIsAllChecked,
+    }));
 
-      const allchecked = updatedItems.every(item => item.isChecked);
-      setIsAllChecked(allchecked);
-      return updatedItems;
-    });
-  };
+    setCartItems(updatedCartItems);
 
-  const handleSelectedRemove = () => {
-    const selectedItems = cartItems.filter(item => item.isChecked);
-
-    if (selectedItems.length === 0) {
-      alert('삭제할 상품을 선택해주세요.');
-      return;
+    // Update selectedItems based on the new state
+    if (newIsAllChecked) {
+      const allSelectedItems = updatedCartItems.map(item => item.product._id);
+      setSelectedItems(allSelectedItems); // Add all items to selectedItems
     } else {
-      setCartItems(prev => prev.filter(item => !item.isChecked));
-      setIsAllChecked(false);
+      setSelectedItems([]); // Clear selectedItems when deselecting all
     }
   };
 
-  const handelAddBuy = () => {
+  // Handle individual item selection
+  const handleItemCheck = (id: number, checked: boolean) => {
+    setCartItems(prev =>
+      prev.map(item =>
+        item.product._id === id ? { ...item, isChecked: checked } : item,
+      ),
+    );
+
+    // Update selectedItems based on individual selection
+    setSelectedItems(prev =>
+      checked ? [...prev, id] : prev.filter(itemId => itemId !== id),
+    );
+  };
+
+  // Handle "선택삭제" button click
+  const handleSelectedRemove = async () => {
+    if (selectedItems.length === 0) {
+      alert('삭제할 상품을 선택해주세요.');
+      return;
+ 
+    try {
+      // API call to delete selected items
+      await fetchDeleteAllCarts(selectedItems); // API 호출
+
+      // Update state after deletion
+      setCartItems(prev =>
+        prev.filter(item => !selectedItems.includes(item.product._id)),
+      );
+      setSelectedItems([]); // Clear selectedItems after deletion
+      setIsAllChecked(false);
+      alert('선택된 상품이 삭제되었습니다.');
+    } catch (err) {
+      console.error('상품 삭제 중 오류 발생:', err);
+      alert('상품 삭제에 실패했습니다.');
+    }
+  };
+    
+      const handelAddBuy = () => {
     const selectedItems = cartItems.filter(item => item.isChecked);
 
     const purchaseData = selectedItems.map(item => ({
@@ -126,20 +148,11 @@ export default function CartPage() {
 
   return (
     <div className="flex flex-col">
-      {/* 상단 */}
-      <div className="mt-10">
-        <Link href="/shop" className="relative top-7 left-4">
-          <ChevronLeft size={24} />
-        </Link>
-        <p className="text-center text-lg leading-6 font-semibold">장바구니</p>
-      </div>
-      <hr className="mt-10" />
-
       {/* 전체 선택 */}
       <div className="relative flex">
         <button
           onClick={handleAllSelect}
-          aria-label={isAllChecked ? '전체 상품 선택' : '전체 상품 선택 해제'}
+          aria-label={isAllChecked ? '전체 상품 선택 해제' : '전체 상품 선택'}
           className="absolute top-3.5"
         >
           {isAllChecked ? (
@@ -153,7 +166,7 @@ export default function CartPage() {
           ) : (
             <Image
               src="/check-off.svg"
-              alt="전체 선택 설정 버튼"
+              alt="전체 선택 해제 버튼"
               width={20}
               height={20}
               className="ml-5"
