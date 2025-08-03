@@ -47,12 +47,8 @@ export const RecommendProducts = ({
             mainImageSrc={product.mainImages[0]?.path}
             category={product.extra.category}
             discountRate={product.extra.discountRate}
-            discountPrice={product.extra.discountedPrice}
             recommendedBy={product.extra.recommendedBy}
             textPrice="text-sm"
-            liveTitle={product.extra?.live?.title}
-            liveRate={product.extra?.live?.liveDiscountRate}
-            livePrice={product.extra?.live?.livePrice}
           />
         </SwiperSlide>
       ))}
