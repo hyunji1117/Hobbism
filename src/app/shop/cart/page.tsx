@@ -8,6 +8,10 @@ import {
 import { CartItem } from '@/types/cart';
 import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
 import Image from 'next/image';
+import Link from 'next/link';
+import { usePurchaseStore } from '@/store/order.store';
+import { useRouter } from 'next/navigation';
+
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -15,6 +19,7 @@ export default function CartPage() {
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   // Load cart items on component mount
   useEffect(() => {
@@ -32,10 +37,18 @@ export default function CartPage() {
               path: item.product.image.path,
               price: item.product.price,
               quantity: item.product.quantity,
+              size: item.product.size,
+              color: item.product.color,
+              extra: {
+                originalPrice: item.product.extra.originalPrice,
+              },
             },
             isChecked: false,
           })),
         );
+
+        console.log('data', data);
+        // console.log('name', name);
       } catch (err) {
         console.error('장바구니 데이터를 가져오는 중 오류 발생:', err);
         setError('장바구니 데이터를 불러오는 데 실패했습니다.');
@@ -94,8 +107,7 @@ export default function CartPage() {
     if (selectedItems.length === 0) {
       alert('삭제할 상품을 선택해주세요.');
       return;
-    }
-
+ 
     try {
       // API call to delete selected items
       await fetchDeleteAllCarts(selectedItems); // API 호출
@@ -111,6 +123,27 @@ export default function CartPage() {
       console.error('상품 삭제 중 오류 발생:', err);
       alert('상품 삭제에 실패했습니다.');
     }
+  };
+    
+      const handelAddBuy = () => {
+    const selectedItems = cartItems.filter(item => item.isChecked);
+
+    const purchaseData = selectedItems.map(item => ({
+      id: item.product._id.toString(),
+      name: item.product.name,
+      originalPrice: item.product.extra.originalPrice,
+      price: item.product.price,
+      quantity: item.product.quantity,
+      size: item.product.size,
+      color: item.product.color,
+      productImg: item.product.image.path || '',
+    }));
+
+    console.log('purchaseData', purchaseData);
+
+    // 구매 데이터 저장 및 페이지 이동
+    usePurchaseStore.getState().setPurchaseData(purchaseData);
+    router.push(`/shop/purchase`);
   };
 
   return (
@@ -188,7 +221,10 @@ export default function CartPage() {
 
       {/* 결제 버튼 */}
       <div className="relative top-3 text-center">
-        <button className="h-[3.5rem] w-[21.875rem] cursor-pointer rounded-md bg-[#FE508B] text-xl font-semibold text-white hover:bg-[#e6457b]">
+        <button
+          className="h-[3.5rem] w-[21.875rem] cursor-pointer rounded-md bg-[#FE508B] text-xl font-semibold text-white hover:bg-[#e6457b]"
+          onClick={handelAddBuy}
+        >
           결제하기
         </button>
       </div>

@@ -80,7 +80,7 @@ export default function CartAction({
   const handleAddToCart = async () => {
     if (isBottomSheetOpen) {
       // 바텀시트가 열려 있는 상태에서 옵션 검증 수행
-      if (!selectedSize || !selectedColor) {
+      if (hasOptions && (!selectedSize || !selectedColor)) {
         alert('사이즈와 색상을 모두 선택해주세요!');
         return;
       }
@@ -90,7 +90,7 @@ export default function CartAction({
         const response = await fetchAddToCart({
           product_id: Number(item.id),
           quantity,
-          size: selectedSize.toString(),
+          size: selectedSize?.toString(),
           color: selectedColor,
         });
 
@@ -115,7 +115,7 @@ export default function CartAction({
       setIsBottomSheetOpen(true);
       return;
     }
-    if (!selectedSize || !selectedColor) {
+    if (hasOptions && (!selectedSize || !selectedColor)) {
       alert('모든 옵션을 선택해주세요.');
       return;
     }
