@@ -1,139 +1,136 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { CartItem } from '@/types/cart';
+import { Minus, Plus, X } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
 
-export interface CartItem {
-  id: string;
-  productImg?: string;
+export interface CardItemCardProps {
+  id: number;
+  path: string;
   name: string;
   price: number;
   quantity: number;
   isChecked?: boolean;
+  onQuantityChange?: (id: number, quantity: number) => void;
+  onRemove?: (id: number) => void;
+  onCheck?: (id: number, checked: boolean) => void;
 }
 
-interface CartContextType {
-  cartItems: CartItem[];
-  setCartItems: (items: CartItem[]) => void;
-  updateCartItemQuantity: (id: number, quantity: number) => void;
-  addToCart: (item: Omit<CartItem, 'isChecked'>) => void;
-  removeFromCart: (id: string) => void;
-  clearCart: () => void;
-  cartCount: number;
-  setQuantity: (id: string, quantity: number) => void;
-  toggleCheckItem: (id: string, checked: boolean) => void;
-  checkAll: () => void;
-  uncheckAll: () => void;
-  getTotalCheckedPrice: () => number;
-  removeSelectedItems: () => void;
-  checkedIds: string[];
-}
+export function CartItemCard({
+  id,
+  path,
+  name,
+  price,
+  quantity,
+  isChecked = false,
+  onQuantityChange,
+  onRemove,
+  onCheck,
+}: CardItemCardProps) {
+  const [localQuantity, setLocalQuantity] = useState(quantity);
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
-
-export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
-  const updateCartItemQuantity = (id: number, quantity: number) => {
-    setCartItems(prev =>
-      prev.map(item =>
-        item.product._id === id
-          ? { ...item, product: { ...item.product, quantity } }
-          : item,
-      ),
-    );
+  const handleCheckedChange = () => {
+    onCheck?.(id, !isChecked);
   };
 
-  // 로컬스토리지 연동
-  useEffect(() => {
-    const raw = localStorage.getItem('cartItems');
-    if (raw) {
-      setCartItems(JSON.parse(raw));
+  const handleUp = () => {
+    if (localQuantity < 99) {
+      const newQuantity = localQuantity + 1;
+      setLocalQuantity(newQuantity);
+      onQuantityChange?.(id, newQuantity);
     }
-  }, []);
-  useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  const addToCart = (item: Omit<CartItem, 'isChecked'>) => {
-    setCartItems(prev => {
-      const idx = prev.findIndex(i => i.id === item.id);
-      if (idx !== -1) {
-        // 이미 담겨있으면
-        const n = [...prev];
-        n[idx].quantity += item.quantity;
-        n[idx].isChecked = true;
-        return n;
-      }
-      return [...prev, { ...item, isChecked: true }];
-    });
   };
 
-  const removeFromCart = (id: string) => {
-    setCartItems(prev => prev.filter(i => i.id !== id));
+  const handleDown = () => {
+    if (localQuantity > 1) {
+      const newQuantity = localQuantity - 1;
+      setLocalQuantity(newQuantity);
+      onQuantityChange?.(id, newQuantity);
+    }
   };
 
-  const removeSelectedItems = () => {
-    setCartItems(prev => prev.filter(i => !i.isChecked));
+  const handleRemove = () => {
+    onRemove?.(id);
   };
 
-  const clearCart = () => setCartItems([]);
-
-  const cartCount = cartItems.reduce((s, i) => s + i.quantity, 0);
-
-  const setQuantity = (id: string, quantity: number) => {
-    setCartItems(prev => prev.map(i => (i.id === id ? { ...i, quantity } : i)));
-  };
-
-  const toggleCheckItem = (id: string, checked: boolean) => {
-    setCartItems(prev =>
-      prev.map(i => (i.id === id ? { ...i, isChecked: checked } : i)),
-    );
-  };
-
-  const checkAll = () =>
-    setCartItems(prev => prev.map(i => ({ ...i, isChecked: true })));
-
-  const uncheckAll = () =>
-    setCartItems(prev => prev.map(i => ({ ...i, isChecked: false })));
-
-  const getTotalCheckedPrice = () =>
-    cartItems.reduce(
-      (total, cur) =>
-        cur.isChecked ? total + cur.price * cur.quantity : total,
-      0,
-    );
-
-  const checkedIds = cartItems.filter(i => i.isChecked).map(i => i.id);
+  console.log('name', name);
 
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        setCartItems,
-        updateCartItemQuantity,
-        addToCart,
-        removeFromCart,
-        clearCart,
-        cartCount,
-        setQuantity,
-        toggleCheckItem,
-        checkAll,
-        uncheckAll,
-        getTotalCheckedPrice,
-        removeSelectedItems,
-        checkedIds,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  );
-};
+    <>
+      <div className="relative mx-auto h-[6.5rem] w-[21.875rem]">
+        {/* 체크박스 */}
+        <div className="mt-1" onClick={handleCheckedChange}>
+          <button
+            className="cursor-pointer"
+            onClick={handleCheckedChange}
+            aria-label={isChecked ? '상품 선택 해제' : '상품 선택'}
+          >
+            {isChecked ? (
+              <Image
+                src="/check-on.svg"
+                alt="check icon"
+                width={20}
+                height={20}
+              />
+            ) : (
+              <Image
+                src="/check-off.svg"
+                alt="uncheck icon"
+                width={20}
+                height={20}
+              />
+            )}
+          </button>
+        </div>
 
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart는 CartProvider가 있어야 합니다.');
-  }
-  return context;
-};
+        {/* 상품 이미지 */}
+        <div className="relative bottom-8 ml-8">
+          <Image
+            src={path || ''}
+            alt={name}
+            className="rounded-xl border-2"
+            width={80}
+            height={80}
+          />
+        </div>
+
+        {/* 상품 정보 */}
+        <div className="absolute top-0 left-34">
+          <p className="text-lg leading-6 font-semibold">
+            {name?.length > 10 ? `${name.slice(0, 10)}...` : name}
+          </p>
+          <p>{price.toLocaleString()}원</p>
+        </div>
+
+        {/* 수량 변경 */}
+        <div className="absolute top-14 left-34">
+          <button
+            className="relative bottom-1 cursor-pointer"
+            onClick={handleDown}
+          >
+            <div className="flex size-7 items-center justify-center rounded-full border border-[#CECECE]">
+              <Minus size={20} />
+            </div>
+          </button>
+          <span className="relative bottom-2 px-6">{localQuantity}</span>
+          <button
+            className="relative bottom-1 cursor-pointer"
+            onClick={handleUp}
+          >
+            <div className="flex size-7 items-center justify-center rounded-full border border-[#CECECE]">
+              <Plus size={20} />
+            </div>
+          </button>
+        </div>
+
+        {/* 삭제 아이콘 */}
+        <div className="absolute top-2 right-0">
+          <button className="cursor-pointer" onClick={handleRemove}>
+            <X size={18} />
+          </button>
+        </div>
+      </div>
+      <hr className="mx-7 mb-7" />
+    </>
+  );
+}
