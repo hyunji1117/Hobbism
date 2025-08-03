@@ -1,11 +1,7 @@
-'use client';
-
 import '@/styles/globals.css';
 import localFont from 'next/font/local';
 import { MobileFrame } from '@/components/layout/moblie-frame/MobileFrame';
 import ModalProvider from '@/components/common/ModalProvider';
-import { SessionProvider } from 'next-auth/react';
-import TokenSync from '@/components/features/auth/TokenSync';
 import Script from 'next/script';
 import AdBannerModal from '@/components/features/user/alarm/AdBannerModal';
 import { ToastProvider } from '@/components/common/ToastProvider';
@@ -16,6 +12,10 @@ const pretendard = localFont({
   weight: '45 920',
   variable: '--font-pretendard',
 });
+
+export const metadata = {
+  title: 'Hobbism',
+};
 
 export default function RootLayout({
   children,
@@ -31,16 +31,12 @@ export default function RootLayout({
         />
       </head>
       <body className={`${pretendard.className}`}>
-        <SessionProvider>
-          <TokenSync />
-
-          <MobileFrame>
-            {children}
-            <AdBannerModal />
-            <ModalProvider />
-            <ToastProvider />
-          </MobileFrame>
-        </SessionProvider>
+        <MobileFrame>
+          {children}
+          <AdBannerModal />
+          <ModalProvider />
+          <ToastProvider />
+        </MobileFrame>
       </body>
     </html>
   );
