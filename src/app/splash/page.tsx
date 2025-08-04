@@ -1,8 +1,24 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 export default function SplashPage() {
+
+   const router = useRouter();
+
+   useEffect(() => {
+     // 2.5초 후 로그인 페이지로 이동
+     const timer = setTimeout(() => {
+       router.push('/login');
+     }, 2500);
+
+     return () => clearTimeout(timer);
+   }, [router]);
+
   return (
-    <div className="absolute top-0 left-0 z-100 h-screen w-full overflow-hidden bg-[#4B5563]">
+    <div className="absolute top-0 left-0 z-100 h-screen w-full overflow-hidden bg-[#a4a4a4]">
       {/* 로고 */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="logo-animation text-center">
@@ -28,6 +44,7 @@ export default function SplashPage() {
           alt="곰 캐릭터"
           width={1159}
           height={1321}
+          priority
           className="h-auto w-60 rotate-180"
         />
       </div>
@@ -39,6 +56,7 @@ export default function SplashPage() {
           alt="곰 캐릭터"
           width={1159}
           height={1321}
+          priority
           className="h-auto w-60"
         />
       </div>
