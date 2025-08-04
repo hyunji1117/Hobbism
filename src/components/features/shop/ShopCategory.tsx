@@ -76,7 +76,7 @@ export const ShopCategory = ({
       <Swiper
         breakpoints={{
           10: {
-            slidesPerView: 5,
+            slidesPerView: 5.4,
           },
           768: {
             slidesPerView: 8,
