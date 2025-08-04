@@ -2,7 +2,11 @@
 
 import { useAuthStore } from '@/store/auth.store';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import type { Swiper as SwiperType } from 'swiper';
 
 const modalContent = [
   {
@@ -34,20 +38,8 @@ const modalContent = [
 
 export default function RandomModal({ onClose }: { onClose: () => void }) {
   const [current, setCurrent] = useState(0);
-  const [paused, setPaused] = useState(false);
   const { user } = useAuthStore();
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // 자동 슬라이드
-  useEffect(() => {
-    if (paused) return;
-    timerRef.current = setTimeout(() => {
-      setCurrent(prev => (prev + 1) % modalContent.length);
-    }, 3000);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, [current, paused]);
+  const swiperRef = useRef<SwiperType>(null);
 
   // 오늘 하루 보지 않기 적용
   const handleTodayClose = () => {
@@ -57,7 +49,9 @@ export default function RandomModal({ onClose }: { onClose: () => void }) {
     onClose();
   };
 
-  const { image, width, height } = modalContent[current];
+  const handleSlideChange = (swiper: SwiperType) => {
+    setCurrent(swiper.realIndex);
+  };
 
   return (
     <div className="fixed inset-0 bottom-[-55px] z-51 flex items-end pb-14">
@@ -67,64 +61,55 @@ export default function RandomModal({ onClose }: { onClose: () => void }) {
       />
       {/* 바텀시트 */}
       <div className="relative mx-auto w-full max-w-[600px] rounded-t-3xl border-gray-200 bg-white pb-2 shadow-xl">
-        {/* 슬라이드 컨트롤 */}
+        {/* 슬라이드 개수 표시 */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-          <button
-            onClick={() => setPaused(p => !p)}
-            className="rounded-full border bg-gray-100 px-2 py-1 text-sm"
-            aria-label={paused ? '재생' : '일시정지'}
-          >
-            {paused ? '▶' : 'Ⅱ'}
-          </button>
-          <span className="rounded border bg-white/80 px-2 py-1 text-xs">
+          <span className="rounded-xl bg-black/40 px-2 py-1 text-xs text-white">
             {current + 1} / {modalContent.length}
           </span>
-          <button
-            onClick={() =>
-              setCurrent(
-                prev => (prev - 1 + modalContent.length) % modalContent.length,
-              )
-            }
-            className="rounded-full border bg-gray-100 px-2 py-1 text-sm"
-            aria-label="이전"
-          >
-            {'<'}
-          </button>
-          <button
-            onClick={() => setCurrent(prev => (prev + 1) % modalContent.length)}
-            className="rounded-full border bg-gray-100 px-2 py-1 text-sm"
-            aria-label="다음"
-          >
-            {'>'}
-          </button>
         </div>
-
-        {/* 슬라이더 이미지 */}
-        <Image
-          src={image}
-          alt="광고 이미지"
-          width={width}
-          height={height}
-          className="w-full rounded-t-2xl object-center"
-          style={{
-            maxHeight: 350,
-            background: '#fff',
-            display: 'block',
+        {/* 슬라이드 컨트롤 */}
+        <Swiper
+          onSwiper={swiper => (swiperRef.current = swiper)}
+          onSlideChange={handleSlideChange}
+          modules={[Autoplay]}
+          spaceBetween={0}
+          slidesPerView={1}
+          loop={true}
+          autoplay={{
+            delay: 3500,
+            disableOnInteraction: false,
           }}
-          priority
-        />
-
+          className="rounded-t-2xl"
+        >
+          {modalContent.map((content, index) => (
+            <SwiperSlide key={index}>
+              <Image
+                src={content.image}
+                alt="광고 이미지"
+                width={content.width}
+                height={content.height}
+                className="w-full rounded-t-2xl object-center"
+                style={{
+                  maxHeight: 350,
+                  background: '#fff',
+                  display: 'block',
+                }}
+                priority={index === 0}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
         {/* 하단 버튼 영역 */}
         <div className="flex w-full items-center justify-between border-t px-5 pb-3">
           <button
-            className={`relative top-2.5 text-sm text-gray-500 underline select-none`}
+            className="relative top-2.5 cursor-pointer text-sm text-gray-500 select-none hover:text-gray-600"
             onClick={handleTodayClose}
           >
             오늘 하루 보지 않기
           </button>
           <button
             type="button"
-            className="relative top-4 mb-3 text-sm text-gray-500 select-none"
+            className="relative top-4 mb-3 cursor-pointer text-sm text-gray-500 select-none hover:text-gray-600"
             onClick={onClose}
           >
             닫기
