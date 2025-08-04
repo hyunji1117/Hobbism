@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   fetchCartList,
   fetchUpdateCartItemQuantity,
+  fetchDeleteAllCarts,
 } from '@/data/functions/CartFetch.client';
 import { CartItem } from '@/types/cart';
 import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
@@ -81,11 +82,18 @@ export default function CartPage() {
   const handleAllSelect = () => {
     const newCheckedState = !isAllChecked;
     setIsAllChecked(newCheckedState);
+
+    // 모든 항목의 체크 상태를 업데이트
     setCartItems(prev =>
       prev.map(item => ({
         ...item,
         isChecked: newCheckedState,
       })),
+    );
+
+    // handleItemCheck를 호출하여 상태를 반영
+    cartItems.forEach(item =>
+      handleItemCheck(item.product._id, newCheckedState),
     );
   };
 
@@ -107,12 +115,37 @@ export default function CartPage() {
       setCartItems(prevItems =>
         prevItems.map(item =>
           item.product._id === id
-            ? { ...item, quantity: updatedItem.quantity }
+            ? // API 응답 구조에 맞게 수정
+              { ...item, quantity: updatedItem.data.quantity }
             : item,
         ),
       );
     } catch (error) {
       console.error('수량 변경 중 오류 발생:', error);
+    }
+  };
+
+  const handleRemoveAll = async () => {
+    const selectedItems = cartItems.filter(item => item.isChecked);
+    const selectedIds = selectedItems.map(item => item.cartId);
+
+    if (selectedIds.length === 0) {
+      toast.error('선택된 상품이 없습니다.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await fetchDeleteAllCarts(selectedIds);
+      setCartItems(prevItems =>
+        prevItems.filter(item => !selectedIds.includes(item.cartId)),
+      );
+      toast.success('선택된 상품이 삭제되었습니다.');
+    } catch (error) {
+      console.error('상품 삭제 중 오류 발생:', error);
+      toast.error('상품 삭제에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -177,7 +210,7 @@ export default function CartPage() {
         </span>
         <button
           className="absolute top-3 right-5 text-[#F05656]"
-          // onClick={handleSelectedRemove}
+          onClick={handleRemoveAll}
         >
           선택 삭제
         </button>
