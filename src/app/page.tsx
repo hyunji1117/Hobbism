@@ -54,7 +54,7 @@ export default function Home() {
       </div>
 
       {/* 위쪽 곰돌이 */}
-      <div className="bear-top-animation absolute top-0 right-0">
+      <div className="bear-top-animation absolute -top-18 -right-2 rotate-14">
         <Image
           src="/images/splash/bear-character02.png"
           alt="곰 캐릭터"

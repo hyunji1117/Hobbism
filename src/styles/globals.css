@@ -240,7 +240,7 @@
 }
 
 .bear-top-animation {
-  animation: slideInFromTopRight 1s 0.3s cubic-bezier(1,-0.81,.31,1.16) forwards;
+  animation: slideInFromTopRight 1s 0.4s cubic-bezier(1,-0.81,.31,1.16) forwards;
   transform: translate(30px, -30px) rotate(-10deg);
 }
 
@@ -265,5 +265,9 @@
   
   .mobile-text {
     font-size: 0.8rem;
+  }
+
+  .bear-top-animation{
+    top: -52px;
   }
 }
