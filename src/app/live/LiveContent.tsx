@@ -48,12 +48,12 @@ export default function LiveContent({ live }: { live: LiveProduct }) {
 
       <div key={live._id} className="h-screen overflow-hidden">
         {/* 라이브 댓글 */}
-        <div className="absolute bottom-0 h-[48%] w-full">
+        <div className="absolute bottom-0 h-[60%] w-full">
           <LiveComment liveId={live.extra?.live.liveId} />
         </div>
 
         {/* 라이브 비디오 */}
-        <div className="h-[62%]">
+        <div className="h-[50%]">
           <LiveVideo
             livePath={live.extra?.live.livePath}
             _id={live._id}
