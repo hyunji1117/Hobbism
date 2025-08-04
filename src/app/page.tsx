@@ -1,41 +1,33 @@
-// 'use client';
-
-// import { useEffect } from 'react';
-// import { useRouter } from 'next/navigation';
-
-// export default function Home() {
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     router.replace('/splash');
-//   }, [router]);
-
-//   return <div>Loading...</div>;
-// }
-
-// export default function Home() {
-//   return <h1>final-01-1bone v2</h1>;
-// }
-
-
 'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import Loading from '@/app/loading';   
 import Image from 'next/image';
 
 export default function Home() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
-   const router = useRouter();
+  useEffect(() => {
+    if (status === 'loading') return;
 
-  //  useEffect(() => {
-  //    // 2.5초 후 로그인 페이지로 이동
-  //    const timer = setTimeout(() => {
-  //      router.push('/login');
-  //    }, 2500);
+    if (session) {
+      router.push('/character');
+      return;
+    }
 
-  //    return () => clearTimeout(timer);
-  //  }, [router]);
+    const timer = setTimeout(() => {
+      router.push('/login');
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [router, session, status]);
+
+  if (status === 'loading' || session) {
+    return <Loading />;
+  }
 
   return (
     <div className="absolute top-0 left-0 z-100 h-screen w-full overflow-hidden bg-[#a4a4a4]">
