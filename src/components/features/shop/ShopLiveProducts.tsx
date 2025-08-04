@@ -35,7 +35,7 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
     const start = moment(matchedLive?.extra?.live?.start);
 
     return (
-      <SwiperSlide key={product._id} className="mr-2.5 !w-[calc(100%/3.5)]">
+      <SwiperSlide key={product._id} className="mr-1 !w-[calc(100%/3.5)]">
         {!isLiveNow ? (
           <div className="pointer-events-none select-none">
             <div className="absolute z-2 flex aspect-square w-full rounded-2xl bg-black/50 text-white">
@@ -80,7 +80,7 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
 
   return (
     <>
-      <Swiper spaceBetween={10} slidesPerView={3.5}>
+      <Swiper spaceBetween={10} slidesPerView="auto" watchOverflow={true}>
         {liveProducts}
       </Swiper>
 
