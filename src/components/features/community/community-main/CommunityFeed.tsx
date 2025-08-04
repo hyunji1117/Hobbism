@@ -68,6 +68,7 @@ interface Props {
   page: 'main' | 'detail';
   isBookmarked: boolean;
   bookmark_id?: number;
+  onDelete?: (_id: number) => void;
 }
 
 //          component: 커뮤니티 피드 컴포넌트          //
@@ -76,6 +77,7 @@ export default function CommunityFeed({
   page,
   isBookmarked,
   bookmark_id,
+  onDelete,
 }: Props) {
   const { user, accessToken } = useAuthStore();
   const isOwner = user?._id === post.user._id;
@@ -146,6 +148,13 @@ export default function CommunityFeed({
 
     if (res.ok === 1) {
       clearModals();
+      setShowMore(false);
+      if (page === 'main') {
+        onDelete?.(post._id);
+      } else {
+        await router.refresh();
+        router.push('/community');
+      }
       router.push('/community');
     } else {
       console.error('게시물 삭제 안됨');
@@ -281,7 +290,10 @@ export default function CommunityFeed({
         <div className="relative flex items-center gap-3">
           {!isOwner && (
             <button
-              className="cursor-pointer rounded-full bg-[rgba(74,74,74,0.2)] px-5 py-1.5 text-sm font-semibold"
+              className={cn(
+                'cursor-pointer rounded-full border border-[#4A4A4A] px-5 py-1 text-sm font-semibold',
+                isFollowed ? 'bg-[#4A4A4A] text-white' : 'bg-white',
+              )}
               onClick={handleToggleFollow}
             >
               {isFollowed ? '팔로잉' : '팔로우'}
@@ -408,18 +420,10 @@ export default function CommunityFeed({
         >
           {post.content}
         </p>
-        {/* {page === 'main' && (
-          <Link
-            href={`/community/${post._id}`}
-            className="inline-block text-sm text-[#98B87E] underline"
-          >
-            자세히 보기
-          </Link>
-        )} */}
       </Link>
 
       <div className="flex px-4 text-xs">
-        <button className="cursor-pointer rounded-sm bg-[rgba(74,74,74,0.3)] px-2 py-1 font-medium text-[#4A4A4A]">
+        <button className="cursor-pointer rounded-sm bg-[#cdd6a0] px-2 py-1 font-semibold text-[#3b673a]">
           {`# ${tagLabel}`}
         </button>
       </div>

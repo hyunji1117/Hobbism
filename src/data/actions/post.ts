@@ -276,6 +276,7 @@ export async function deletePost(
         'Client-Id': CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
       },
+      cache: 'no-cache',
     });
 
     data = await res.json();
@@ -285,7 +286,7 @@ export async function deletePost(
   }
 
   if (data.ok) {
-    revalidateTag('posts');
+    revalidateTag(`posts?type=community`);
   }
 
   return data;

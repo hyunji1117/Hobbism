@@ -133,6 +133,7 @@ export default function FeedWriteForm() {
       }
       const res = await createPost(null, formData);
 
+      setIsLoading(false);
       console.log('피드 등록 결과', res);
 
       if (res.ok === 1) {

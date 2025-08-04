@@ -54,6 +54,10 @@ export default function CommunityFeedList({
     setLoading(false);
   }, [page, totalPages, loading]);
 
+  const handleDelete = (_id: number) => {
+    setPosts(prev => prev.filter(post => post._id !== _id));
+  };
+
   // IntersectionObserver 등록
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -88,6 +92,7 @@ export default function CommunityFeedList({
             page="main"
             isBookmarked={isBookmarked}
             bookmark_id={bookmark_id}
+            onDelete={handleDelete}
           />
         );
       })}
