@@ -33,8 +33,10 @@ export function CartItemCard({
   onRemove,
   onCheck,
 }: CardItemCardProps) {
+  // 로컬 상태 관리
   const [localQuantity, setLocalQuantity] = useState(quantity);
   const [localChecked, setLocalChecked] = useState(isChecked);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   // 개별 체크박스 상태 변경
   const handleCheckedChange = () => {
@@ -48,9 +50,9 @@ export function CartItemCard({
     if (localQuantity < 99) {
       const newQuantity = localQuantity + 1;
       try {
-        await fetchUpdateCartItemQuantity(id, newQuantity);
+        await fetchUpdateCartItemQuantity(cartId, newQuantity);
         setLocalQuantity(newQuantity);
-        onQuantityChange?.(id, newQuantity);
+        onQuantityChange?.(cartId, newQuantity);
       } catch (error) {
         console.error('수량 증가 중 오류 발생:', error);
         alert('수량 변경에 실패했습니다. 다시 시도해주세요.');
@@ -63,9 +65,9 @@ export function CartItemCard({
     if (localQuantity > 1) {
       const newQuantity = localQuantity - 1;
       try {
-        await fetchUpdateCartItemQuantity(id, newQuantity);
+        await fetchUpdateCartItemQuantity(cartId, newQuantity);
         setLocalQuantity(newQuantity);
-        onQuantityChange?.(id, newQuantity);
+        onQuantityChange?.(cartId, newQuantity);
       } catch (error) {
         console.error('수량 감소 중 오류 발생:', error);
         alert('수량 변경에 실패했습니다. 다시 시도해주세요.');
@@ -73,17 +75,22 @@ export function CartItemCard({
     }
   };
 
-  // 상품 삭제
+  // 한건 상품 삭제
   const handleRemove = async () => {
     try {
-      await deleteCartItem(id); // API 호출
-      onRemove?.(id); // 부모 컴포넌트에 삭제된 상품 ID 전달
+      await deleteCartItem(cartId); // API 호출
+      setIsDeleted(true); // 삭제 상태로 변경
+      onRemove?.(cartId); // 부모 컴포넌트에 삭제된 상품 ID 전달
       alert('삭제 되었습니다.');
     } catch (error) {
       console.error('삭제 실패:', error);
       alert('삭제에 실패했습니다. 다시 시도해주세요.');
     }
   };
+
+  if (isDeleted) {
+    return null; // 삭제된 상태라면 UI에서 제거
+  }
 
   return (
     <>
