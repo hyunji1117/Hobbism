@@ -123,7 +123,7 @@ export function UserShopTab() {
           ))
         ) : (
           <li className="py-8 text-center text-gray-500">
-            쇼팡 내역이 없습니다.
+            쇼핑 내역이 없습니다.
           </li>
         )}
       </ul>
