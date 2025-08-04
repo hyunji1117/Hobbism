@@ -55,7 +55,7 @@ export const ProductDetailInfo = ({
       <div className="mt-1 flex items-center">
         {/* 할인률 */}
         {discountRate > 0 && (
-          <span className="pr-2 text-[24px] font-semibold text-[#EF4444]">
+          <span className="pr-2 text-[24px] font-semibold text-[#F05656]">
             {discountRate.toLocaleString()}%
           </span>
         )}
@@ -178,14 +178,15 @@ export const ProductActionButtons = ({
     <div className="flex justify-between">
       <button
         onClick={onCartClick}
-        className="w-[48%] rounded-md bg-blue-500 px-4 py-2 text-white"
+        className="w-[48%] rounded-md border border-[#4B5563] px-4 py-2 text-black hover:bg-[#EAEAEA]"
       >
         장바구니 담기
       </button>
       <button
         onClick={onBuyNowClick}
-        className="w-[48%] rounded-md bg-green-500 px-4 py-2 text-white"
+        className="0 w-[48%] rounded-md bg-[#4B5563] px-4 py-2 text-white hover:bg-[#2C2F33]"
       >
+        {/* bg-[#2C2F33] */}
         구매하기
       </button>
     </div>
