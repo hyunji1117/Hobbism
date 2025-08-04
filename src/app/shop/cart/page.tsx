@@ -12,6 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePurchaseStore } from '@/store/order.store';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -116,8 +117,8 @@ export default function CartPage() {
 
   const handelAddBuy = () => {
     const selectedItems = cartItems.filter(item => item.isChecked);
-
     const purchaseData = selectedItems.map(item => ({
+      cartId: item._id,
       id: item.product._id.toString(),
       name: item.product.name,
       originalPrice: item.product.extra.originalPrice,
@@ -127,6 +128,11 @@ export default function CartPage() {
       color: item.product.color,
       productImg: item.product.image.path || '',
     }));
+
+    if (selectedItems.length < 1) {
+      toast.error('선택된 상품이 없습니다.');
+      return;
+    }
 
     console.log('purchaseData', purchaseData);
 

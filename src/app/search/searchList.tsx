@@ -29,11 +29,14 @@ export default function SearchList({
     if (loading || !hasNextPage) return; // 이미 요청했던 page라면 중복 호출 차단
     setLoading(true);
 
-    const data = await fetchProducts(page); // 서버에서 (page)번 페이지 게시물 받아옴
-    if (data.length === 0) {
+    const data = await fetchProducts(page);
+    const noLiveData = data.filter(d => (d.extra.isLiveSpecial = false));
+
+    // 서버에서 (page)번 페이지 게시물 받아옴
+    if (noLiveData.length === 0) {
       setHasNextPage(false);
     } else {
-      setProducts(prev => [...prev, ...data]);
+      setProducts(prev => [...prev, ...noLiveData]);
       setPage(prev => prev + 1);
     }
 

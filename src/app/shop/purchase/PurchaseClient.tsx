@@ -38,8 +38,6 @@ export default function PurchaseClient({
     quantity: Number(item.quantity),
   }));
 
-  console.log('products 직렬화 테스트', JSON.stringify(products));
-
   return (
     <>
       <div className="pb-[10vh]">
@@ -111,10 +109,20 @@ export default function PurchaseClient({
         {purchaseData.length > 0 && (
           <button
             type="submit"
+            disabled={isLoading}
             className="fixed bottom-[10vh] left-1/2 w-[93vw] max-w-[572px] -translate-x-1/2 rounded-xl bg-black py-4 text-lg font-semibold text-white md:w-full"
           >
             {totalAmount.toLocaleString()}원 결제하기
           </button>
+        )}
+
+        {isLoading && (
+          <div className="fixed top-1/2 left-1/2 z-5 w-full -translate-1/2">
+            <div className="flex min-h-screen flex-col items-center justify-center">
+              <span className="mb-3 ml-2 text-2xl font-semibold text-[#FE508B]"></span>
+              <div className="h-15 w-15 animate-spin rounded-full border-4 border-[#FE508B] border-t-transparent" />
+            </div>
+          </div>
         )}
       </form>
     </>
