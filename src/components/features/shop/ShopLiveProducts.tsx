@@ -22,9 +22,19 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
     return 2; // 라이브 끝
   };
 
-  const sortedLiveData = [...liveData].sort(
-    (a, b) => getLiveRank(a) - getLiveRank(b),
-  );
+  const sortedLiveData = [...liveData].sort((a, b) => {
+    const rankA = getLiveRank(a);
+    const rankB = getLiveRank(b);
+
+    if (rankA !== rankB) {
+      return rankA - rankB; // 라이브 상태 우선 정렬
+    }
+
+    const startA = moment(a.extra.live?.start).valueOf();
+    const startB = moment(b.extra.live?.start).valueOf();
+
+    return startA - startB; // 같은 상태 내에서는 시작일 오름차순
+  });
 
   const liveProducts = sortedLiveData.map(product => {
     const liveInfo = currentLive.find(live => live._id === product._id);
@@ -37,7 +47,7 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
     return (
       <SwiperSlide
         key={product._id}
-        className="mr-2.5 !w-[calc(100%/3.5)] last:-mr-6"
+        className="mr-[7px] !w-[calc(100%/3.5)] last:-mr-4"
       >
         {!isLiveNow ? (
           <div className="pointer-events-none select-none">
@@ -83,7 +93,7 @@ export const ShopLiveProducts = ({ liveData }: { liveData: Product[] }) => {
 
   return (
     <>
-      <Swiper spaceBetween={10} slidesPerView="auto" watchOverflow={true}>
+      <Swiper spaceBetween={7} slidesPerView="auto" watchOverflow={true}>
         {liveProducts}
       </Swiper>
 
