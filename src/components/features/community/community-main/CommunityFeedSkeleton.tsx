@@ -17,8 +17,8 @@ export default function CommunityFeedSkeleton() {
       </div>
 
       {/* 이미지 슬라이더 영역 */}
-      <div className="relative aspect-square w-full px-4">
-        <Skeleton className="h-full w-full rounded-md" />
+      <div className="relative aspect-square w-full">
+        <Skeleton className="h-full w-full" />
       </div>
 
       {/* 아이콘 영역 */}

@@ -1,10 +1,8 @@
-import CommunityFeed from '@/components/features/community/community-main/CommunityFeed';
 import CommunityFeedList from '@/components/features/community/community-main/CommunityFeedList';
 import CommunityFeedSkeleton from '@/components/features/community/community-main/CommunityFeedSkeleton';
 import { getBookmarks } from '@/data/actions/bookmark';
 import { fetchPosts } from '@/data/functions/CommunityFetch';
 import { authOptions } from '@/lib/auth';
-import { Post } from '@/types/';
 import { CirclePlus, Pencil } from 'lucide-react';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
@@ -33,7 +31,7 @@ export default async function CommunityPage() {
   const follow = followRes.item;
 
   return (
-    <main className="flex w-full flex-1 flex-col bg-white">
+    <main className="relative flex w-full flex-1 flex-col bg-white">
       {/* 메인 컨텐츠 */}
       <div className="flex flex-col py-3 text-[#4A4A4A]">
         <div className="flex justify-between px-4">

@@ -29,6 +29,8 @@ export default function CommentForm({ _id, onSuccess }: Props) {
   //          state: 액세스토큰 상태          //
   const accessToken = useAuthStore(state => state.accessToken);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   //          state: react-hook-form(닉네임, 소개, 이미지, accessToken)          //
   const { register, handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: {
@@ -45,17 +47,27 @@ export default function CommentForm({ _id, onSuccess }: Props) {
 
   //          event handler: 폼 제출 이벤트 처리          //
   const onSubmit = async (data: FormValues) => {
-    const formData = new FormData();
-    formData.append('_id', _id);
-    formData.append('accessToken', data.accessToken);
-    formData.append('content', data.content);
+    if (isLoading) return;
 
-    const res = await createReply(null, formData);
+    setIsLoading(true);
 
-    if (res.ok === 1) {
-      setContent('');
-      setValue('content', '');
-      onSuccess?.();
+    try {
+      const formData = new FormData();
+      formData.append('_id', _id);
+      formData.append('accessToken', data.accessToken);
+      formData.append('content', data.content);
+
+      const res = await createReply(null, formData);
+
+      if (res.ok === 1) {
+        setContent('');
+        setValue('content', '');
+        onSuccess?.();
+      }
+    } catch (error) {
+      console.error('댓글 등록 실패:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -90,15 +102,15 @@ export default function CommentForm({ _id, onSuccess }: Props) {
           placeholder="댓글을 작성해주세요"
           className="min-h-12 w-full resize-none outline-none"
           ref={el => {
-            contentRegister.ref(el); // react-hook-form용
-            contentRef.current = el; // textarea 동적 높이 조절용
+            contentRegister.ref(el);
+            contentRef.current = el;
           }}
           onChange={onContentChangeHandler}
         ></textarea>
       </div>
       <div className="flex justify-end">
         <button
-          disabled={!content.trim()}
+          disabled={isLoading || !content.trim()}
           className={cn(
             'flex items-center justify-center rounded-full px-3 py-2 text-sm leading-none text-white',
             content.trim() ? 'cursor-pointer bg-[#98B87E]' : 'bg-gray-300',
