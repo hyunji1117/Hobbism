@@ -93,40 +93,45 @@ export function PaymentSelector({
           </li>
           {selected === 'simple' && (
             <div>
-              <ul className="flex gap-2">
+              <ul className="grid w-full grid-cols-3 gap-2">
                 <li>
-                  <button className="flex w-fit items-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
-                    <Image
-                      src="/kakaoIcon.svg"
-                      alt={`kakao icon`}
-                      width={25}
-                      height={25}
-                    />
-                    <p className="ml-2 text-sm">카카오페이</p>
+                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                    <div className="relative aspect-square w-4 md:w-5">
+                      <Image
+                        src="/kakaoIcon.svg"
+                        alt={`kakao icon`}
+                        fill
+                        sizes="10vw"
+                      />
+                    </div>
+                    <p className="ml-2 text-xs md:text-sm">카카오페이</p>
                   </button>
                 </li>
                 <li>
-                  <button className="flex w-fit items-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
-                    <span className="bg-black p-1">
+                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                    <div className="relative aspect-square w-3 bg-black md:w-4">
                       <Image
                         src="/naverIcon.svg"
                         alt={`naver icon`}
-                        width={12}
-                        height={12}
+                        fill
+                        sizes="10vw"
+                        className="p-0.5"
                       />
-                    </span>
-                    <p className="ml-2 text-sm">네이버페이</p>
+                    </div>
+                    <p className="ml-2 text-xs md:text-sm">네이버페이</p>
                   </button>
                 </li>
                 <li>
-                  <button className="flex w-fit items-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
-                    <Image
-                      src="/tossIcon.svg"
-                      alt={`toss icon`}
-                      width={20}
-                      height={20}
-                    />
-                    <p className="ml-2 text-sm">토스페이</p>
+                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                    <div className="relative aspect-square w-3.5 md:w-4">
+                      <Image
+                        src="/tossIcon.svg"
+                        alt={`toss icon`}
+                        fill
+                        sizes="10vw"
+                      />
+                    </div>
+                    <p className="ml-2 text-xs md:text-sm">토스페이</p>
                   </button>
                 </li>
               </ul>
