@@ -8,6 +8,7 @@ import filterValidProducts from '@/utils/product';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { PulseLoader } from 'react-spinners';
 
 export default function SearchList({
   initialData,
@@ -114,7 +115,11 @@ export default function SearchList({
       {/* ===== 무한 스크롤 observer ===== */}
       <div ref={observerRef} className="h-10" />
       {/* ===== loading 중 렌더링 ===== */}
-      {loading && <SmallLoading />}
+      {loading && (
+        <div className="mb-3 flex w-full justify-center">
+          <PulseLoader color="#4A4A4A" />
+        </div>
+      )}
 
       {/* ===== 무한 스크롤 끝날 시 렌더 ====== */}
       {searchProducts.length > 0 && !hasNextPage && !loading && (

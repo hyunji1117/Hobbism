@@ -9,6 +9,7 @@ import { useLiveStore } from '@/store/live.store';
 import { Product } from '@/types';
 import filterValidProducts from '@/utils/product';
 import { JSX, useEffect, useRef, useState } from 'react';
+import { PulseLoader } from 'react-spinners';
 
 export default function ShopList({ initialData }: { initialData: Product[] }) {
   //       state: 무한 스크롤 상태 변수          //
@@ -172,7 +173,11 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
         </div>
 
         <div ref={observerRef} className="h-10" />
-        {loading && <SmallLoading />}
+        {loading && (
+          <div className="flex w-full justify-center">
+            <PulseLoader color="#4A4A4A" />
+          </div>
+        )}
         {!hasNextPage && !loading && (
           <p className="py-4 text-center text-gray-500">
             모든 상품을 다 보셨어요!
