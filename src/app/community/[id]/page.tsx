@@ -1,11 +1,12 @@
 import { getPost } from '@/data/actions/post';
-import CommunityMain from '@/components/features/community/community-main/CommunityMain';
 import CommunityFeed from '@/components/features/community/community-main/CommunityFeed';
 import CommunityComment from '@/components/features/community/community-comment/CommunityComment';
 import { fetchReplies } from '@/data/functions/CommunityFetch';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getBookmarks } from '@/data/actions/bookmark';
+import { Suspense } from 'react';
+import CommunityFeedSkeleton from '@/components/features/community/community-main/CommunityFeedSkeleton';
 
 interface CommunityDetailPageProps {
   params: Promise<{ id: string }>;
@@ -19,6 +20,9 @@ export default async function CommunityDetailPage({
 
   // 게시글 데이터 조회
   const res = await getPost(postId);
+
+  if (res.ok !== 1) return;
+  const post = res.item;
 
   const session = await getServerSession(authOptions);
 
@@ -34,6 +38,7 @@ export default async function CommunityDetailPage({
     commentRes.ok === 1
       ? commentRes.item.filter(c => c.user._id === userId).map(c => c._id)
       : [];
+  console.log('나의 댓글 아이디', myCommentIds);
 
   const bookmarkRes = await getBookmarks('post', session.accessToken);
 
@@ -45,7 +50,18 @@ export default async function CommunityDetailPage({
   const isBookmarked = !!bookmark;
   const bookmark_id = bookmark?._id;
 
-  if (!res.ok || !res.item) {
+  const followRes = await getBookmarks('user', session.accessToken);
+
+  if (followRes.ok !== 1 || !followRes.item) return null;
+  const follow = followRes.item;
+
+  const following = follow.find(f => f.user._id === post.user._id);
+  const isFollowing = !!following;
+  const follow_id = following?._id;
+
+  console.log('팔로우 유저: ', follow);
+
+  if (res.ok !== 1 || !res.item) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-4">
         <div className="text-center">
@@ -70,13 +86,15 @@ export default async function CommunityDetailPage({
 
   // CommunityMain 컴포넌트 재사용
   return (
-    <div className="flex-1 bg-white">
-      <CommunityFeed
-        post={res.item}
-        page="detail"
-        isBookmarked={isBookmarked}
-        bookmark_id={bookmark_id}
-      />
+    <div className="flex flex-1 flex-col bg-white">
+      <Suspense fallback={<CommunityFeedSkeleton />}>
+        <CommunityFeed
+          post={res.item}
+          page="detail"
+          isBookmarked={isBookmarked}
+          bookmark_id={bookmark_id}
+        />
+      </Suspense>
       <CommunityComment
         commentList={commentRes.item}
         post_id={id}

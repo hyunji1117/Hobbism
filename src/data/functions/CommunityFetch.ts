@@ -8,9 +8,21 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
  * @param {string} boardType - 게시판 타입(예: community, notice 등)
  * @returns {Promise<ApiRes<Post[]>>} - 게시글 목록 응답 객체
  */
-export async function fetchPosts(boardType: string): ApiResPromise<Post[]> {
+export async function fetchPosts(
+  boardType: string,
+  page?: number,
+  limit?: number,
+): ApiResPromise<Post[]> {
+  const query = new URLSearchParams({
+    type: boardType,
+    ...(page !== undefined ? { page: String(page) } : {}),
+    ...(limit !== undefined ? { limit: String(limit) } : {}),
+  }).toString();
+
+  console.log('게시물 쿼리', query);
+
   try {
-    const res = await fetch(`${API_URL}/posts?type=${boardType}`, {
+    const res = await fetch(`${API_URL}/posts?${query}`, {
       headers: {
         'Client-Id': CLIENT_ID,
       },

@@ -26,10 +26,10 @@ declare module 'next-auth' {
     accessToken?: string;
     loginType?: string;
     user: {
-      _id?: number;
-      name?: string;
+      _id: number;
+      name: string;
       email?: string;
-      image?: string;
+      image: string;
       points?: number;
       address?: string;
       phone?: string;

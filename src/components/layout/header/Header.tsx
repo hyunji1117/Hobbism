@@ -226,15 +226,7 @@ export default function Header() {
             {isUserPage && !isMypage && !isFollowPage && !isBookmarkPage && (
               <Siren />
             )}
-            {isCommunityPage && (
-              <Link
-                href="/community/write"
-                className="flex items-center gap-2 rounded-md px-2 py-2"
-              >
-                <Pencil size={20} className="text-[#4A4A4A]" />
-                {/* <span className="text-sm text-[#4A4A4A]">피드 작성</span> */}
-              </Link>
-            )}
+
             {isCharacterPage && (
               <>
                 <Info

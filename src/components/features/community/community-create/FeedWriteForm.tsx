@@ -1,21 +1,10 @@
 'use client';
 
-import {
-  ChangeEvent,
-  useActionState,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { createPost } from '@/data/actions/post';
-import { useAuthStore } from '@/store/auth.store'; // 영찬님 로그인
-import FeedCategorySelect from './FeedCategorySelect';
-import FeedContentInput from './FeedContentInput';
-import FeedImageUpload from './FeedImageUpload';
-import FeedSubmitButton from './FeedSubmitButton';
+import { useAuthStore } from '@/store/auth.store';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
 import { useModalStore } from '@/store/modal.store';
 import { useRouter } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
