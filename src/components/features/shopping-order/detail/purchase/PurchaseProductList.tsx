@@ -11,7 +11,10 @@ export function PurchaseProductList() {
         </h2>
         <ul>
           {purchaseData.map(product => (
-            <li className="mt-3 flex gap-5" key={product.id}>
+            <li
+              className="mt-3 flex gap-5"
+              key={product.cartId ? product.cartId : product.id}
+            >
               <div className="relative aspect-square w-20">
                 <Image
                   fill

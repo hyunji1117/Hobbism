@@ -118,6 +118,7 @@ export default function CartPage() {
     const selectedItems = cartItems.filter(item => item.isChecked);
 
     const purchaseData = selectedItems.map(item => ({
+      cartId: item._id,
       id: item.product._id.toString(),
       name: item.product.name,
       originalPrice: item.product.extra.originalPrice,
