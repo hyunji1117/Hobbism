@@ -1,6 +1,7 @@
 'use server';
 
 import { Product, ProductListRes } from '@/types';
+import { OrderInfoRes } from '@/types/orders';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
@@ -30,11 +31,14 @@ export async function OrderFetch(
 }
 
 // 상품 구매 목록 조회
-export async function OrderListFetch() {
+export async function OrderListFetch(
+  accessToken: string,
+): Promise<OrderInfoRes> {
   const res = await fetch(`${API_URL}/orders`, {
     headers: {
       'Content-Type': 'application/json',
       'Client-Id': CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
   if (!res.ok) {
