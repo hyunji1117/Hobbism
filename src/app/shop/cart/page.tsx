@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { usePurchaseStore } from '@/store/order.store';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { SmallLoading } from '@/components/common/SmallLoading';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -71,7 +72,7 @@ export default function CartPage() {
     calculateTotalPrice();
   }, [cartItems]);
 
-  if (isLoading) return <p className="py-10 text-center">로딩 중...</p>;
+  if (isLoading) return <SmallLoading />;
   if (error) return <p className="py-10 text-center text-red-500">{error}</p>;
   if (cartItems.length === 0) {
     return <p className="py-10 text-center">장바구니가 비어 있습니다.</p>;
@@ -128,6 +129,8 @@ export default function CartPage() {
       color: item.product.color,
       productImg: item.product.image.path || '',
     }));
+
+    setIsLoading(true);
 
     if (selectedItems.length < 1) {
       toast.error('선택된 상품이 없습니다.');
