@@ -71,6 +71,7 @@ export default function CommunityComment({
           setCurrentSection={setCurrentSection}
           viewPageList={viewPageList}
           totalSection={totalSection}
+          pagingCount={5}
         />
       </div>
       {/* 댓글 입력창 */}

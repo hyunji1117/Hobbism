@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Plus, X } from 'lucide-react';
 import { FEED_CATEGORIES } from '@/constant/category';
 import { cn } from '@/lib/utils';
+import { getUserAttribute, updateUserInfo } from '@/data/actions/user';
 
 //          interface: 피드 작성 폼 입력 타입 정의          //
 interface FormValues {
@@ -31,6 +32,8 @@ export default function FeedWriteForm() {
 
   //          state: 액세스토큰 상태          //
   const accessToken = useAuthStore(state => state.accessToken);
+  const user = useAuthStore(state => state.user);
+
   //          state: react-hook-form(닉네임, 소개, 이미지, accessToken)          //
   const { register, handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: {
@@ -119,6 +122,7 @@ export default function FeedWriteForm() {
 
   //          event handler: 폼 제출 이벤트 처리          //
   const onSubmit = async (data: FormValues) => {
+    if (!accessToken || !user?._id) return;
     setIsLoading(true);
     try {
       const formData = new FormData();
@@ -133,11 +137,24 @@ export default function FeedWriteForm() {
       }
       const res = await createPost(null, formData);
 
-      setIsLoading(false);
-      console.log('피드 등록 결과', res);
-
       if (res.ok === 1) {
-        console.log('피드 업로드 됨');
+        const pointRes = await getUserAttribute(user._id, 'extra');
+
+        if (res.ok !== 1) return null;
+        const userForm = new FormData();
+        userForm.append('accessToken', accessToken);
+        userForm.append('point', String(pointRes.item.extra.point + 100));
+        userForm.append(
+          'total_point',
+          String(pointRes.item.extra.total_point + 100),
+        );
+        const userUpdateRes = await updateUserInfo(user._id, userForm);
+
+        if (userUpdateRes.ok === 1) {
+          console.log('포인트 업데이트 성공');
+        }
+        router.push('/community');
+        return;
       }
     } finally {
       setIsLoading(false);

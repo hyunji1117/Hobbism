@@ -38,7 +38,6 @@ export default async function CommunityDetailPage({
     commentRes.ok === 1
       ? commentRes.item.filter(c => c.user._id === userId).map(c => c._id)
       : [];
-  console.log('나의 댓글 아이디', myCommentIds);
 
   const bookmarkRes = await getBookmarks('post', session.accessToken);
 
@@ -49,17 +48,6 @@ export default async function CommunityDetailPage({
 
   const isBookmarked = !!bookmark;
   const bookmark_id = bookmark?._id;
-
-  const followRes = await getBookmarks('user', session.accessToken);
-
-  if (followRes.ok !== 1 || !followRes.item) return null;
-  const follow = followRes.item;
-
-  const following = follow.find(f => f.user._id === post.user._id);
-  const isFollowing = !!following;
-  const follow_id = following?._id;
-
-  console.log('팔로우 유저: ', follow);
 
   if (res.ok !== 1 || !res.item) {
     return (

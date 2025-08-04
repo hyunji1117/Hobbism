@@ -12,7 +12,6 @@ import { Suspense } from 'react';
 export default async function CommunityPage() {
   const res = await fetchPosts('community', 1, 5);
 
-  console.log('게시물 결과', res);
   if (res.ok !== 1 || !res.pagination) return null;
 
   const session = await getServerSession(authOptions);

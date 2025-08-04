@@ -423,7 +423,7 @@ export default function CommunityFeed({
       </Link>
 
       <div className="flex px-4 text-xs">
-        <button className="cursor-pointer rounded-sm bg-[#cdd6a0] px-2 py-1 font-semibold text-[#3b673a]">
+        <button className="cursor-pointer rounded-sm bg-[#eaedef] px-2 py-1 font-semibold text-[#4a4a4a]">
           {`# ${tagLabel}`}
         </button>
       </div>
