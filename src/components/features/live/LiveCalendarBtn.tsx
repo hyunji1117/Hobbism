@@ -56,13 +56,13 @@ export const LiveCalendarBtn = () => {
 
       <div className='pr-3.5" absolute -top-3 -right-4'>
         {/* 동시간 라이브 */}
-        {isSameTimeLives && (
+        {/* {isSameTimeLives && (
           <div
             className={`absolute top-12.5 right-0 mr-2 rounded-sm bg-white p-1 text-xs font-extrabold text-[#FE508B] transition-all duration-200 after:absolute after:-top-3 after:right-4 after:border-7 after:border-transparent after:border-b-white after:content-[''] ${isBtnClicked ? 'opacity-0' : 'animate-pulse'}`}
           >
             동시LIVE!
           </div>
-        )}
+        )} */}
 
         {isDropdownOpen && (
           <div ref={dropdownRef}>

@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronUp, CircleChevronUp } from 'lucide-react';
+import { ChevronUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function TopButton() {
@@ -37,7 +37,7 @@ export default function TopButton() {
               className="absolute right-3.5 bottom-0 aspect-square w-10 rounded-full bg-white shadow-[1px_3px_8px_#BEBEBE]"
             >
               <ChevronUp
-                stroke="#FE508B"
+                stroke="#1a1a1a"
                 strokeWidth={1.5}
                 fill="white"
                 className="h-full w-full"

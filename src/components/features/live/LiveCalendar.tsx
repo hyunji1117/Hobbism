@@ -41,7 +41,7 @@ export const LiveCalendar = () => {
             const textColor = isSaturday
               ? 'text-[#51AAED]'
               : isSunday
-                ? 'text-[#FE508B]'
+                ? 'text-red-400'
                 : 'text-black';
 
             const hasLive = liveCastData.some(live =>
@@ -60,7 +60,7 @@ export const LiveCalendar = () => {
                   {day.format('D')}
 
                   {hasLive && (
-                    <div className="mb-5 h-1.5 w-1.5 rounded-full bg-[#FE508B]"></div>
+                    <div className="mb-5 h-1.5 w-1.5 rounded-full bg-red-500"></div>
                   )}
                 </div>
               </div>
