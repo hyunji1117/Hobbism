@@ -17,8 +17,8 @@ export default function Login() {
             priority
           />
 
-          <p className="relative -top-10 font-semibold text-[#8F8F91]">
-            SNS 가입 한 번으로 취미 소통과 쇼핑까지
+          <p className="relative -top-12 font-semibold text-[16px] text-[#8F8F91]">
+            한 곳에서 누리는 취미의 모든것!
           </p>
         </div>
 
@@ -30,7 +30,7 @@ export default function Login() {
 
           {/* 안내 문구 */}
           <div className="mt-5 flex w-full flex-col items-center">
-            <p className="text-center text-[12px] text-[#4B5563]">
+            <p className="text-center text-[12px] text-[#c3c3c3]">
               로그인 시 개인정보 보호정책과 약관에 동의하며, 서비스 이용을 위해{' '}
               <br /> 이메일, 이름, 프로필 정보를 수집합니다.
             </p>
