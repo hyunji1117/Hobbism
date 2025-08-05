@@ -1,5 +1,6 @@
 import { RandomHobbyContent } from '@/components/features/shop/RandomHobby/RandomHobbyContent';
 import { fetchAllProducts } from '@/data/functions/ProductFetch';
+import filterValidProducts from '@/utils/product';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 
@@ -10,11 +11,12 @@ export const metadata: Metadata = {
 
 export default async function RandomHobby() {
   const categoryData = await fetchAllProducts();
+  const filteredData = filterValidProducts(categoryData);
 
   return (
     <>
       <Suspense>
-        <RandomHobbyContent categoryData={categoryData} />
+        <RandomHobbyContent categoryData={filteredData} />
       </Suspense>
     </>
   );
