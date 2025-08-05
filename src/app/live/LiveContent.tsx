@@ -46,19 +46,23 @@ export default function LiveContent({ live }: { live: LiveProduct }) {
         )
       )}
 
-      {/* 라이브 비디오 */}
-      <div key={live._id} className="h-screen">
-        <div className="h-[60%]">
+      <div key={live._id} className="h-screen overflow-hidden">
+        {/* 라이브 댓글 */}
+        <div className="absolute bottom-0 h-[60%] w-full">
+          <LiveComment liveId={live.extra?.live.liveId} />
+        </div>
+
+        {/* 라이브 비디오 */}
+        <div className="h-[50%]">
           <LiveVideo
             livePath={live.extra?.live.livePath}
             _id={live._id}
             name={live.name}
             rate={live.extra?.discountRate}
+            imgSrc={live.mainImages[0]?.path}
+            price={live.price}
+            isLiveNow={moment().isBetween(moment(live.start), moment(live.end))}
           />
-        </div>
-        {/* 라이브 댓글 */}
-        <div className="h-[48%]">
-          <LiveComment liveId={live.extra?.live.liveId} />
         </div>
       </div>
     </>

@@ -12,6 +12,7 @@ type PurchaseItem = {
   size?: number | string;
   color?: string;
   productImg: string;
+  cartId?: number;
 };
 
 type Store = {

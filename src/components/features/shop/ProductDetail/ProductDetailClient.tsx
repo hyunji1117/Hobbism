@@ -14,6 +14,7 @@ import { ProductQuantitySelector } from '@/components/features/shop/ProductDetai
 import { fetchAddToCart } from '@/data/functions/CartFetch.client';
 
 import { usePurchaseStore } from '@/store/order.store';
+import { SmallLoading } from '@/components/common/SmallLoading';
 
 // 장바구니 아이콘 컴포넌트
 export function CartIcon() {
@@ -119,6 +120,7 @@ export default function CartAction({
     }
 
     setIsBottomSheetOpen(false);
+    setLoading(true);
 
     const purchaseData = {
       id: item.id,
@@ -252,6 +254,8 @@ export default function CartAction({
           )}
         </div>
       )}
+
+      {loading && <SmallLoading />}
     </>
   );
 }

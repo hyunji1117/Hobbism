@@ -70,7 +70,7 @@ export const ShopAd = () => {
           effect="fade"
         >
           {ads.map((ban, idx) => (
-            <SwiperSlide className="w-full" key={`slide-${idx}`}>
+            <SwiperSlide className="w-full pt-6 pb-8" key={`slide-${idx}`}>
               <Link href={ban.path}>
                 <div className="relative aspect-[4/1] w-full">
                   <Image

@@ -1,5 +1,6 @@
 'use client';
 
+import { SmallLoading } from '@/components/common/SmallLoading';
 import { PaymentSelector } from '@/components/features/shopping-order/detail/purchase/PaymentSelector';
 import { PaymentSummary } from '@/components/features/shopping-order/detail/purchase/PaymentSummary';
 import { PurchaseAddress } from '@/components/features/shopping-order/detail/purchase/PurchaseAddress';
@@ -37,8 +38,6 @@ export default function PurchaseClient({
     _id: Number(item.id),
     quantity: Number(item.quantity),
   }));
-
-  console.log('products 직렬화 테스트', JSON.stringify(products));
 
   return (
     <>
@@ -111,11 +110,14 @@ export default function PurchaseClient({
         {purchaseData.length > 0 && (
           <button
             type="submit"
+            disabled={isLoading}
             className="fixed bottom-[10vh] left-1/2 w-[93vw] max-w-[572px] -translate-x-1/2 rounded-xl bg-black py-4 text-lg font-semibold text-white md:w-full"
           >
             {totalAmount.toLocaleString()}원 결제하기
           </button>
         )}
+
+        {isLoading && <SmallLoading />}
       </form>
     </>
   );

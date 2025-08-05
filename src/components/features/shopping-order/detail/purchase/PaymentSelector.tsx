@@ -1,5 +1,8 @@
-import { Banknote, CreditCard, WalletCards } from 'lucide-react';
+'use client';
+
+import { Banknote, ChevronDown, CreditCard, WalletCards } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 export function PaymentSelector({
   selected,
@@ -8,6 +11,20 @@ export function PaymentSelector({
   selected: string | null;
   setSelectedPayment: (method: string) => void;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleOpen = () => setIsOpen(prev => !prev);
+  const [selectBank, setSelectBank] = useState('은행선택');
+
+  const banks = [
+    '신한은행',
+    '우리은행',
+    '기업은행',
+    '하나은행',
+    '부산은행',
+    '우체국',
+    '케이뱅크',
+  ];
+
   return (
     <>
       <div className="mx-3.5 mb-5">
@@ -54,23 +71,33 @@ export function PaymentSelector({
             </label>
           </li>
           {selected === 'cash' && (
-            <form className="pb-5">
-              <label className="sr-only">입금은행</label>
-              <select
-                name="bank"
-                id="bank"
-                className="h-12 w-full rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black"
+            <div className="mb-3">
+              <button
+                onClick={toggleOpen}
+                type="button"
+                className="flex h-12 w-full justify-between rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black"
               >
-                <option value="">은행 선택</option>
-                <option value="">신한은행</option>
-                <option value="">우리은행</option>
-                <option value="">기업은행</option>
-                <option value="">하나은행</option>
-                <option value="">부산은행</option>
-                <option value="">우체국</option>
-                <option value="">케이뱅크</option>
-              </select>
-            </form>
+                <p>{selectBank}</p>
+                <ChevronDown />
+              </button>
+
+              {isOpen && (
+                <ul className="w-full rounded-lg border border-[#e6e6e6] bg-white text-[#111111] outline-none focus:border-black">
+                  {banks.map(bank => (
+                    <li
+                      key={bank}
+                      onClick={() => {
+                        setSelectBank(bank);
+                        setIsOpen(false);
+                      }}
+                      className="border-b px-4 py-3.5 transition-all last:border-none hover:bg-[#f4f4f4]"
+                    >
+                      {bank}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           )}
           <li className="mb-4 flex items-center gap-2">
             <input
@@ -93,40 +120,45 @@ export function PaymentSelector({
           </li>
           {selected === 'simple' && (
             <div>
-              <ul className="flex gap-2">
+              <ul className="grid w-full grid-cols-3 gap-2">
                 <li>
-                  <button className="flex w-fit items-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
-                    <Image
-                      src="/kakaoIcon.svg"
-                      alt={`kakao icon`}
-                      width={25}
-                      height={25}
-                    />
-                    <p className="ml-2 text-sm">카카오페이</p>
+                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                    <div className="relative aspect-square w-4 md:w-5">
+                      <Image
+                        src="/kakaoIcon.svg"
+                        alt={`kakao icon`}
+                        fill
+                        sizes="10vw"
+                      />
+                    </div>
+                    <p className="ml-2 text-xs md:text-sm">카카오페이</p>
                   </button>
                 </li>
                 <li>
-                  <button className="flex w-fit items-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
-                    <span className="bg-black p-1">
+                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                    <div className="relative aspect-square w-3 bg-black md:w-4">
                       <Image
                         src="/naverIcon.svg"
                         alt={`naver icon`}
-                        width={12}
-                        height={12}
+                        fill
+                        sizes="10vw"
+                        className="p-0.5"
                       />
-                    </span>
-                    <p className="ml-2 text-sm">네이버페이</p>
+                    </div>
+                    <p className="ml-2 text-xs md:text-sm">네이버페이</p>
                   </button>
                 </li>
                 <li>
-                  <button className="flex w-fit items-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
-                    <Image
-                      src="/tossIcon.svg"
-                      alt={`toss icon`}
-                      width={20}
-                      height={20}
-                    />
-                    <p className="ml-2 text-sm">토스페이</p>
+                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                    <div className="relative aspect-square w-3.5 md:w-4">
+                      <Image
+                        src="/tossIcon.svg"
+                        alt={`toss icon`}
+                        fill
+                        sizes="10vw"
+                      />
+                    </div>
+                    <p className="ml-2 text-xs md:text-sm">토스페이</p>
                   </button>
                 </li>
               </ul>

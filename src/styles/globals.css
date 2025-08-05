@@ -199,19 +199,19 @@
 
 @keyframes slideInFromTopRight {
   from {
-    transform: translate(30px, -30px);
+    transform: translate(30px, -30px) rotate(-10deg);
   }
   to {
-    transform: translate(0, 0);
+    transform: translate(0, 0) rotate(0);
   }
 }
 
 @keyframes slideInFromBottomLeft {
   from {
-    transform: translate(-30px, 30px);
+    transform: translate(-30px, 30px) rotate(10deg);
   }
   to {
-    transform: translate(0, 0);
+    transform: translate(0, 0) rotate(0);
   }
 }
 
@@ -240,15 +240,34 @@
 }
 
 .bear-top-animation {
-  animation: slideInFromTopRight 1s cubic-bezier(.43,-0.81,.36,1.12) forwards;
-  transform: translate(30px, -30px);
+  animation: slideInFromTopRight 1s 0.4s cubic-bezier(1,-0.81,.31,1.16) forwards;
+  transform: translate(30px, -30px) rotate(-10deg);
 }
 
 .bear-bottom-animation {
-  animation: slideInFromBottomLeft 1s cubic-bezier(.43,-0.81,.36,1.12) forwards;
-  transform: translate(-30px, 30px);
+  animation: slideInFromBottomLeft 1s 0.2s cubic-bezier(1,-0.81,.31,1.16)forwards;
+  transform: translate(-30px, 30px) rotate(10deg);
 }
 
 .logo-animation {
-  animation: scaleIn ease-out 1s forwards;
+  animation: scaleIn ease-out 1.2s forwards;
+}
+
+/* 모바일용 크기 (480px 이하) */
+@media (max-width: 480px) {
+  .mobile-logo {
+    height: 2rem;
+  }
+  
+  .mobile-bear {
+    width: 11rem;
+  }
+  
+  .mobile-text {
+    font-size: 0.8rem;
+  }
+
+  .bear-top-animation{
+    top: -52px;
+  }
 }

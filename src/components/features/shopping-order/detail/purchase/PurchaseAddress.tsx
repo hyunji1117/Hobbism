@@ -43,14 +43,14 @@ export function PurchaseAddress({
   //          state: accessToken 상태          //
   const accessToken = useAuthStore(state => state.accessToken);
 
-  const { register, setValue, handleSubmit } = useForm<FormValues>({
+  const { register, setValue, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       address: addressInfo.address ?? '',
       detail: addressInfo.detailAddress ?? '',
       postcode: addressInfo.postcode ?? '',
     },
   });
-  const toggleOpen = () => setIsOpen(prev => !prev);
+  // const toggleOpen = () => setIsOpen(prev => !prev);
 
   const onComplete = (data: Address) => {
     setValue('address', data.address);
@@ -86,17 +86,30 @@ export function PurchaseAddress({
     setIsOpen(false);
   };
 
+  // x 버튼 클릭 시 form 닫고 입력값 초기화
+  const handleCloseForm = () => {
+    reset(); // form input 초기화
+    setIsOpen(false); // form 닫기
+  };
+
   return (
     <>
       <div className="mx-3.5">
         <div className="mb-2 flex justify-between border-b border-b-[#EAEAEA] pb-2">
           <h2 className="text-lg font-bold">배송 정보</h2>
-          <button
-            onClick={toggleOpen}
-            className="text-right font-semibold text-[#FE508B]"
-          >
-            {!isOpen ? <span>배송지 변경</span> : <X />}
-          </button>
+
+          {!isOpen ? (
+            <button
+              onClick={() => setIsOpen(true)}
+              className="text-right font-semibold underline"
+            >
+              <span>배송지 변경</span>
+            </button>
+          ) : (
+            <button onClick={() => handleCloseForm()}>
+              <X />
+            </button>
+          )}
         </div>
         {isOpen && (
           <form
@@ -159,9 +172,7 @@ export function PurchaseAddress({
                   `(${localAddressInfo.detailAddress})`}
               </p>
             ) : (
-              <p className="text-[#4B5563]">
-                배송지가 비어 있습니다. 배송지를 입력해 주세요.
-              </p>
+              <p className="text-[#4B5563]">배송지가 비어 있습니다.</p>
             )}
           </div>
         </div>

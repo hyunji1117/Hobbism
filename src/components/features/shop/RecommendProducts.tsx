@@ -37,9 +37,12 @@ export const RecommendProducts = ({
 
   //          render: 추천 상품 컴포넌트 렌더          //
   return (
-    <Swiper spaceBetween={10} slidesPerView={3.5}>
+    <Swiper spaceBetween={7} slidesPerView="auto" watchOverflow={true}>
       {filteredProducts.slice(0, 5).map(product => (
-        <SwiperSlide key={product._id} className="mr-2.5 !w-[calc(100%/3.5)]">
+        <SwiperSlide
+          key={product._id}
+          className="mr-[7px] !w-[calc(100%/3.5)] last:-mr-4"
+        >
           <ShopProduct
             _id={product._id}
             price={product.price}

@@ -7,7 +7,9 @@ import { ShopProduct } from '@/components/features/shop/ShopProduct';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import { useLiveStore } from '@/store/live.store';
 import { Product } from '@/types';
+import filterValidProducts from '@/utils/product';
 import { JSX, useEffect, useRef, useState } from 'react';
+import { PulseLoader } from 'react-spinners';
 
 export default function ShopList({ initialData }: { initialData: Product[] }) {
   //       state: 무한 스크롤 상태 변수          //
@@ -24,8 +26,12 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
     setLoading(true);
 
     const data = await fetchProducts(page); // 서버에서 (page)번 페이지 게시물 받아옴
+    const filteredData = filterValidProducts(data);
+
     setProducts(prev => {
-      const newData = data.filter(d => !prev.some(p => p._id === d._id)); // 중복 제거 로직
+      const newData = filteredData.filter(
+        d => !prev.some(p => p._id === d._id),
+      ); // 중복 제거 로직
       return [...prev, ...newData];
     });
 
@@ -94,9 +100,11 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
       while (true) {
         // 데이터를 찾을 때까지 무한 루프
         const data = await fetchProducts(targetPage); // targetPage에 해당하는 상품 데이터를 서버에서 가져옴
-        if (data.length === 0) break; // 끝까지 없으면 종료
+        const filteredData = filterValidProducts(data);
 
-        const filtered = data.filter(p =>
+        if (filteredData.length === 0) break; // 끝까지 없으면 종료
+
+        const filtered = filteredData.filter(p =>
           p.extra.category.includes(newCategory),
         );
 
@@ -110,7 +118,8 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
       }
     } else {
       const data = await fetchProducts(1);
-      firstPageData = data;
+      const filteredData = filterValidProducts(data);
+      firstPageData = filteredData;
     } // 카테고리가 ALL이라면 필터링 없이 첫 페이지 그대로 렌더링
 
     setSelectedCategory(newCategory);
@@ -164,7 +173,11 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
         </div>
 
         <div ref={observerRef} className="h-10" />
-        {loading && <SmallLoading />}
+        {loading && (
+          <div className="flex w-full justify-center">
+            <PulseLoader color="#4A4A4A" />
+          </div>
+        )}
         {!hasNextPage && !loading && (
           <p className="py-4 text-center text-gray-500">
             모든 상품을 다 보셨어요!

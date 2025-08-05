@@ -43,5 +43,6 @@ export interface OrderInfoRes {
     user: OrderedUser;
     address: OrderedAddress;
     selectedPayment: string;
+    createdAt: string;
   };
 }
