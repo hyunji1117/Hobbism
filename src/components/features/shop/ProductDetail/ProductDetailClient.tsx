@@ -15,6 +15,7 @@ import { fetchAddToCart } from '@/data/functions/CartFetch.client';
 
 import { usePurchaseStore } from '@/store/order.store';
 import { SmallLoading } from '@/components/common/SmallLoading';
+import toast from 'react-hot-toast';
 
 // 장바구니 아이콘 컴포넌트
 export function CartIcon() {
@@ -82,7 +83,7 @@ export default function CartAction({
     if (isBottomSheetOpen) {
       // 바텀시트가 열려 있는 상태에서 옵션 검증 수행
       if (hasOptions && (!selectedSize || !selectedColor)) {
-        alert('사이즈와 색상을 모두 선택해주세요!');
+        toast.error('사이즈와 색상을 모두 선택해주세요!');
         return;
       }
       setLoading(true);
@@ -95,11 +96,11 @@ export default function CartAction({
         });
         console.log('장바구니 추가 성공 응답:', response);
 
-        alert('장바구니에 상품이 추가되었습니다!');
+        toast.success('장바구니에 상품이 추가되었습니다!');
         setIsBottomSheetOpen(false);
       } catch (error) {
         console.error('장바구니 추가 중 오류 발생:', error);
-        alert('장바구니 추가에 실패했습니다.');
+        toast.error('장바구니 추가에 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -115,7 +116,7 @@ export default function CartAction({
       return;
     }
     if (hasOptions && (!selectedSize || !selectedColor)) {
-      alert('사이즈와 색상을 모두 선택해주세요!');
+      toast.error('사이즈와 색상을 모두 선택해주세요!');
       return;
     }
 
