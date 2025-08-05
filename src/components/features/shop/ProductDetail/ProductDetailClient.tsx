@@ -51,8 +51,11 @@ export default function CartAction({
 
   const handleAddToCart = async () => {
     if (isBottomSheetOpen) {
-      if (hasOptions && (!selectedSize || !selectedColor)) {
-        toast.error('사이즈와 색상을 모두 선택해주세요!');
+      if (
+        (options?.size?.length && !selectedSize) ||
+        (options?.color?.length && !selectedColor)
+      ) {
+        toast.error('옵션을 모두 선택해 주세요!');
         return;
       }
       setLoading(true);
@@ -84,8 +87,11 @@ export default function CartAction({
       setIsBottomSheetOpen(true);
       return;
     }
-    if (hasOptions && (!selectedSize || !selectedColor)) {
-      toast.error('사이즈와 색상을 모두 선택해주세요!');
+    if (
+      (options?.size?.length && !selectedSize) ||
+      (options?.color?.length && !selectedColor)
+    ) {
+      toast.error('옵션을 모두 선택해주세요!');
       return;
     }
 
