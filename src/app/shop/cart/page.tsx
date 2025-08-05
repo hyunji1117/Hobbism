@@ -90,11 +90,6 @@ export default function CartPage() {
         isChecked: newCheckedState,
       })),
     );
-
-    // handleItemCheck를 호출하여 상태를 반영
-    cartItems.forEach(item =>
-      handleItemCheck(item.product._id, newCheckedState),
-    );
   };
 
   const handleItemCheck = (id: number, checked: boolean) => {
@@ -103,25 +98,42 @@ export default function CartPage() {
         item.product._id === id ? { ...item, isChecked: checked } : item,
       );
 
-      const allchecked = updatedItems.every(item => item.isChecked);
-      setIsAllChecked(allchecked);
+      const allChecked = updatedItems.every(item => item.isChecked);
+      setIsAllChecked(allChecked);
       return updatedItems;
     });
   };
 
+  // const handleQuantityChange = async (id: number, quantity: number) => {
+  //   try {
+  //     const updatedItem = await fetchUpdateCartItemQuantity(id, quantity);
+  //     setCartItems(prevItems =>
+  //       prevItems.map(item =>
+  //         item.product._id === id
+  //           ? // API 응답 구조에 맞게 수정
+  //             { ...item, quantity: updatedItem.data.quantity }
+  //           : item,
+  //       ),
+  //     );
+  //   } catch (error) {
+  //     console.error('수량 변경 중 오류 발생:', error);
+  //   }
+  // };
+
   const handleQuantityChange = async (id: number, quantity: number) => {
     try {
       const updatedItem = await fetchUpdateCartItemQuantity(id, quantity);
+      console.log('Updated Item:', updatedItem);
       setCartItems(prevItems =>
         prevItems.map(item =>
-          item.product._id === id
-            ? // API 응답 구조에 맞게 수정
-              { ...item, quantity: updatedItem.data.quantity }
+          item.product._id === id.toString()
+            ? { ...item, quantity: updatedItem.data.quantity }
             : item,
         ),
       );
     } catch (error) {
       console.error('수량 변경 중 오류 발생:', error);
+      toast.error('수량 변경에 실패했습니다.');
     }
   };
 
