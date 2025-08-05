@@ -7,6 +7,7 @@ import {
 import { Minus, Plus, X } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export interface CardItemCardProps {
   id: number;
@@ -81,7 +82,7 @@ export function CartItemCard({
       await deleteCartItem(cartId); // API 호출
       setIsDeleted(true); // 삭제 상태로 변경
       onRemove?.(cartId); // 부모 컴포넌트에 삭제된 상품 ID 전달
-      alert('삭제 되었습니다.');
+      toast.success('선택하신 상품이 삭제되었습니다.');
     } catch (error) {
       console.error('삭제 실패:', error);
       alert('삭제에 실패했습니다. 다시 시도해주세요.');
