@@ -12,6 +12,7 @@ interface CommunityDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+//          component: 커뮤니티 상세 페이지 컴포넌트          //
 export default async function CommunityDetailPage({
   params,
 }: CommunityDetailPageProps) {
@@ -72,7 +73,7 @@ export default async function CommunityDetailPage({
 
   if (commentRes.ok !== 1) return null;
 
-  // CommunityMain 컴포넌트 재사용
+  //           render: 커뮤니티 상세 페이지 컴포넌트 렌더링          //
   return (
     <div className="flex flex-1 flex-col bg-white">
       <Suspense fallback={<CommunityFeedSkeleton />}>

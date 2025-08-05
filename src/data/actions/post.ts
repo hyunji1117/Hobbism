@@ -366,14 +366,14 @@ export async function deleteReply(
   state: ApiRes<null> | null,
   formData: FormData,
 ): ApiResPromise<null> {
-  const _id = formData.get('_id') as string;
+  const post_id = formData.get('post_id') as string;
   const replyId = formData.get('replyId') as string;
   const accessToken = formData.get('accessToken') as string;
 
   let data: ApiRes<null>;
 
   try {
-    const res = await fetch(`${API_URL}/posts/${_id}/replies/${replyId}`, {
+    const res = await fetch(`${API_URL}/posts/${post_id}/replies/${replyId}`, {
       method: 'DELETE',
       headers: {
         'Client-Id': CLIENT_ID,
@@ -388,8 +388,8 @@ export async function deleteReply(
   }
 
   if (data.ok) {
-    revalidateTag(`posts/${_id}/replies`);
-    revalidateTag(`posts/${_id}`);
+    revalidateTag(`posts/${post_id}/replies`);
+    revalidateTag(`posts/${post_id}`);
   }
 
   return data;

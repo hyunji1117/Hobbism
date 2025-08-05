@@ -45,7 +45,7 @@ export default function CommunityFeedList({
     setLoading(true);
     const nextPage = page + 1;
 
-    const res = await fetchPosts('community', nextPage, 5);
+    const res = await fetchPosts('community', nextPage, 10);
     if (res.ok === 1 && res.item.length > 0) {
       setPosts(prev => [...prev, ...res.item]);
       setPage(nextPage);

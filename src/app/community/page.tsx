@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 
 export default async function CommunityPage() {
-  const res = await fetchPosts('community', 1, 5);
+  const res = await fetchPosts('community', 1, 10);
 
   if (res.ok !== 1 || !res.pagination) return null;
 
@@ -59,20 +59,20 @@ export default async function CommunityPage() {
         <Link
           href={'/community/write'}
           className="flex items-center justify-center gap-1 border-t border-[#f2f2f2] py-3"
+          prefetch={true}
         >
           <CirclePlus size={20} />
           <span>피드 작성하기</span>
         </Link>
         <div className="h-4 bg-[#f7f7f7]"></div>
       </div>
-      <Suspense fallback={<CommunityFeedSkeleton />}>
-        <CommunityFeedList
-          posts={res.item}
-          postBookmarks={bookmarkRes.item}
-          userFollows={followRes.item}
-          totalPages={res.pagination.totalPages}
-        />
-      </Suspense>
+
+      <CommunityFeedList
+        posts={res.item}
+        postBookmarks={bookmarkRes.item}
+        userFollows={followRes.item}
+        totalPages={res.pagination.totalPages}
+      />
     </main>
   );
 }

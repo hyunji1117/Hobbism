@@ -55,6 +55,8 @@ export default function CommunityComment({
               key={comment._id}
               comment={comment}
               mine={myCommentIds.includes(comment._id)}
+              post_id={post_id}
+              onDeleteSuccess={refreshComments}
             />
           ))}
         </div>

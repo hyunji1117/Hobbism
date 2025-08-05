@@ -271,6 +271,7 @@ export default function CommunityFeed({
         <Link
           href={`/user/${post.user._id}`}
           className="relative aspect-square w-[38px] overflow-hidden rounded-full"
+          prefetch={true}
         >
           <Image
             src={getUserImageUrl(post.user.image)}
@@ -313,7 +314,7 @@ export default function CommunityFeed({
               <Link
                 href={`/community/update/${post._id}`}
                 className="w-fit appearance-none px-8 py-1 leading-none whitespace-nowrap"
-                // onClick={onUpdateButtonClickHandler}
+                prefetch={true}
               >
                 <span className="text-[#98B87E]">수정</span>
               </Link>
@@ -384,6 +385,7 @@ export default function CommunityFeed({
           <Link
             href={`/community/${post._id}`}
             className="flex cursor-pointer items-center"
+            prefetch={true}
           >
             <MessageCircle size={24} className="mr-1.5" />
             <span className="font-semibold">{post.repliesCount}</span>
@@ -411,7 +413,11 @@ export default function CommunityFeed({
       </div>
 
       {/* 본문 영역 */}
-      <Link href={`/community/${post._id}`} className="flex px-4 pb-2">
+      <Link
+        href={`/community/${post._id}`}
+        className="flex px-4 pb-2"
+        prefetch={true}
+      >
         <p
           className={cn(
             'whitespace-pre-wrap text-[#4A4A4A]',

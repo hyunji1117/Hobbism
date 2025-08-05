@@ -13,7 +13,10 @@ export default function CommunityFeedSkeleton() {
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-3 w-16" />
         </div>
-        <Skeleton className="h-8 w-16 rounded-full" />
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-[30px] w-[80px] rounded-full" />
+          <Skeleton className="h-[30px] w-[30px] rounded-full" />
+        </div>
       </div>
 
       {/* 이미지 슬라이더 영역 */}
@@ -24,11 +27,10 @@ export default function CommunityFeedSkeleton() {
       {/* 아이콘 영역 */}
       <div className="flex h-12 items-center justify-between px-5 pt-2">
         <div className="flex items-center gap-3">
-          <Skeleton className="h-5 w-5 rounded-full" />
-          <Skeleton className="h-4 w-6" />
-          <Skeleton className="h-5 w-5 rounded-full" />
+          <Skeleton className="h-6 w-6 rounded-full" />
+          <Skeleton className="h-6 w-6 rounded-full" />
         </div>
-        <Skeleton className="h-5 w-5 rounded-full" />
+        <Skeleton className="h-6 w-6 rounded-full" />
       </div>
 
       {/* 본문 영역 */}
