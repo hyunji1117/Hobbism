@@ -1,10 +1,8 @@
 'use client';
 
-import { LiveCalendarBtn } from '@/components/features/live/LiveCalendarBtn';
 import { LiveComment } from '@/components/features/live/LiveComment';
 import { LiveProgress } from '@/components/features/live/LiveProgress';
 import { LiveVideo } from '@/components/features/live/LiveVideo';
-import { GoBackButton } from '@/components/features/shop/ProductDetail/ProductDetailClient';
 import { LiveProduct, useLiveStore } from '@/store/live.store';
 import moment from 'moment';
 import { useState } from 'react';
@@ -46,7 +44,7 @@ export default function LiveContent({ live }: { live: LiveProduct }) {
         )
       )}
 
-      <div key={live._id} className="h-screen overflow-hidden">
+      <div key={live?._id} className="h-screen overflow-hidden">
         {/* 라이브 댓글 */}
         <div className="absolute bottom-0 h-[60%] w-full">
           <LiveComment liveId={live.extra?.live.liveId} />
@@ -56,7 +54,7 @@ export default function LiveContent({ live }: { live: LiveProduct }) {
         <div className="h-[50%]">
           <LiveVideo
             livePath={live.extra?.live.livePath}
-            _id={live._id}
+            _id={live?._id}
             name={live.name}
             rate={live.extra?.discountRate}
             imgSrc={live.mainImages[0]?.path}

@@ -19,7 +19,7 @@ export default async function UserEditPage() {
   if (!user) return null;
 
   return (
-    <div className="flex h-[calc(100%-48px)] flex-col">
+    <div className="flex min-h-[calc(100vh-48px)] flex-1 flex-col">
       <UserEditForm user={user} />
     </div>
   );

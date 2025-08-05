@@ -18,7 +18,7 @@ export default function ConfirmModal({
 
       <ModalPanel className="mx-6 w-[400px] px-6 py-4 text-center text-[#1A1A1A]">
         <div className="my-6 flex flex-col gap-2 text-center">
-          <p className="">{`${label}을 그만두시겠어요?`}</p>
+          <p className="">{`${label} 그만두시겠어요?`}</p>
           <p className="text-sm text-gray-500">작성 중인 내용이 삭제됩니다</p>
         </div>
         <div className="flex h-10 gap-2">

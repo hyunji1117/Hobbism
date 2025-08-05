@@ -23,7 +23,7 @@ export const RecommendProducts = ({
 
   //        effect: 카테고리가 바뀔 때 실행될 함수       //
   useEffect(() => {
-    const fetchAndFilter = async () => {
+    const fetchAndFilter = async (): Promise<void> => {
       const filtered = categoryData.filter(product =>
         Array.isArray(product.extra.category)
           ? product.extra.category.includes(category)
@@ -33,7 +33,7 @@ export const RecommendProducts = ({
     };
 
     fetchAndFilter();
-  }, [category]);
+  }, [category, categoryData]);
 
   //          render: 추천 상품 컴포넌트 렌더          //
   return (

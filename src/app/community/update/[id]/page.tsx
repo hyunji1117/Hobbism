@@ -15,7 +15,7 @@ export default async function UpdatePage({
 
   console.log('post res', res);
   return (
-    <div className="flex min-h-[calc(100%-48px)] flex-1 flex-col p-4">
+    <div className="flex flex-1 flex-col p-4">
       <FeedUpdateForm post={res.item} />
     </div>
   );

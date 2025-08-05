@@ -66,6 +66,19 @@ export default async function CommunityPage() {
         </Link>
         <div className="h-4 bg-[#f7f7f7]"></div>
       </div>
+      {/* 게시물 목록 or 빈 상태 메시지 */}
+      {res.item.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center py-20 text-sm text-gray-400">
+          게시물이 없습니다.
+        </div>
+      ) : (
+        <CommunityFeedList
+          posts={res.item}
+          postBookmarks={bookmarkRes.item}
+          userFollows={followRes.item}
+          totalPages={res.pagination.totalPages}
+        />
+      )}
 
       <CommunityFeedList
         posts={res.item}

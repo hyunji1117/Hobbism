@@ -5,6 +5,7 @@ import { ShopBanner } from '@/components/features/shop/ShopBanner';
 import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';
 import TabBar from '@/components/layout/tabbar/Tabbar';
 import { fetchAllProducts, fetchProducts } from '@/data/functions/ProductFetch';
+import filterValidProducts from '@/utils/product';
 import moment from 'moment';
 import { Metadata } from 'next';
 
@@ -22,6 +23,7 @@ export default async function ShopPage() {
   };
 
   const initialData = await fetchProducts(1);
+  const initialFiltered = filterValidProducts(initialData);
   const liveData = await fetchAllProducts();
   const initialLiveFiltered = liveData
     .filter(product => product.extra.isLiveSpecial)
@@ -29,9 +31,6 @@ export default async function ShopPage() {
 
   return (
     <>
-      {/* 탑버튼 */}
-      <TopButton />
-
       {/* 메인 배너 */}
       <section>
         <ShopBanner />
@@ -47,7 +46,7 @@ export default async function ShopPage() {
       <RandomHobbyBtn />
 
       {/* 전체(카테고리 별) 상품 */}
-      <ShopList initialData={initialData} />
+      <ShopList initialData={initialFiltered} />
     </>
   );
 }

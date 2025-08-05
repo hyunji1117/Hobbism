@@ -50,7 +50,6 @@ export function UserShopTab() {
 
   return (
     <div className="p-4">
-      <h3 className="mb-4 pl-2 text-lg font-semibold">쇼핑 내역</h3>
       <ul className="space-y-4">
         {currentOrders.length > 0 ? (
           currentOrders.map(order => (

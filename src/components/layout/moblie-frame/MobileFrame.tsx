@@ -6,8 +6,13 @@ import Header from '@/components/layout/header/Header';
 import TabBar from '@/components/layout/tabbar/Tabbar';
 import { SessionProvider } from 'next-auth/react';
 import { PropsWithChildren } from 'react';
+import { usePathname } from 'next/navigation'; 
 
 export function MobileFrame({ children }: PropsWithChildren) {
+  const pathname = usePathname();
+
+  const hideTabbar = pathname === '/' || pathname === '/login';
+
   return (
     <SessionProvider>
       <TokenSync />
@@ -18,7 +23,7 @@ export function MobileFrame({ children }: PropsWithChildren) {
         >
           <Header />
           {children}
-          <TabBar />
+          {!hideTabbar && <TabBar />}
         </div>
       </CartProvider>
     </SessionProvider>

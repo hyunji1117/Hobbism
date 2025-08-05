@@ -9,17 +9,20 @@ export const OptionSelector = ({
   options,
   selectedOption,
   onSelect,
+  onOpen, // 드롭다운 열릴 때 호출되는 이벤트
 }: {
   name: string;
   options: string[] | number[];
   selectedOption: string;
   onSelect: (selectedOption: string) => void;
+  onOpen?: () => void; // 선택값 초기화를 위한 이벤트
 }) => {
-  console.log(name, options); // "사이즈", [260, 270, ...] / "색상", ["brown", ...]
-
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
+    if (!isOpen && onOpen) {
+      onOpen(); // 드롭다운 열릴 때 초기화
+    }
     setIsOpen(!isOpen);
   };
 
@@ -34,7 +37,7 @@ export const OptionSelector = ({
         aria-label={`${name} 옵션 선택 드롭다운`}
       >
         <span className="text-[16px] text-[#000]">
-          {selectedOption || `${name}`}
+          {selectedOption || `${name}`} {/* 초기 상태에서는 name 값 표시 */}
         </span>
         <ChevronDown
           className={`h-[24px] w-[24px] text-black transition-transform ${
@@ -54,7 +57,7 @@ export const OptionSelector = ({
               key={option.toString()}
               className="cursor-pointer border-b border-[#EAEAEA] p-2 text-[#666]"
               onClick={() => {
-                onSelect(option.toString());
+                onSelect(option);
                 setIsOpen(false);
               }}
               role="option"

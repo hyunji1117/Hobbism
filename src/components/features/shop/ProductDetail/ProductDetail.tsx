@@ -111,7 +111,7 @@ export const ProductQuantitySelector = ({
   item: { name: string };
 }) => {
   return (
-    <section className="h-[100px] w-full rounded-[8px] bg-[#EAEAEA] p-3">
+    <section className="mx-5 my-4 h-[100px] rounded-[8px] bg-[#EAEAEA] p-3">
       {selectedOption ? (
         <h2 className="mb-4 text-[18px] font-semibold text-black">
           {item.name}
@@ -124,28 +124,28 @@ export const ProductQuantitySelector = ({
       <div id="counter" className="flex gap-4">
         <button
           type="button"
-          className={`flex h-[28px] w-[28px] items-center justify-center rounded-full border ${
+          className={`flex h-[28px] w-[28px] cursor-pointer items-center justify-center rounded-full border ${
             quantity === 1
-              ? 'border-[#C3C3C3] bg-[#C3C3C3]'
-              : 'border-[#C3C3C3] bg-white'
-          } text-[18px] leading-none text-[#4B5563]`}
+              ? 'border-[#ECEDEE] bg-[#C3C3C3]'
+              : 'border-[#ECEDEE] bg-white'
+          } text-[18px] leading-none text-[#ECEDEE]`}
           onClick={onDecrease}
           disabled={quantity === 1}
         >
-          <Minus className="h-[20] w-[20]" />
+          <Minus size={20} color="#787878" strokeWidth={1.5} />
         </button>
         <button
           type="button"
-          className="text-[18px] font-semibold text-[#4B5563]"
+          className="cursor-pointer px-2 text-[18px] font-semibold text-[#787878]"
         >
           {quantity}
         </button>
         <button
           type="button"
-          className="flex h-[28px] w-[28px] items-center justify-center rounded-full border border-[#C3C3C3] bg-white text-[18px] leading-none text-[#4B5563]"
+          className="flex size-7 cursor-pointer items-center justify-center rounded-full border border-[#ECEDEE] bg-white text-[18px] leading-none text-[#4B5563]"
           onClick={onIncrease}
         >
-          <Plus className="h-[20] w-[20] border-[#C3C3C3]" />
+          <Plus size={20} strokeWidth={1.5} color="#787878" />
         </button>
         <span className="ml-auto flex items-center justify-center text-[18px] font-semibold text-black">
           {(quantity * price).toLocaleString()}원
@@ -175,16 +175,16 @@ export const ProductActionButtons = ({
   options,
 }: ProductActionButtonsProps) => {
   return (
-    <div className="flex justify-between">
+    <div className="flex h-[54px] justify-between gap-3">
       <button
         onClick={onCartClick}
-        className="w-[48%] rounded-md border border-[#4B5563] px-4 py-2 text-black hover:bg-[#EAEAEA]"
+        className="w-[40%] cursor-pointer rounded-[8px] border border-[#4B5563] px-4 py-2 text-[16px] text-black hover:bg-[#EAEAEA]"
       >
         장바구니 담기
       </button>
       <button
         onClick={onBuyNowClick}
-        className="0 w-[48%] rounded-md bg-[#4B5563] px-4 py-2 text-white hover:bg-[#2C2F33]"
+        className="0 w-[57%] cursor-pointer rounded-[8px] bg-[#4B5563] px-4 py-2 text-[18px] font-semibold text-white hover:bg-[#2C2F33]"
       >
         {/* bg-[#2C2F33] */}
         구매하기
