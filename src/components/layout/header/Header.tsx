@@ -144,7 +144,7 @@ export default function Header() {
           isCharacterPage || isLivePage || isHobbyPage
             ? 'absolute bg-transparent'
             : 'fixed bg-white',
-          'top-0 z-50 flex min-h-12 w-full max-w-[600px] items-center',
+          'top-0 z-30 flex min-h-12 w-full max-w-[600px] items-center',
         )}
       >
         <div className="relative flex w-full items-center">

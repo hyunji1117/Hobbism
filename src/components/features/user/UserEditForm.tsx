@@ -48,6 +48,8 @@ export function UserEditForm({ user }: Props) {
     },
   });
 
+  const [isLoading, setLoading] = useState<boolean>(false);
+
   //          function: 라우터 함수          //
   const router = useRouter(); // 라우터 이동용
   //          function: 오픈 모달 함수          //
@@ -84,22 +86,31 @@ export function UserEditForm({ user }: Props) {
 
   //          event handler: 폼 제출 이벤트 처리          //
   const onSubmit = async (data: FormValues) => {
-    const formData = new FormData();
-    formData.append('phone', data.phone);
-    formData.append('nickname', data.nickname);
-    formData.append('introduction', data.introduction);
-    formData.append('accessToken', data.accessToken);
-    if (data.attach) {
-      formData.append('attach', data.attach);
-    }
-    const res = await updateUserInfo(user._id, formData);
+    setLoading(true);
 
-    if (res.ok === 1) {
-      openModal(({ onClose }) => (
-        <SuccessModal key="success-modal" onClose={onClose} />
-      ));
+    try {
+      const formData = new FormData();
+      formData.append('phone', data.phone);
+      formData.append('nickname', data.nickname);
+      formData.append('introduction', data.introduction);
+      formData.append('accessToken', data.accessToken);
+      if (data.attach) {
+        formData.append('attach', data.attach);
+      }
 
-      router.push(`/user/${user._id}`);
+      const res = await updateUserInfo(user._id, formData);
+
+      if (res.ok === 1) {
+        openModal(({ onClose }) => (
+          <SuccessModal key="success-modal" onClose={onClose} />
+        ));
+
+        router.push(`/user/${user._id}`);
+      }
+    } catch (err) {
+      console.error('프로필 수정 실패:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,7 +150,7 @@ export function UserEditForm({ user }: Props) {
 
   //          render: 프로필 수정 컴포넌트 렌더링          //
   return (
-    <section className="relative flex flex-1 flex-col justify-center pt-10">
+    <section className="flex flex-1 flex-col justify-center pt-10">
       {/* 프로필 이미지 영역 */}
       <div className="relative mx-auto mb-6 flex w-[100px] items-center justify-center">
         <Image
@@ -168,78 +179,15 @@ export function UserEditForm({ user }: Props) {
       {/* 유저 정보 수정 폼 */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex h-full flex-1 flex-col justify-between gap-5 px-5"
+        className="flex h-full flex-1 flex-col justify-between gap-4 px-5"
       >
         <input type="hidden" {...register('accessToken')} />
 
-        <div className="flex h-full flex-col gap-6">
-          {/* 닉네임 입력 */}
-          <section className="flex w-full flex-col gap-2">
-            <div className="flex justify-between">
-              <span className="font-bold break-words whitespace-pre-wrap text-[#1A1A1A]">
-                닉네임
-              </span>
-              <span className="text-sm text-[#666666]">
-                한글, 영문, 숫자만 가능(최대 15자)
-              </span>
-            </div>
-            <p className="text-sm text-[#666666]">
-              닉네임은 아바타이름으로 사용됩니다
-            </p>
-            <input
-              {...register('nickname')}
-              maxLength={15}
-              onChange={handleNicknameChange}
-              placeholder="닉네임 (최대 15자)"
-              className="h-12 w-full rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#1A1A1A] outline-none focus:border-black"
-            />
-            <div className="flex justify-end">
-              <span className="text=[#666666] text-xs">{`${nicknameLength}/15`}</span>
-            </div>
-          </section>
-
-          {/* 소개 입력 */}
-          <section className="mt-4 flex w-full flex-col gap-2">
-            <p className="font-bold break-words whitespace-pre-wrap text-[#1A1A1A]">
-              내 소개
-            </p>
-            <textarea
-              {...register('introduction')}
-              maxLength={30}
-              placeholder="내 소개 (최대 30자)"
-              onChange={handleIntroChange}
-              className="min-h-52 w-full rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#1A1A1A] outline-none focus:border-black"
-            />
-            <div className="flex justify-end">
-              <span className="text-xs text-[#666666]">{`${introLength}/30`}</span>
-            </div>
-          </section>
-          {/* 전화번호 입력 */}
-          <section className="flex w-full flex-col gap-2">
-            <div className="flex justify-between">
-              <span className="font-bold break-words whitespace-pre-wrap text-[#1A1A1A]">
-                전화번호
-              </span>
-              <span className="text-sm text-[#666666]">
-                010으로 시작하는 11자리 숫자
-              </span>
-            </div>
-
-            <input
-              {...register('phone')}
-              maxLength={11}
-              onChange={handlePhoneChange}
-              placeholder="01000000000"
-              className="h-12 w-full rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black"
-            />
-            <div className="flex justify-end">
-              <span className="text-xs text-[#666666]">{`${phoneLength}/11`}</span>
-            </div>
-          </section>
+        <div className="flex h-full flex-col gap-4">
           {/* 이름 출력 */}
           <section className="flex w-full flex-col gap-2">
             <div className="flex justify-between">
-              <span className="font-bold break-words whitespace-pre-wrap text-[#1A1A1A]">
+              <span className="font-bold break-words whitespace-pre-wrap text-[#4A4A4A]">
                 이름
               </span>
             </div>
@@ -251,16 +199,88 @@ export function UserEditForm({ user }: Props) {
               className="h-12 w-full rounded-lg border border-[#e6e6e6] bg-[#f2f2f2] px-4 py-3 text-[#7a7a7a] outline-none focus:border-black"
             />
           </section>
+
+          {/* 전화번호 입력 */}
+          <section className="flex w-full flex-col gap-2">
+            <div className="flex justify-between">
+              <span className="font-bold break-words whitespace-pre-wrap text-[#4A4A4A]">
+                전화번호
+              </span>
+            </div>
+
+            <input
+              {...register('phone')}
+              maxLength={11}
+              onChange={handlePhoneChange}
+              placeholder="01000000000"
+              className="h-12 w-full rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#4A4A4A] outline-none focus:border-[#4A4A4A]"
+            />
+            <div className="flex w-full justify-between">
+              <span className="text-xs text-[#666666]">
+                010으로 시작하는 11자리 숫자
+              </span>
+              <span className="text-xs text-[#666666]">{`${phoneLength}/11`}</span>
+            </div>
+          </section>
+
+          {/* 닉네임 입력 */}
+          <section className="flex w-full flex-col gap-2">
+            <div className="flex justify-between">
+              <span className="font-bold break-words whitespace-pre-wrap text-[#4A4A4A]">
+                닉네임
+              </span>
+              <span className="text-sm text-[#666666]">
+                한글, 영문, 숫자만 가능(최대 15자)
+              </span>
+            </div>
+
+            <input
+              {...register('nickname')}
+              maxLength={15}
+              onChange={handleNicknameChange}
+              placeholder="닉네임 (최대 15자)"
+              className="h-12 w-full rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#4A4A4A] outline-none focus:border-[#4A4A4A]"
+            />
+            <div className="flex w-full justify-between">
+              <span className="text-xs text-[#666666]">
+                닉네임은 아바타이름으로 사용됩니다
+              </span>
+              <span className="text=[#666666] text-xs">{`${nicknameLength}/15`}</span>
+            </div>
+          </section>
+
+          {/* 소개 입력 */}
+          <section className="mt-4 flex w-full flex-col gap-2">
+            <p className="font-bold break-words whitespace-pre-wrap text-[#4A4A4A]">
+              내 소개
+            </p>
+            <textarea
+              {...register('introduction')}
+              maxLength={30}
+              placeholder="내 소개 (최대 30자)"
+              onChange={handleIntroChange}
+              className="min-h-52 w-full resize-none rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#4A4A4A] outline-none focus:border-black"
+            />
+            <div className="flex justify-end">
+              <span className="text-xs text-[#666666]">{`${introLength}/30`}</span>
+            </div>
+          </section>
         </div>
 
         {/* 제출 버튼 */}
         <button
           type="submit"
+          disabled={isLoading}
           className="mb-6 w-full cursor-pointer rounded-lg bg-[#4a4a4a] py-3 text-sm text-white"
         >
           수정하기
         </button>
       </form>
+      {isLoading && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70">
+          <span className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-transparent" />
+        </div>
+      )}
     </section>
   );
 }

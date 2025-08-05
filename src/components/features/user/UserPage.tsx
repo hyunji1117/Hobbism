@@ -8,6 +8,7 @@ import { UserFeedTab } from '@/components/features/user/UserFeedTab';
 import { UserShopTab } from '@/components/features/user/UserShopTab';
 import { useAuthStore } from '@/store/auth.store';
 import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 //          interface: 유저 페이지 컴포넌트 Properties          //
 interface Props {
@@ -62,12 +63,17 @@ export function UserPageClient({ user, posts, userBookmark }: Props) {
 
       {/* 피드 및 쇼핑 내역 탭 */}
       <section className="flex flex-col">
-        <Tabs defaultValue="feed" className="gap-0">
+        <Tabs defaultValue="feed" className="gap-0 text-[#4A4A4A]">
           {/* 탭 버튼 목록 */}
           <TabsList className="h-14 w-full rounded-none border-b bg-white px-4 py-0">
             <TabsTrigger
               value="feed"
-              className="cursor-pointer rounded-none border-none !shadow-none data-[state=active]:bg-[#4A4A4A] data-[state=active]:text-white"
+              className={cn(
+                'cursor-pointer rounded-none !shadow-none',
+                isMypage
+                  ? 'border-none data-[state=active]:bg-[#4A4A4A] data-[state=active]:text-white'
+                  : 'cursor-default border-b border-b-[#4A4A4A] font-bold data-[state=active]:bg-white data-[state=active]:text-[#4A4A4A]',
+              )}
             >
               {isMypage ? '내 피드' : '피드'}
             </TabsTrigger>
