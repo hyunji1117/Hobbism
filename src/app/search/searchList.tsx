@@ -7,7 +7,7 @@ import { Product } from '@/types';
 import filterValidProducts from '@/utils/product';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { PulseLoader } from 'react-spinners';
 
 export default function SearchList({
@@ -27,7 +27,7 @@ export default function SearchList({
   const observerRef = useRef<HTMLDivElement | null>(null); // 무한 스크롤 트리거 참조
 
   //          function: 게시물 로딩 함수          //
-  const loadingProducts = async () => {
+  const loadingProducts = useCallback(async () => {
     if (loading || !hasNextPage) return; // 이미 요청했던 page라면 중복 호출 차단
     setLoading(true);
 
@@ -43,7 +43,7 @@ export default function SearchList({
     }
 
     setLoading(false);
-  };
+  }, [hasNextPage, loading, page]);
 
   //          function: word(searchParams) 포함된 상품           //
   const searchProducts = products.filter(product =>
@@ -63,7 +63,7 @@ export default function SearchList({
 
     if (observerRef.current) observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, [observerRef.current, hasNextPage, loading]);
+  }, [hasNextPage, loading, loadingProducts]);
 
   //         render: 검색 결과 렌더링          //
   return (
