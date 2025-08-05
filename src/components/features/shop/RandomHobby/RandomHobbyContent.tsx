@@ -76,14 +76,14 @@ export const hobbyData = [
 export const RandomHobbyContent = ({
   categoryData,
 }: {
-  categoryData: Product[];
+  categoryData?: Product[];
 }) => {
   const searchParams = useSearchParams();
   const hobby = searchParams.get('hobby');
 
   const randomHobby = hobbyData.find(item => item.category === hobby);
 
-  if (!hobby) return <div>취미 정보가 없습니다</div>;
+  if (!hobby || !categoryData) return <div>취미 정보가 없습니다</div>;
 
   //         render: 오늘의 취미 뽑기 렌더        //
   return (

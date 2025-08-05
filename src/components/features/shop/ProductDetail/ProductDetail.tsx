@@ -72,25 +72,25 @@ export const ProductDetailInfo = ({
 };
 
 // 장바구니 담기 버튼 컴포넌트
-export function ProductDetail({
-  product,
-}: {
-  product: { id: string; name: string; price: number };
-}) {
-  const { addToCart } = useCart();
+// export function ProductDetail({
+//   product,
+// }: {
+//   product: { id: string; name: string; price: number };
+// }) {
+//   const { addToCart } = useCart();
 
-  const handleAdd = () => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      quantity: 1,
-    });
-    alert('장바구니에 담겼습니다.');
-  };
+//   const handleAdd = () => {
+//     addToCart({
+//       id: product.id,
+//       name: product.name,
+//       price: product.price,
+//       quantity: 1,
+//     });
+//     alert('장바구니에 담겼습니다.');
+//   };
 
-  return <button onClick={handleAdd}>장바구니 담기</button>;
-}
+//   return <button onClick={handleAdd}>장바구니 담기</button>;
+// }
 
 // 수량 컨트롤
 export const ProductQuantitySelector = ({

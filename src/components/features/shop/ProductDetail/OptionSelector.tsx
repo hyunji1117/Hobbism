@@ -57,7 +57,7 @@ export const OptionSelector = ({
               key={option.toString()}
               className="cursor-pointer border-b border-[#EAEAEA] p-2 text-[#666]"
               onClick={() => {
-                onSelect(option);
+                onSelect(option.toString());
                 setIsOpen(false);
               }}
               role="option"

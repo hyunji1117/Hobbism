@@ -100,7 +100,6 @@ export async function updateUserInfo(
       if (fileRes.ok) {
         image = fileRes.item[0].path;
       } else {
-        return fileRes;
       }
     }
     const body = {
