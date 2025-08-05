@@ -29,9 +29,6 @@ export default async function ShopPage() {
 
   return (
     <>
-      {/* 탑버튼 */}
-      <TopButton />
-
       {/* 메인 배너 */}
       <section>
         <ShopBanner />

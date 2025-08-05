@@ -47,7 +47,7 @@ export function UserPageClient({ user, posts, userBookmark }: Props) {
 
   //          render: 유저 페이지 컴포넌트 렌더링          //
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-1 flex-col">
       {/* 유저 프로필 정보 영역 */}
       <section className="flex flex-col gap-5 p-4">
         <UserProfileSection
@@ -62,8 +62,8 @@ export function UserPageClient({ user, posts, userBookmark }: Props) {
       {/* {isMypage && <UserPreviewList recommendedUser={recommenedUser} />} */}
 
       {/* 피드 및 쇼핑 내역 탭 */}
-      <section className="flex flex-col">
-        <Tabs defaultValue="feed" className="gap-0 text-[#4A4A4A]">
+      <section className="flex flex-1 flex-col">
+        <Tabs defaultValue="feed" className="flex-1 gap-0 text-[#4A4A4A]">
           {/* 탭 버튼 목록 */}
           <TabsList className="h-14 w-full rounded-none border-b bg-white px-4 py-0">
             <TabsTrigger

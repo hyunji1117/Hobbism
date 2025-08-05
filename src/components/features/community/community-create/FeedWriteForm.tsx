@@ -173,7 +173,7 @@ export default function FeedWriteForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex h-full min-h-[calc(100%-48px)] flex-1 flex-col"
+      className="flex h-full min-h-[calc(100vh-48px)] flex-1 flex-col"
     >
       {/* 숨겨진 필드들 */}
       <input type="hidden" name="type" value="community" />

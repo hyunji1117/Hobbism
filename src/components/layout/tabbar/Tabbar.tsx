@@ -26,6 +26,7 @@ export default function TabBar() {
   const [isHidden, setIsHidden] = useState(false);
 
   const isCommunityPage = pathname === '/community'; // 커뮤니티 메인
+  const isShopPage = pathname === '/shop';
 
   //          function: 탭 활성화 함수          //
   const isActiveTab = (targetPath: string) => pathname.startsWith(targetPath);
@@ -40,17 +41,24 @@ export default function TabBar() {
       '/shop/cart',
       '/live',
       '/hobby',
+      '/shop/purchase',
     ];
     const shouldHide = hidden.some(path => pathname.startsWith(path));
     const shopDetailPath = pathname.match(/^\/shop\/\d+/);
     const communityUpdatePath = pathname.match(/^\/community\/update\/\d+/);
     const communityDetailPath = pathname.match(/^\/community\/\d+/);
+    const purchaseCompletedPath = pathname.match(
+      /^\/shop\/orderCompleted\/\d+/,
+    );
+    const orderDeatilPath = pathname.match(/^\/shop\/order\/\d+/);
 
     setIsHidden(
       shouldHide ||
         !!shopDetailPath ||
         !!communityUpdatePath ||
-        !!communityDetailPath,
+        !!communityDetailPath ||
+        !!purchaseCompletedPath ||
+        !!orderDeatilPath,
     );
   }, [pathname]);
 
@@ -59,7 +67,7 @@ export default function TabBar() {
   return (
     <>
       <nav className="fixed bottom-0 z-50 flex h-14 w-full max-w-[600px] items-center justify-around border-t border-[#EAEAEA] bg-white">
-        {isCommunityPage && <ScrollTopButton />}
+        {(isCommunityPage || isShopPage) && <ScrollTopButton />}
         {/* 캐릭터 탭 */}
         <Link
           href="/character"

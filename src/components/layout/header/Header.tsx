@@ -56,6 +56,10 @@ export default function Header() {
     () => /^\/community\/update\/\d+/.test(pathname),
     [pathname],
   );
+  const isOrderDetailPage = useMemo(
+    () => /^\/shop\/order\/\d+/.test(pathname),
+    [pathname],
+  );
 
   //          state: 고정 경로 페이지 상태          //
   const isLoginPage = pathname === '/login'; // 로그인 페이지
@@ -74,6 +78,7 @@ export default function Header() {
   const isLivePage = pathname === '/live';
   const isHobbyPage = pathname === '/hobby';
   const isRandomHobbyPage = pathname === '/shop/randomHobby';
+  const isPurchasePage = pathname === '/shop/purchase';
 
   //          state: 현재 페이지가 내 마이페이지인지 여부          //
   const isMypage = user && pathname === `/user/${user._id}`;
@@ -98,9 +103,14 @@ export default function Header() {
     isLivePage ||
     isHobbyPage ||
     isRandomHobbyPage ||
+    isOrderDetailPage ||
     isBookmarkPage; // 일반 뒤로가기 버튼 노출 조건
+
   const showConfirmBackButton =
-    isEditPage || isCommunityWritePage || isCommunityUpdatePage; // 뒤로가기 시 확인이 필요한 페이지
+    isEditPage ||
+    isCommunityWritePage ||
+    isCommunityUpdatePage ||
+    isPurchasePage;
   const showCartIcon = isShopPage || isProductPage; // 쇼핑카트 아이콘 노출 조건
 
   //          state: 장바구니 아이콘의 상품 개수 가져오기            //
@@ -121,9 +131,10 @@ export default function Header() {
   }, [setCartItems]);
 
   const confirmBackLabel = useMemo(() => {
-    if (isCommunityWritePage) return '피드 작성';
-    if (isEditPage) return '프로필 수정';
-    if (isCommunityUpdatePage) return '피드 수정';
+    if (isCommunityWritePage) return '피드 작성을';
+    if (isPurchasePage) return '결제를';
+    if (isEditPage) return '프로필 수정을';
+    if (isCommunityUpdatePage) return '피드 수정을';
     return '';
   }, [isCommunityWritePage, isEditPage, isCommunityUpdatePage]);
 
@@ -196,6 +207,8 @@ export default function Header() {
             {isNoticePage && '공지사항'}
             {isContactPage && '고객센터'}
             {isCommunityUpdatePage && '피드수정'}
+            {isPurchasePage && '결제'}
+            {isOrderDetailPage && '주문상세'}
           </h3>
 
           {/* 오른쪽 아이콘 영역 */}
