@@ -22,7 +22,10 @@ export const useLiveStore = create<LiveStore>(set => ({
   liveToShow: [],
   fetchLive: async () => {
     const data = await fetchAllProducts();
-    const liveData = filterValidProducts(data, { excludeLiveSpecial: false });
+    // const liveData = filterValidProducts(data, { excludeLiveSpecial: false });
+    const liveData = data
+      .filter(d => d.show)
+      .filter(d => d.extra?.isLiveSpecial);
 
     const now = moment();
 
