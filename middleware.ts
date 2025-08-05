@@ -79,80 +79,80 @@ async function updateJwtToken(
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // // 차단 경로
-  // if (pathname.startsWith('/api/') || pathname.startsWith('/_next/')) {
-  //   return NextResponse.next();
-  // }
-  // // 공개 경로
-  // if (openRoutes.includes(pathname)) {
-  //   return NextResponse.next();
-  // }
+  // 차단 경로
+  if (pathname.startsWith('/api/') || pathname.startsWith('/_next/')) {
+    return NextResponse.next();
+  }
+  // 공개 경로
+  if (openRoutes.includes(pathname)) {
+    return NextResponse.next();
+  }
 
-  // const isProtectedRoute = protectedRoutes.some(route =>
-  //   pathname.startsWith(route),
-  // );
-  // if (isProtectedRoute) {
-  //   const token = await getToken({
-  //     req: request,
-  //     secret: process.env.NEXTAUTH_SECRET,
-  //   });
-  //   // 토큰 없는 경우 (비로그인)
-  //   if (!token) {
-  //     const loginUrl = new URL('/login', request.url);
-  //     return NextResponse.redirect(loginUrl);
-  //   }
+  const isProtectedRoute = protectedRoutes.some(route =>
+    pathname.startsWith(route),
+  );
+  if (isProtectedRoute) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    // 토큰 없는 경우 (비로그인)
+    if (!token) {
+      const loginUrl = new URL('/login', request.url);
+      return NextResponse.redirect(loginUrl);
+    }
 
-  //   // 토큰 있는 경우
-  //   if (token.accessToken && token._id) {
-  //     const isValidToken = await verifyAccessToken(
-  //       token.accessToken,
-  //       token._id as number,
-  //     );
-  //     // 재발급 시도
-  //     if (!isValidToken) {
-  //       const refreshToken = request.cookies.get('refresh-token')?.value;
-  //       // 리프레시 토큰 확인
-  //       if (refreshToken) {
-  //         const newAccessToken = await refreshAccessToken(refreshToken);
-  //         // 새로운 엑세스 토큰 발급
-  //         if (newAccessToken) {
-  //           try {
-  //             const updatedJwtToken = await updateJwtToken(
-  //               token,
-  //               newAccessToken,
-  //             );
-  //             const response = NextResponse.next();
+    // 토큰 있는 경우
+    if (token.accessToken && token._id) {
+      const isValidToken = await verifyAccessToken(
+        token.accessToken,
+        token._id as number,
+      );
+      // 재발급 시도
+      if (!isValidToken) {
+        const refreshToken = request.cookies.get('refresh-token')?.value;
+        // 리프레시 토큰 확인
+        if (refreshToken) {
+          const newAccessToken = await refreshAccessToken(refreshToken);
+          // 새로운 엑세스 토큰 발급
+          if (newAccessToken) {
+            try {
+              const updatedJwtToken = await updateJwtToken(
+                token,
+                newAccessToken,
+              );
+              const response = NextResponse.next();
 
-  //             response.cookies.set('next-auth.session-token', updatedJwtToken, {
-  //               httpOnly: true,
-  //               secure: process.env.NODE_ENV === 'production',
-  //               sameSite: 'lax',
-  //               maxAge: 60 * 60 * 24 * 30, // 30일
-  //               path: '/',
-  //             });
-  //             return response;
-  //           } catch (error) {
-  //             console.log('JWT 갱신 실패:', error);
-  //             const loginUrl = new URL('/login', request.url);
-  //             return NextResponse.redirect(loginUrl);
-  //           }
-  //         } else {
-  //           console.log('accessToken 재발급 실패');
-  //           const loginUrl = new URL('/login', request.url);
-  //           return NextResponse.redirect(loginUrl);
-  //         }
-  //       } else {
-  //         console.log('RefreshToken 없음');
-  //         const loginUrl = new URL('/login', request.url);
-  //         return NextResponse.redirect(loginUrl);
-  //       }
-  //     }
-  //   } else {
-  //     console.log('기존 accessToken 또는 사용자 id 없음');
-  //     const loginUrl = new URL('/login', request.url);
-  //     return NextResponse.redirect(loginUrl);
-  //   }
-  // }
+              response.cookies.set('next-auth.session-token', updatedJwtToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 30, // 30일
+                path: '/',
+              });
+              return response;
+            } catch (error) {
+              console.log('JWT 갱신 실패:', error);
+              const loginUrl = new URL('/login', request.url);
+              return NextResponse.redirect(loginUrl);
+            }
+          } else {
+            console.log('accessToken 재발급 실패');
+            const loginUrl = new URL('/login', request.url);
+            return NextResponse.redirect(loginUrl);
+          }
+        } else {
+          console.log('RefreshToken 없음');
+          const loginUrl = new URL('/login', request.url);
+          return NextResponse.redirect(loginUrl);
+        }
+      }
+    } else {
+      console.log('기존 accessToken 또는 사용자 id 없음');
+      const loginUrl = new URL('/login', request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
 
   return NextResponse.next();
 }
