@@ -1,6 +1,6 @@
 'use client';
 
-import LiveOverlay from '@/app/live/LiveOverlay';
+import LiveContent from '@/app/live/LiveContent';
 import { useLiveStore } from '@/store/live.store';
 import { useEffect } from 'react';
 
@@ -12,23 +12,24 @@ export default function LiveData() {
     fetchLive();
   }, [fetchLive]);
 
-  const liveToShowArray = Array.isArray(liveToShow) ? liveToShow : [liveToShow];
-
-  console.log('liveToShow', liveToShow);
-  console.log('liveToShowArray', liveToShowArray);
-
-  // 값이 아직 비었을 경우 로딩 처리 등
-  if (!liveToShowArray || liveToShowArray.length === 0) {
-    return <div>로딩 중</div>;
+  if (!liveToShow || (Array.isArray(liveToShow) && liveToShow.length === 0)) {
+    return <div>라이브 상품이 없습니다.</div>;
   }
+
+  const liveToShowArray = Array.isArray(liveToShow) ? liveToShow : [liveToShow];
+  const validLives = liveToShowArray.filter(Boolean);
 
   return (
     <>
-      {liveToShowArray.map(live => (
-        <div key={live._id} className="snap-start">
-          <LiveOverlay live={live} />
-        </div>
-      ))}
+      {validLives.length > 0 ? (
+        validLives.map(live => (
+          <div key={live._id}>
+            <LiveContent live={live} />
+          </div>
+        ))
+      ) : (
+        <div>라이브 상품이 없습니다.</div>
+      )}
     </>
   );
 }

@@ -1,9 +1,11 @@
 'use client';
 
 import { RecommendProducts } from '@/components/features/shop/RecommendProducts';
+import { Product } from '@/types';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 
+//          component: 오늘의 취미 뽑기 데이터         //
 export const hobbyData = [
   {
     category: 'PERFUME',
@@ -69,14 +71,21 @@ export const hobbyData = [
     comment4: '내 취향 굿즈 장바구니 채워 보자!',
   },
 ];
-export const RandomHobbyContent = () => {
+
+//        component: 오늘의 취미 뽑기 콘텐츠 컴포넌트       //
+export const RandomHobbyContent = ({
+  categoryData,
+}: {
+  categoryData?: Product[];
+}) => {
   const searchParams = useSearchParams();
   const hobby = searchParams.get('hobby');
 
   const randomHobby = hobbyData.find(item => item.category === hobby);
 
-  if (!hobby) return <div>취미 정보가 없습니다</div>;
+  if (!hobby || !categoryData) return <div>취미 정보가 없습니다</div>;
 
+  //         render: 오늘의 취미 뽑기 렌더        //
   return (
     <>
       <div className="flex w-full flex-col items-center rounded-2xl p-4">
@@ -114,7 +123,7 @@ export const RandomHobbyContent = () => {
           {randomHobby?.categoryKr} 추천 상품
         </h3>
         <div className="pb-8">
-          <RecommendProducts category={hobby} />
+          <RecommendProducts category={hobby} categoryData={categoryData} />
         </div>
       </section>
     </>

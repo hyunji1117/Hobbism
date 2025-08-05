@@ -2,23 +2,29 @@
 'use client';
 
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
-import { fetchLiveProducts } from '@/data/functions/AllProductFetch';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import { useEffect, useState } from 'react';
 import { Product } from '@/types';
 
+//       interface: 추천 상품 인터페이스        //
 interface RecommendProductsProps {
   category: string;
+  categoryData: Product[];
 }
 
-export const RecommendProducts = ({ category }: RecommendProductsProps) => {
+//        component: 추천 상품 컴포넌트(앞에서부터 5개까지 렌더링)        //
+export const RecommendProducts = ({
+  category,
+  categoryData,
+}: RecommendProductsProps) => {
+  //        state: 필터된 상품 상태       //
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
+  //        effect: 카테고리가 바뀔 때 실행될 함수       //
   useEffect(() => {
-    const fetchAndFilter = async () => {
-      const data = await fetchLiveProducts();
-      const filtered = data.filter(product =>
+    const fetchAndFilter = async (): Promise<void> => {
+      const filtered = categoryData.filter(product =>
         Array.isArray(product.extra.category)
           ? product.extra.category.includes(category)
           : product.extra.category === category,
@@ -27,12 +33,16 @@ export const RecommendProducts = ({ category }: RecommendProductsProps) => {
     };
 
     fetchAndFilter();
-  }, [category]);
+  }, [category, categoryData]);
 
+  //          render: 추천 상품 컴포넌트 렌더          //
   return (
-    <Swiper spaceBetween={10} slidesPerView={3.5}>
+    <Swiper spaceBetween={7} slidesPerView="auto" watchOverflow={true}>
       {filteredProducts.slice(0, 5).map(product => (
-        <SwiperSlide key={product._id} className="mr-2.5 !w-[calc(100%/3.5)]">
+        <SwiperSlide
+          key={product._id}
+          className="mr-[7px] !w-[calc(100%/3.5)] last:-mr-4"
+        >
           <ShopProduct
             _id={product._id}
             price={product.price}
@@ -40,7 +50,6 @@ export const RecommendProducts = ({ category }: RecommendProductsProps) => {
             mainImageSrc={product.mainImages[0]?.path}
             category={product.extra.category}
             discountRate={product.extra.discountRate}
-            discountPrice={product.extra.discountedPrice}
             recommendedBy={product.extra.recommendedBy}
             textPrice="text-sm"
           />

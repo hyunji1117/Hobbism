@@ -28,6 +28,7 @@ export const LiveCalendar = () => {
   const weeklyLives = liveCastData.filter(live =>
     weekDays.some(day => live.start.isSame(day, 'day')),
   );
+  // .filter(live => live.extra?.live);
 
   return (
     <>
@@ -41,7 +42,7 @@ export const LiveCalendar = () => {
             const textColor = isSaturday
               ? 'text-[#51AAED]'
               : isSunday
-                ? 'text-[#FE508B]'
+                ? 'text-red-400'
                 : 'text-black';
 
             const hasLive = liveCastData.some(live =>
@@ -60,7 +61,7 @@ export const LiveCalendar = () => {
                   {day.format('D')}
 
                   {hasLive && (
-                    <div className="mb-5 h-1.5 w-1.5 rounded-full bg-[#FE508B]"></div>
+                    <div className="mb-5 h-1.5 w-1.5 rounded-full bg-red-500"></div>
                   )}
                 </div>
               </div>
@@ -78,20 +79,27 @@ export const LiveCalendar = () => {
                 이번 주 라이브 일정이 없습니다.
               </li>
             ) : (
-              weeklyLives.map(live => (
-                <li
-                  key={live._id}
-                  className={`mb-1 flex rounded-sm px-2 py-2 ${moment().isBetween(moment(live.start), moment(live.end)) ? 'bg-[#ffe8f0]' : 'bg-white'}`}
-                >
-                  <h3>
-                    {live.start.format('M월 D일')}
-                    <small className="block text-[#4B5563]">
-                      {live.start.format('HH:mm')}
-                    </small>
-                  </h3>
-                  <p className="mt-1 ml-7 text-sm">{live.extra?.live.title}</p>
-                </li>
-              ))
+              weeklyLives.map(live => {
+                console.log(live.extra.live);
+
+                if (!live.extra.live) return;
+                return (
+                  <li
+                    key={live._id}
+                    className={`mb-1 flex rounded-sm px-2 py-2 ${moment().isBetween(moment(live.start), moment(live.end)) ? 'bg-[#ffe8f0]' : 'bg-white'}`}
+                  >
+                    <h3>
+                      {live.start.format('M월 D일')}
+                      <small className="block text-[#4B5563]">
+                        {live.start.format('HH:mm')}
+                      </small>
+                    </h3>
+                    <p className="mt-1 ml-7 text-sm">
+                      {live.extra?.live?.title}
+                    </p>
+                  </li>
+                );
+              })
             )}
           </ul>
         </div>

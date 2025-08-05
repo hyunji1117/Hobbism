@@ -1,5 +1,6 @@
-import { fetchLiveProducts } from '@/data/functions/AllProductFetch';
+import { fetchAllProducts } from '@/data/functions/ProductFetch';
 import { Product } from '@/types';
+import filterValidProducts from '@/utils/product';
 import moment from 'moment';
 import { create } from 'zustand';
 
@@ -20,8 +21,11 @@ export const useLiveStore = create<LiveStore>(set => ({
   currentLive: [],
   liveToShow: [],
   fetchLive: async () => {
-    const data = await fetchLiveProducts();
-    const liveData = data.filter(item => item?.extra?.isLiveSpecial);
+    const data = await fetchAllProducts();
+    // const liveData = filterValidProducts(data, { excludeLiveSpecial: false });
+    const liveData = data
+      .filter(d => d.show)
+      .filter(d => d.extra?.isLiveSpecial);
 
     const now = moment();
 

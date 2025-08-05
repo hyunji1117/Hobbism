@@ -7,6 +7,12 @@ interface ModalProps extends PropsWithChildren {
 }
 
 export default function Modal({ children, onClose }: ModalProps) {
+  const target =
+    typeof window !== 'undefined'
+      ? document.getElementById('modal-root')
+      : null;
+
+  if (!target) return null;
   return createPortal(
     <div
       className="fixed inset-0 z-50 h-full w-full"
@@ -15,23 +21,32 @@ export default function Modal({ children, onClose }: ModalProps) {
     >
       {children}
     </div>,
-    document.body,
+    target,
   );
 }
 
-export function ModalBackdrop() {
+export function ModalBackdrop({ className }: { className?: string }) {
   return (
-    <div className="fixed inset-0 -z-10 mx-auto h-full w-full max-w-[600px] bg-[rgba(1,1,1,0.2)]" />
+    <div
+      className={cn(
+        'fixed inset-0 -z-10 mx-auto h-full w-full max-w-[600px] bg-[rgba(1,1,1,0.2)]',
+        className,
+      )}
+    />
   );
 }
 
 export function ModalPanel({
   children,
   className,
-}: PropsWithChildren<{ className?: string }>) {
+  disableStopPropagation = false,
+}: PropsWithChildren<{
+  className?: string;
+  disableStopPropagation?: boolean;
+}>) {
   return (
     <motion.div
-      className="fixed inset-0 flex items-center justify-center"
+      className="absolute inset-0 flex items-center justify-center"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
@@ -42,9 +57,13 @@ export function ModalPanel({
       }}
     >
       <div
-        onClick={e => e.stopPropagation()}
+        onClick={e => {
+          if (!disableStopPropagation) {
+            e.stopPropagation(); // 평소엔 막음
+          }
+        }}
         className={cn(
-          'rounded-2xl border border-[#D9D9D9] bg-white',
+          'relative max-w-[600px] rounded-2xl border border-[#D9D9D9] bg-white',
           className,
         )}
       >

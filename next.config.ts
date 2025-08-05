@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
 
   experimental: {
     serverActions: {
-      bodySizeLimit: '10mb', // 또는 '10mb', '20mb' 등으로 설정
+      bodySizeLimit: '100mb',
     },
   },
   images: {
@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'fesp-api.koyeb.app',
         port: '',
-        pathname: '/market/files/febc13-final01-emjf/**',
+        pathname: '/market/files/**',
       },
       {
         protocol: 'https',
@@ -41,6 +41,12 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'ssl.pstatic.net',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '**',
       },
     ],
   },

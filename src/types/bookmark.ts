@@ -18,6 +18,7 @@ export interface BookmarkPost {
     user: Pick<User, '_id' | 'image' | 'name'>;
     _id: number;
   };
+  user_id: number;
   _id: number;
 }
 

@@ -1,8 +1,15 @@
 'use client';
 
+import { LiveProgress } from '@/components/features/live/LiveProgress';
+import { useLiveStore } from '@/store/live.store';
+import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+//        interface: 상품 인터페이스        //
 interface ShopProductProps {
   _id: number;
   price: number;
@@ -10,11 +17,11 @@ interface ShopProductProps {
   mainImageSrc: string;
   category: string[];
   discountRate: number;
-  discountPrice: number;
   recommendedBy: string;
   textPrice: string;
 }
 
+//       component: shop main 상품 컴포넌트       //
 export const ShopProduct = ({
   _id,
   price,
@@ -22,35 +29,54 @@ export const ShopProduct = ({
   mainImageSrc,
   discountRate,
   recommendedBy,
-  discountPrice,
   textPrice,
 }: ShopProductProps) => {
-  const recommendKr: Record<string, string> = {
-    inhwan: '인환',
-    hyunji: '현지',
-    woomin: '우민',
-    youngchan: '영찬',
-    ayoung: '아영',
+  // 카테고리 한글 변환, 배경색, 글자색
+  const recommendData: Record<
+    string,
+    { name: string; color: string; textColor: string }
+  > = {
+    inhwan: { name: '인환', color: 'bg-[#FE508B]', textColor: 'text-white' },
+    hyunji: { name: '현지', color: 'bg-[#FAB91D]', textColor: 'text-black' },
+    woomin: { name: '우민', color: 'bg-[#51AAED]', textColor: 'text-white' },
+    youngchan: { name: '영찬', color: 'bg-[#D2E308]', textColor: 'text-black' },
+    ayoung: { name: '아영', color: 'bg-[#6E67DA]', textColor: 'text-white' },
   };
-  const recommendKrName = recommendKr[recommendedBy];
 
-  const recommendColorCode: Record<string, string> = {
-    inhwan: 'bg-[#FE508B]',
-    hyunji: 'bg-[#FAB91D]',
-    woomin: 'bg-[#51AAED]',
-    youngchan: 'bg-[#D2E308]',
-    ayoung: 'bg-[#6E67DA]',
-  };
-  const recommendColor = recommendColorCode[recommendedBy];
+  const recommendInfo = recommendData[recommendedBy];
 
+  const currentLive = useLiveStore(state => state.currentLive);
+
+  const now = moment();
+
+  const isLive = currentLive.some(product => {
+    if (product._id !== _id) return false;
+
+    const start = moment(product.start);
+    const end = moment(product.end);
+
+    return now.isBetween(start, end);
+  });
+
+  //        render: 상품 렌더        //
   return (
-    <Link href={`/shop/${_id}`} className={`mb-2 flex w-full flex-col gap-1`}>
+    <Link
+      href={isLive ? '/live' : `/shop/${_id}`}
+      className={`mb-2 flex w-full flex-col gap-1`}
+    >
+      {/* 라이브 중인 상품일 경우 라이브 뱃지 */}
+      {isLive && (
+        <div className="absolute top-2 -left-2 z-5">
+          <LiveProgress />
+        </div>
+      )}
+
       <div className={`relative mb-1 aspect-square w-full`}>
         <Image
           fill
           style={{ objectFit: 'cover', objectPosition: 'center' }}
-          src={`https://fesp-api.koyeb.app/market/${mainImageSrc}`}
-          alt={`/${mainImageSrc}`}
+          src={`${mainImageSrc}`}
+          alt={mainImageSrc}
           sizes="100vw, (max-width: 1200px) 50vw, 33vw"
           priority={false}
           className="pointer-events-none rounded-xl"
@@ -64,9 +90,9 @@ export const ShopProduct = ({
 
         {recommendedBy && (
           <span
-            className={`${recommendColor} pointer-events-none flex items-center rounded-sm px-2 text-[8px] whitespace-nowrap text-white`}
+            className={`${recommendInfo.color} pointer-events-none flex items-center rounded-sm px-2 text-[8px] whitespace-nowrap ${recommendInfo.textColor}`}
           >
-            {recommendKrName}PICK
+            {recommendInfo.name}PICK
           </span>
         )}
       </div>
@@ -76,7 +102,7 @@ export const ShopProduct = ({
             {discountRate}%
           </span>
         )}
-        {discountPrice ? discountPrice : price}원
+        {price}원
       </p>
     </Link>
   );

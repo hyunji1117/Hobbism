@@ -1,35 +1,41 @@
 import Modal, { ModalBackdrop, ModalPanel } from '@/components/common/Modal';
+import { Separator } from '@/components/ui/separator';
 
 interface ConfirmModalProps {
   onConfirm: () => void;
   onClose: () => void;
+  label: string;
 }
 
 export default function ConfirmModal({
   onConfirm,
   onClose,
+  label,
 }: ConfirmModalProps) {
   return (
-    <Modal onClose={onClose}>
+    <Modal key={'confitem-modal'} onClose={onClose}>
       <ModalBackdrop />
 
-      <ModalPanel className="w-[300px] p-6 text-center">
-        <div className="mb-4 text-center text-sm">
-          <p>작성 중인 내용은 저장되지 않습니다</p>
-          <p>정말 나가시겠습니까?</p>
+      <ModalPanel className="mx-6 w-[400px] px-6 py-4 text-center text-[#1A1A1A]">
+        <div className="my-6 flex flex-col gap-2 text-center">
+          <p className="">{`${label} 그만두시겠어요?`}</p>
+          <p className="text-sm text-gray-500">작성 중인 내용이 삭제됩니다</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex h-10 gap-2">
           <button
             onClick={onClose}
-            className="flex-1 cursor-pointer rounded-lg bg-gray-200 py-2"
+            className="flex-1 cursor-pointer py-2 font-medium"
           >
-            취소
+            아니요
           </button>
+          <div className="flex h-full items-center justify-center py-3">
+            <Separator orientation="vertical" className="bg-gray-300" />
+          </div>
           <button
             onClick={onConfirm}
-            className="flex-1 cursor-pointer rounded-lg bg-black py-2 text-white"
+            className="flex-1 cursor-pointer py-2 font-medium"
           >
-            확인
+            네 그만둘래요
           </button>
         </div>
       </ModalPanel>

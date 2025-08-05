@@ -1,53 +1,79 @@
 'use client';
 
-import { PostList, User } from '@/types';
+import { Bookmark, PostList, User } from '@/types';
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { UserProfileSection } from '@/components/features/user/UserProfileSection';
-import UserPreviewList from '@/components/features/user/UserPreviewList';
 import { UserFeedTab } from '@/components/features/user/UserFeedTab';
 import { UserShopTab } from '@/components/features/user/UserShopTab';
 import { useAuthStore } from '@/store/auth.store';
 import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 //          interface: 유저 페이지 컴포넌트 Properties          //
 interface Props {
   user: User;
   posts: PostList[];
-  recommenedUser: User[];
+  userBookmark?: Bookmark[];
+  // recommenedUser: User[];
 }
 
 //          component: 유저 페이지 컴포넌트          //
-export function UserPageClient({ user, posts, recommenedUser }: Props) {
+export function UserPageClient({ user, posts, userBookmark }: Props) {
   //          state: 로그인 유저 상태          //
   const currentUser = useAuthStore(state => state.user);
+
   //          state: 마이페이지 상태          //
   const [isMypage, setMypage] = useState<boolean>(true);
-  //          effect: user가 변경될 때마다 실행할 함수          //
+
+  let isBookmark = false;
+  let bookmarkId: number | undefined = undefined;
+
+  if (!isMypage && userBookmark) {
+    const bookmark = userBookmark.find(
+      bookmark => bookmark.user._id === user._id,
+    );
+    if (bookmark) {
+      isBookmark = true;
+      bookmarkId = bookmark._id;
+    }
+  }
+
   useEffect(() => {
-    if (!currentUser?._id) return;
-    setMypage(currentUser._id === user._id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+    if (currentUser) {
+      setMypage(currentUser._id === user._id);
+    }
+  }, [currentUser, user]);
+
   //          render: 유저 페이지 컴포넌트 렌더링          //
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-1 flex-col">
       {/* 유저 프로필 정보 영역 */}
-      <section className="flex flex-col gap-5 p-5">
-        <UserProfileSection user={user} isMypage={isMypage} />
+      <section className="flex flex-col gap-5 p-4">
+        <UserProfileSection
+          user={user}
+          isMypage={isMypage}
+          isBookmark={isBookmark}
+          bookmark_id={bookmarkId}
+        />
       </section>
 
       {/* 마이페이지일 때만 추천 유저 리스트 표시 */}
-      {isMypage && <UserPreviewList recommendedUser={recommenedUser} />}
+      {/* {isMypage && <UserPreviewList recommendedUser={recommenedUser} />} */}
 
       {/* 피드 및 쇼핑 내역 탭 */}
-      <section className="flex flex-col">
-        <Tabs defaultValue="feed">
+      <section className="flex flex-1 flex-col">
+        <Tabs defaultValue="feed" className="flex-1 gap-0 text-[#4A4A4A]">
           {/* 탭 버튼 목록 */}
-          <TabsList className="h-14 w-full rounded-none border-b bg-white px-5 py-0">
+          <TabsList className="h-14 w-full rounded-none border-b bg-white px-4 py-0">
             <TabsTrigger
               value="feed"
-              className="cursor-pointer rounded-none border-none !shadow-none data-[state=active]:bg-gray-200"
+              className={cn(
+                'cursor-pointer rounded-none !shadow-none',
+                isMypage
+                  ? 'border-none data-[state=active]:bg-[#4A4A4A] data-[state=active]:text-white'
+                  : 'cursor-default border-b border-b-[#4A4A4A] font-bold data-[state=active]:bg-white data-[state=active]:text-[#4A4A4A]',
+              )}
             >
               {isMypage ? '내 피드' : '피드'}
             </TabsTrigger>
@@ -56,7 +82,7 @@ export function UserPageClient({ user, posts, recommenedUser }: Props) {
             {isMypage && (
               <TabsTrigger
                 value="shop"
-                className="cursor-pointer rounded-none border-none !shadow-none data-[state=active]:bg-gray-200"
+                className="cursor-pointer rounded-none border-none !shadow-none data-[state=active]:bg-[#4A4A4A] data-[state=active]:text-white"
               >
                 쇼핑 내역
               </TabsTrigger>

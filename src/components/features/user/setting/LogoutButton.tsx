@@ -1,28 +1,34 @@
 'use client';
 
+import LogoutModal from '@/components/common/LogoutModal';
 import { LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth.store';
+import { useState } from 'react';
 
 export function LogoutButton() {
-  const router = useRouter();
-  const resetUser = useAuthStore(state => state.clearAuth);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleLogout = () => {
-    resetUser();
-    localStorage.clear();
-    sessionStorage.clear();
+  const handleLogoutClick = () => {
+    setShowModal(true);
+  };
 
-    router.push('/login');
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   return (
-    <button
-      onClick={handleLogout}
-      className="flex w-full cursor-pointer gap-2.5 rounded-[8px] border bg-white p-3"
-    >
-      <LogOut />
-      <span>로그아웃</span>
-    </button>
+    <>
+      <button
+        onClick={handleLogoutClick}
+        className="flex w-full cursor-pointer gap-2.5 rounded-[8px] border bg-white p-3"
+        type="button"
+        aria-label="로그아웃"
+      >
+        <LogOut />
+        <span>로그아웃</span>
+      </button>
+
+      {/* 로그아웃 모달 */}
+      {showModal && <LogoutModal onClose={handleCloseModal} />}
+    </>
   );
 }

@@ -11,3 +11,6 @@ export * from './user';
 export * from './post';
 // 북마크 관련 타입 정의
 export * from './bookmark';
+
+export * from './item';
+export * from './comment';

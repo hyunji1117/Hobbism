@@ -19,7 +19,7 @@ export default async function FollowPage({
   return (
     <>
       <Tabs defaultValue={defaultTab}>
-        <TabsList className="h-14 w-full rounded-none border-b bg-white px-0 py-0">
+        <TabsList className="h-14 w-full rounded-none border-b bg-white px-0 py-0 text-[#4A4A4A]">
           <TabsTrigger
             value="follow"
             className="rounded-none border-none !shadow-none data-[state=active]:bg-gray-200"

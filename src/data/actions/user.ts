@@ -79,35 +79,55 @@ export async function updateUserInfo(
     const nickname = formData.get('nickname')?.toString();
     const introduction = formData.get('introduction')?.toString();
     const address = formData.get('address')?.toString();
+    const phone = formData.get('phone')?.toString();
     const detail = formData.get('detail')?.toString();
+    const equippedItemCodes = formData.get('equippedItemCodes');
+    const ownedItemCodes = formData.get('ownedItemCodes');
+    const hobby = formData.get('hobby');
+    const postcode = formData.get('postcode');
     const extraRes = await getUserAttribute(_id, 'extra');
-    const prevExtra = extraRes.ok ? extraRes.item.extra : {};
+    const prevExtra = extraRes.ok === 1 ? extraRes.item.extra : {};
+    const point = formData.get('point');
+    const total_point = formData.get('total_point');
     let image;
 
-    console.log(attach);
-    console.log(accessToken);
+    console.error('포인트', point);
+    console.error('토탈 포인트', total_point);
+
     if (attach instanceof File && attach.size > 0) {
       const fileRes = await uploadFile(formData);
       console.log(`fileRes`, fileRes);
       if (fileRes.ok) {
         image = fileRes.item[0].path;
       } else {
-        return fileRes;
       }
     }
     const body = {
       ...(address && { address }),
+      ...(phone && { phone }),
       extra: {
         ...prevExtra,
         ...(nickname && { nickname }),
         ...(introduction && { introduction }),
+        ...(hobby && { hobby }),
         ...(detail && { detail_address: detail }),
+        ...(postcode && { postcode }),
+        ...(equippedItemCodes && {
+          equippedItemCodes: JSON.parse(
+            formData.get('equippedItemCodes') as string,
+          ),
+        }),
+        ...(ownedItemCodes && {
+          ownedItemCodes: JSON.parse(formData.get('ownedItemCodes') as string),
+        }),
+        ...(point && { point: parseInt(point.toString(), 10) }),
+        ...(total_point && {
+          total_point: parseInt(total_point.toString(), 10),
+        }),
       },
       ...(image ? { image } : {}),
     };
 
-    console.log(`body`, body);
-    console.log(`accessToken`, accessToken);
     res = await fetch(`${API_URL}/users/${_id}`, {
       method: 'PATCH',
       headers: {
@@ -119,8 +139,6 @@ export async function updateUserInfo(
     });
 
     data = await res.json();
-
-    console.log('data patch', data);
   } catch (error) {
     // 네트워크 오류 처리
     console.error(error);

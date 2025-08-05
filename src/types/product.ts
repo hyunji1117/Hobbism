@@ -8,6 +8,7 @@ export interface ImageFiles {
 // 상품 한 건
 export interface Product {
   _id: number;
+  // 할인가
   price: number;
   shippingFees: number;
   show: boolean;
@@ -25,15 +26,18 @@ export interface Product {
     recommendedBy: string;
     isLiveSpecial: boolean;
     discountRate: number;
-    discountedPrice: number;
+    options: {
+      size: number[] | string[];
+      color: string[];
+    };
+    originalPrice: number;
+    // options: ProductOption[];
     live: {
       start: string;
       end: string;
       title: string;
       livePath: string;
       liveId: string;
-      livePrice: number;
-      liveDiscountRate: number;
     };
   };
 }
@@ -56,16 +60,50 @@ export interface ProductListRes {
   };
 }
 
+// 옵션
+export interface ProductOption {
+  name: string;
+  values: string | number;
+  options: {
+    size: number[] | string[];
+    color: string[];
+  };
+}
+
+// 상품 상세 정보
 export interface ProductDetailInfoProps {
   item: {
     _id: number;
     name: string;
     price: number;
-    path: string;
+    path?: string;
   };
+  price: number;
   discountRate: number;
-  discountedPrice: number;
   extra: {
     recommendedBy: string;
+    originalPrice: number;
   };
+  sizes?: string[];
+  colors?: string[];
+}
+
+// 장바구니 액션
+export interface CartActionsProps {
+  price: number;
+  options: {
+    size: number[];
+    color: string[];
+  };
+  discountRate: number;
+}
+
+// 상품 수량 선택 컴포넌트
+export interface ProductQuantitySelectorProps {
+  selectedOption: string;
+  quantity: number;
+  onIncrease: () => void;
+  onDecrease: () => void;
+  price: number;
+  originalPrice: number;
 }
