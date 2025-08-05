@@ -15,40 +15,8 @@ import { fetchAddToCart } from '@/data/functions/CartFetch.client';
 
 import { usePurchaseStore } from '@/store/order.store';
 import { SmallLoading } from '@/components/common/SmallLoading';
+import toast from 'react-hot-toast';
 
-// 장바구니 아이콘 컴포넌트
-export function CartIcon() {
-  const { cartCount } = useCart();
-  return (
-    <div className="relative">
-      <ShoppingCart />
-      {cartCount > 0 && (
-        <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-bold text-white">
-          {cartCount}
-        </span>
-      )}
-    </div>
-  );
-}
-
-// 뒤로가기 버튼
-export function GoBackButton({ stroke }: { stroke: string }) {
-  const handleGoBack = () => {
-    if (window.history.length > 2) {
-      window.history.back();
-    } else {
-      window.location.href = '/';
-    }
-  };
-
-  return (
-    <button onClick={handleGoBack}>
-      <ChevronLeft className={stroke} />
-    </button>
-  );
-}
-
-// 상품 상세 구매 액션 로직
 export default function CartAction({
   price,
   options,
@@ -66,10 +34,8 @@ export default function CartAction({
     originalPrice?: number;
   };
 }) {
-  console.log('item', item);
-
   const router = useRouter();
-  const [selectedSize, setSelectedSize] = useState<number | undefined>();
+  const [selectedSize, setSelectedSize] = useState<string | undefined>();
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
@@ -78,11 +44,15 @@ export default function CartAction({
   const hasOptions = options && (options.size || options.color);
   const allOptionsSelected = !hasOptions || (selectedSize && selectedColor);
 
+  const resetOptions = () => {
+    setSelectedSize(undefined);
+    setSelectedColor(undefined);
+  };
+
   const handleAddToCart = async () => {
     if (isBottomSheetOpen) {
-      // 바텀시트가 열려 있는 상태에서 옵션 검증 수행
       if (hasOptions && (!selectedSize || !selectedColor)) {
-        alert('사이즈와 색상을 모두 선택해주세요!');
+        toast.error('사이즈와 색상을 모두 선택해주세요!');
         return;
       }
       setLoading(true);
@@ -95,11 +65,12 @@ export default function CartAction({
         });
         console.log('장바구니 추가 성공 응답:', response);
 
-        alert('장바구니에 상품이 추가되었습니다!');
+        toast.success('장바구니에 상품이 추가되었습니다!');
         setIsBottomSheetOpen(false);
+        resetOptions(); // 옵션 초기화
       } catch (error) {
         console.error('장바구니 추가 중 오류 발생:', error);
-        alert('장바구니 추가에 실패했습니다.');
+        toast.error('장바구니 추가에 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -110,12 +81,11 @@ export default function CartAction({
 
   const handleBuyNow = () => {
     if (!isBottomSheetOpen) {
-      // 바텀시트가 열리지 않은 상태에서는 아무 작업 않도록
       setIsBottomSheetOpen(true);
       return;
     }
     if (hasOptions && (!selectedSize || !selectedColor)) {
-      alert('사이즈와 색상을 모두 선택해주세요!');
+      toast.error('사이즈와 색상을 모두 선택해주세요!');
       return;
     }
 
@@ -135,14 +105,16 @@ export default function CartAction({
 
     console.log('purchaseData', purchaseData);
 
-    // 구매 데이터 저장 및 페이지 이동
     usePurchaseStore.getState().setPurchaseData([purchaseData]);
     router.push(`/shop/purchase`);
+    resetOptions(); // 옵션 초기화
   };
 
-  // 바텀시트 화면을 아래로 스와이프 기능
   const swipeHandlers = useSwipeable({
-    onSwipedDown: () => setIsBottomSheetOpen(false),
+    onSwipedDown: () => {
+      setIsBottomSheetOpen(false);
+      resetOptions(); // 옵션 초기화
+    },
     trackMouse: true,
   });
 
@@ -171,7 +143,10 @@ export default function CartAction({
       {isBottomSheetOpen && (
         <div
           className="fixed inset-0 z-10 flex items-center justify-center"
-          onClick={() => setIsBottomSheetOpen(false)}
+          onClick={() => {
+            setIsBottomSheetOpen(false);
+            resetOptions(); // 옵션 초기화
+          }}
         >
           <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
         </div>
@@ -197,20 +172,21 @@ export default function CartAction({
                   <OptionSelector
                     name="사이즈"
                     options={options.size}
-                    selectedOption={selectedSize?.toString() || ''}
-                    onSelect={value => setSelectedSize(Number(value))}
+                    selectedOption={selectedSize || ''} // 초기 상태에서는 빈 값
+                    onSelect={value => setSelectedSize(value)}
+                    onOpen={() => setSelectedSize('')} // 드롭다운 열릴 때 초기화
                   />
                 </div>
               )}
 
-              {/* 색상 옵션 */}
               {options.color && (
                 <div className="bg-white px-5 pt-3.5">
                   <OptionSelector
                     name="색상"
                     options={options.color}
-                    selectedOption={selectedColor || ''}
+                    selectedOption={selectedColor || ''} // 초기 상태에서는 빈 값
                     onSelect={value => setSelectedColor(value)}
+                    onOpen={() => setSelectedColor('')} // 드롭다운 열릴 때 초기화
                   />
                 </div>
               )}
@@ -259,7 +235,3 @@ export default function CartAction({
     </>
   );
 }
-
-// NavBar에서 사용할 수 있게 내보내기
-CartAction.GoBackButton = GoBackButton;
-CartAction.CartIcon = CartIcon;

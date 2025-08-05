@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   fetchCartList,
   fetchUpdateCartItemQuantity,
+  fetchDeleteAllCarts,
 } from '@/data/functions/CartFetch.client';
 import { CartItem } from '@/types/cart';
 import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
@@ -81,11 +82,18 @@ export default function CartPage() {
   const handleAllSelect = () => {
     const newCheckedState = !isAllChecked;
     setIsAllChecked(newCheckedState);
+
+    // 모든 항목의 체크 상태를 업데이트
     setCartItems(prev =>
       prev.map(item => ({
         ...item,
         isChecked: newCheckedState,
       })),
+    );
+
+    // handleItemCheck를 호출하여 상태를 반영
+    cartItems.forEach(item =>
+      handleItemCheck(item.product._id, newCheckedState),
     );
   };
 
@@ -107,12 +115,37 @@ export default function CartPage() {
       setCartItems(prevItems =>
         prevItems.map(item =>
           item.product._id === id
-            ? { ...item, quantity: updatedItem.quantity }
+            ? // API 응답 구조에 맞게 수정
+              { ...item, quantity: updatedItem.data.quantity }
             : item,
         ),
       );
     } catch (error) {
       console.error('수량 변경 중 오류 발생:', error);
+    }
+  };
+
+  const handleRemoveAll = async () => {
+    const selectedItems = cartItems.filter(item => item.isChecked);
+    const selectedIds = selectedItems.map(item => item.cartId);
+
+    if (selectedIds.length === 0) {
+      toast.error('선택된 상품이 없습니다.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await fetchDeleteAllCarts(selectedIds);
+      setCartItems(prevItems =>
+        prevItems.filter(item => !selectedIds.includes(item.cartId)),
+      );
+      toast.success('선택된 상품이 삭제되었습니다.');
+    } catch (error) {
+      console.error('상품 삭제 중 오류 발생:', error);
+      toast.error('상품 삭제에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -145,9 +178,8 @@ export default function CartPage() {
   };
 
   return (
-    <div className="flex flex-col px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col px-4">
       <hr className="mt-10" />
-
       {/* 전체 선택 */}
       <div className="relative flex">
         <button
@@ -173,54 +205,60 @@ export default function CartPage() {
             />
           )}
         </button>
-        <span className="relative top-3 left-14 text-base leading-6 font-semibold sm:text-lg">
+        <span className="relative top-3 left-14 text-lg leading-6 font-semibold">
           전체 선택
         </span>
+        <button
+          className="absolute top-3 right-5 text-[#F05656]"
+          onClick={handleRemoveAll}
+        >
+          선택 삭제
+        </button>
       </div>
       <hr className="my-6" />
 
       {/* 장바구니에 담긴 상품 리스트 */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {cartItems.map((item, index) => (
-          <CartItemCard
-            cartId={item._id}
-            key={`${item.product._id}-${item.product.name}-${index}`}
-            id={item.product._id}
-            path={item.product.image.path}
-            name={item.product.name}
-            price={item.product.price}
-            quantity={item.quantity}
-            isChecked={item.isChecked}
-            onCheck={checked => handleItemCheck(item.product._id, checked)}
-            onQuantityChange={quantity =>
-              handleQuantityChange(item.product._id, quantity)
-            }
-          />
-        ))}
-      </div>
+      {cartItems.map((item, index) => (
+        <CartItemCard
+          cartId={item._id}
+          key={`${item.product._id}-${item.product.name}-${index}`}
+          id={item.product._id}
+          path={item.product.image.path}
+          name={item.product.name}
+          price={item.product.price}
+          quantity={item.quantity}
+          isChecked={item.isChecked}
+          onCheck={checked => handleItemCheck(item.product._id, checked)}
+          onQuantityChange={quantity =>
+            handleQuantityChange(item.product._id, quantity)
+          }
+        />
+      ))}
 
       {/* 결제 정보 */}
-      <div className="my-6 flex flex-col gap-y-4 text-sm sm:text-base">
+      <div className="mx-4 my-6 flex flex-col gap-y-4">
         <div className="flex justify-between">
           <span className="text-[#4B5563]">총 상품금액</span>
-          <span className="font-medium">{totalPrice.toLocaleString()}원</span>
+          <span className="right-4 font-medium">
+            {totalPrice.toLocaleString()}원
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-[#4B5563]">배송비</span>
-          <span>무료</span>
+          <span className="right-4">무료</span>
         </div>
         <div className="flex justify-between">
           <span className="text-lg leading-6 font-semibold">총 결제금액</span>
-          <span className="text-lg leading-6 font-semibold text-[#F05656]">
+          <span className="right-4 text-lg leading-6 font-semibold text-[#F05656]">
             {totalPrice.toLocaleString()}원
           </span>
         </div>
       </div>
 
       {/* 결제 버튼 */}
-      <div className="text-center">
+      <div className="top-3 px-4 py-3 text-center">
         <button
-          className="h-[3.5rem] w-full cursor-pointer rounded-md bg-[#4B5563] text-base font-semibold text-white hover:bg-[#2C2F33] sm:w-[21.875rem] sm:text-xl"
+          className="h-[3.5rem] w-full max-w-[21.875rem] cursor-pointer rounded-md bg-[#4B5563] text-xl font-semibold text-white hover:bg-[#2C2F33]"
           onClick={handelAddBuy}
         >
           결제하기

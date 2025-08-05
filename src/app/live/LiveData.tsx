@@ -12,15 +12,24 @@ export default function LiveData() {
     fetchLive();
   }, [fetchLive]);
 
+  if (!liveToShow || (Array.isArray(liveToShow) && liveToShow.length === 0)) {
+    return <div>라이브 상품이 없습니다.</div>;
+  }
+
   const liveToShowArray = Array.isArray(liveToShow) ? liveToShow : [liveToShow];
+  const validLives = liveToShowArray.filter(Boolean);
 
   return (
     <>
-      {liveToShowArray.map(live => (
-        <div key={live._id}>
-          <LiveContent live={live} />
-        </div>
-      ))}
+      {validLives.length > 0 ? (
+        validLives.map(live => (
+          <div key={live._id}>
+            <LiveContent live={live} />
+          </div>
+        ))
+      ) : (
+        <div>라이브 상품이 없습니다.</div>
+      )}
     </>
   );
 }

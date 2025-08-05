@@ -125,7 +125,7 @@ export function CartItemCard({
           <Image
             src={path || ''}
             alt={name}
-            className="rounded-xl border-2"
+            className="rounded-lg border border-[#ECEDEE]"
             width={80}
             height={80}
           />
@@ -145,17 +145,19 @@ export function CartItemCard({
             className="relative bottom-1 cursor-pointer"
             onClick={handleDown}
           >
-            <div className="flex size-7 items-center justify-center rounded-full border border-[#CECECE]">
-              <Minus size={20} />
+            <div className="flex size-7 items-center justify-center rounded-full border border-[#ECEDEE]">
+              <Minus size={20} color="#787878" strokeWidth={1.5} />
             </div>
           </button>
-          <span className="relative bottom-2 px-6">{localQuantity}</span>
+          <span className="relative bottom-2 px-6 text-[#787878]">
+            {localQuantity}
+          </span>
           <button
             className="relative bottom-1 cursor-pointer"
             onClick={handleUp}
           >
-            <div className="flex size-7 items-center justify-center rounded-full border border-[#CECECE]">
-              <Plus size={20} />
+            <div className="flex size-7 items-center justify-center rounded-full border border-[#ECEDEE]">
+              <Plus size={20} color="#787878" strokeWidth={1.5} />
             </div>
           </button>
         </div>
@@ -163,7 +165,7 @@ export function CartItemCard({
         {/* 삭제 아이콘 */}
         <div className="absolute top-2 right-0">
           <button className="cursor-pointer" onClick={handleRemove}>
-            <X size={18} />
+            <X size={18} strokeWidth={1} />
           </button>
         </div>
       </div>

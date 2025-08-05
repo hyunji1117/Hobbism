@@ -11,6 +11,7 @@ export default function AdBannerModal() {
   const pathname = usePathname();
   const { showBanner, bannerState } = useBannerStore();
   const { user } = useAuthStore();
+
   const hideUntil =
     typeof window !== 'undefined'
       ? localStorage.getItem(`hideAd_${user?._id}`)
@@ -22,7 +23,7 @@ export default function AdBannerModal() {
   // 로컬스토리지에서 토글 state를 가져옴
   useEffect(() => {
     bannerState();
-  }, []);
+  }, [bannerState]);
 
   // 페이지 진입 후 2초 뒤에 광고 모달 열림
   useEffect(() => {
