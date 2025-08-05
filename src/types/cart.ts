@@ -30,10 +30,14 @@ export interface CartItem {
       originalPrice: number;
     };
   };
-  // mainImages: { path: string }[];
-  isChecked?: boolean;
   _id: number;
+  id: string;
+  name: string;
+  price: number;
   quantity: number;
+  size?: string;
+  color?: string;
+  mainImages?: string[];
 }
 
 // CartItemCard 컴포넌트
