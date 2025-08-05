@@ -7,7 +7,7 @@ import { ChevronRight, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/auth.store';
-import { useFollowStore } from '@/store/follow.store';
+import { useFollowCountStore } from '@/store/followCount.store';
 import { cn } from '@/lib/utils';
 
 //          interface: 유저 프리뷰 카드 컴포넌트 Properties          //
@@ -46,9 +46,9 @@ export default function UserPreviewCard({
   const accessToken = useAuthStore(state => state.accessToken);
 
   //          function: 팔로우 수 증가 함수          //
-  const increaseFollow = useFollowStore(state => state.increaseFollow);
+  const increaseFollow = useFollowCountStore(state => state.increaseFollow);
   //          function: 팔로우 수 감소 함수          //
-  const decreaseFollow = useFollowStore(state => state.decreaseFollow);
+  const decreaseFollow = useFollowCountStore(state => state.decreaseFollow);
 
   //          event handler: 팔로우/언팔로우 버튼 클릭 이벤트 처리          //
   const handleFollow = async () => {

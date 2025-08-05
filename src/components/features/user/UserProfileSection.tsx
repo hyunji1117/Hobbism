@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { User } from '@/types';
-import { useFollowStore } from '@/store/follow.store';
+import { useFollowCountStore } from '@/store/followCount.store';
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import {
@@ -41,7 +41,7 @@ export function UserProfileSection({
 
   //          state: 팔로잉 카운트 상태          //
   const { followCount, setFollowCount, increaseFollow, decreaseFollow } =
-    useFollowStore();
+    useFollowCountStore();
   //          state: accessToken 상태          //
   const accessToken = useAuthStore(state => state.accessToken);
   //          state: 팔로우 상태          //

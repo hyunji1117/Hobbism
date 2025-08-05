@@ -144,6 +144,7 @@ export default function FeedUpdateForm({ post }: Props) {
 
       if (res.ok === 1) {
         console.log('피드 수정 됨');
+        router.push('/community');
       }
     } finally {
       setIsLoading(false);

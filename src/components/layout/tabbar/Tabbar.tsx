@@ -14,6 +14,7 @@ import {
   UserRound,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import ScrollTopButton from '@/components/common/ScrollTopButton';
 
 //          component: 탭바 컴포넌트          //
 export default function TabBar() {
@@ -23,6 +24,8 @@ export default function TabBar() {
   const user = useAuthStore(state => state.user);
   //          state: 히든 페이지 상태          //
   const [isHidden, setIsHidden] = useState(false);
+
+  const isCommunityPage = pathname === '/community'; // 커뮤니티 메인
 
   //          function: 탭 활성화 함수          //
   const isActiveTab = (targetPath: string) => pathname.startsWith(targetPath);
@@ -56,6 +59,7 @@ export default function TabBar() {
   return (
     <>
       <nav className="fixed bottom-0 z-50 flex h-14 w-full max-w-[600px] items-center justify-around border-t border-[#EAEAEA] bg-white">
+        {isCommunityPage && <ScrollTopButton />}
         {/* 캐릭터 탭 */}
         <Link
           href="/character"

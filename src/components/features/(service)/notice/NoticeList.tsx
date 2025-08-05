@@ -64,6 +64,7 @@ export default function NoticeList({ notices }: Props) {
           setCurrentSection={setCurrentSection}
           viewPageList={viewPageList}
           totalSection={totalSection}
+          pagingCount={10}
         />
       </div>
     </>
