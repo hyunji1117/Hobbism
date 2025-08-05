@@ -9,12 +9,19 @@ interface Props {
   setCurrentSection: Dispatch<SetStateAction<number>>;
   viewPageList: number[];
   totalSection: number;
+  pagingCount: number;
 }
 
 //          component: 페이지네이션 컴포넌트          //
 export default function Pagination(props: Props) {
   //          state: Properties          //
-  const { currentPage, currentSection, viewPageList, totalSection } = props;
+  const {
+    currentPage,
+    currentSection,
+    viewPageList,
+    totalSection,
+    pagingCount,
+  } = props;
   const { setCurrentPage, setCurrentSection } = props;
 
   //          event handler: 페이지 번호 클릭 이벤트 처리          //
@@ -24,13 +31,13 @@ export default function Pagination(props: Props) {
   //          event handler: 이전 클릭 이벤트 처리          //
   const onPreviousClickHandler = () => {
     if (currentSection === 1) return;
-    setCurrentPage((currentSection - 1) * 10);
+    setCurrentPage((currentSection - 1) * pagingCount);
     setCurrentSection(currentSection - 1);
   };
   //          event handler: 다음 클릭 이벤트 처리          //
   const onNextClickHandler = () => {
     if (currentSection === totalSection) return;
-    setCurrentPage(currentSection * 10 + 1);
+    setCurrentPage(currentSection * pagingCount + 1);
     setCurrentSection(currentSection + 1);
   };
 

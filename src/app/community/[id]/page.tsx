@@ -1,16 +1,18 @@
 import { getPost } from '@/data/actions/post';
-import CommunityMain from '@/components/features/community/community-main/CommunityMain';
 import CommunityFeed from '@/components/features/community/community-main/CommunityFeed';
 import CommunityComment from '@/components/features/community/community-comment/CommunityComment';
 import { fetchReplies } from '@/data/functions/CommunityFetch';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getBookmarks } from '@/data/actions/bookmark';
+import { Suspense } from 'react';
+import CommunityFeedSkeleton from '@/components/features/community/community-main/CommunityFeedSkeleton';
 
 interface CommunityDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+//          component: 커뮤니티 상세 페이지 컴포넌트          //
 export default async function CommunityDetailPage({
   params,
 }: CommunityDetailPageProps) {
@@ -19,6 +21,9 @@ export default async function CommunityDetailPage({
 
   // 게시글 데이터 조회
   const res = await getPost(postId);
+
+  if (res.ok !== 1) return;
+  const post = res.item;
 
   const session = await getServerSession(authOptions);
 
@@ -45,7 +50,7 @@ export default async function CommunityDetailPage({
   const isBookmarked = !!bookmark;
   const bookmark_id = bookmark?._id;
 
-  if (!res.ok || !res.item) {
+  if (res.ok !== 1 || !res.item) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-4">
         <div className="text-center">
@@ -68,15 +73,17 @@ export default async function CommunityDetailPage({
 
   if (commentRes.ok !== 1) return null;
 
-  // CommunityMain 컴포넌트 재사용
+  //           render: 커뮤니티 상세 페이지 컴포넌트 렌더링          //
   return (
-    <div className="flex-1 bg-white">
-      <CommunityFeed
-        post={res.item}
-        page="detail"
-        isBookmarked={isBookmarked}
-        bookmark_id={bookmark_id}
-      />
+    <div className="flex flex-1 flex-col bg-white">
+      <Suspense fallback={<CommunityFeedSkeleton />}>
+        <CommunityFeed
+          post={res.item}
+          page="detail"
+          isBookmarked={isBookmarked}
+          bookmark_id={bookmark_id}
+        />
+      </Suspense>
       <CommunityComment
         commentList={commentRes.item}
         post_id={id}

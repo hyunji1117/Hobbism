@@ -85,36 +85,8 @@ export async function createPost(
 ): ApiResPromise<Post> {
   let imageUrls: string[] = [];
   const attachFiles = formData.getAll('attach') as File[];
-  console.log('attach', attachFiles);
+
   const accessToken = formData.get('accessToken');
-
-  console.log('accesToken', accessToken);
-
-  // 1단계: 이미지가 있으면 먼저 업로드
-  // const imageFile = formData.get('images') as File;
-  // if (imageFile && imageFile.size > 0) {
-  //   const fileFormData = new FormData();
-  //   fileFormData.append('attach', imageFile);
-
-  //   try {
-  //     const fileRes = await fetch(`${API_URL}/files`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Client-Id': CLIENT_ID,
-  //       },
-  //       body: fileFormData,
-  //     });
-
-  //     const fileResult = await fileRes.json();
-
-  //     if (fileResult.ok) {
-  //       imageUrls = [fileResult.item[0].path];
-  //     }
-  //   } catch (error) {
-  //     console.error('파일 업로드 에러:', error);
-  //     return { ok: 0, message: '이미지 업로드에 실패했습니다.' };
-  //   }
-  // }
 
   if (attachFiles.length > 0) {
     const fileFormData = new FormData();
@@ -169,11 +141,9 @@ export async function createPost(
     return { ok: 0, message: '일시적인 네트워크 문제로 등록에 실패했습니다.' };
   }
 
-  // redirect를 try 밖으로 이동
   if (data.ok) {
-    revalidatePath(`/${body.type}`); // 목록 페이지 캐시 갱신
-    // 메인페이지로 이동 (상세페이지 대신)
-    redirect(`/${body.type}`); // /community로 이동
+    revalidatePath(`/${body.type}`);
+    return data;
   } else {
     return data;
   }
@@ -220,8 +190,6 @@ export async function updatePost(
     }
   }
 
-  console.log('업로드된 이미지 url들', imageUrls);
-
   const body = {
     type: formData.get('type'),
     content: formData.get('content'),
@@ -251,7 +219,6 @@ export async function updatePost(
   if (data.ok) {
     revalidatePath(`/${body.type}`); // 목록 페이지 캐시 갱신
     // 메인페이지로 이동 (상세페이지 대신)
-    redirect(`/${body.type}`); // /community로 이동
   }
 
   return data;
@@ -276,6 +243,7 @@ export async function deletePost(
         'Client-Id': CLIENT_ID,
         Authorization: `Bearer ${accessToken}`,
       },
+      cache: 'no-cache',
     });
 
     data = await res.json();
@@ -285,7 +253,7 @@ export async function deletePost(
   }
 
   if (data.ok) {
-    revalidateTag('posts');
+    revalidateTag(`posts?type=community`);
   }
 
   return data;
@@ -398,14 +366,14 @@ export async function deleteReply(
   state: ApiRes<null> | null,
   formData: FormData,
 ): ApiResPromise<null> {
-  const _id = formData.get('_id') as string;
+  const post_id = formData.get('post_id') as string;
   const replyId = formData.get('replyId') as string;
   const accessToken = formData.get('accessToken') as string;
 
   let data: ApiRes<null>;
 
   try {
-    const res = await fetch(`${API_URL}/posts/${_id}/replies/${replyId}`, {
+    const res = await fetch(`${API_URL}/posts/${post_id}/replies/${replyId}`, {
       method: 'DELETE',
       headers: {
         'Client-Id': CLIENT_ID,
@@ -420,8 +388,8 @@ export async function deleteReply(
   }
 
   if (data.ok) {
-    revalidateTag(`posts/${_id}/replies`);
-    revalidateTag(`posts/${_id}`);
+    revalidateTag(`posts/${post_id}/replies`);
+    revalidateTag(`posts/${post_id}`);
   }
 
   return data;

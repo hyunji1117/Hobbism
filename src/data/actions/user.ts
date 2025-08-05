@@ -83,12 +83,16 @@ export async function updateUserInfo(
     const detail = formData.get('detail')?.toString();
     const equippedItemCodes = formData.get('equippedItemCodes');
     const ownedItemCodes = formData.get('ownedItemCodes');
-    const point = formData.get('point');
     const hobby = formData.get('hobby');
     const postcode = formData.get('postcode');
     const extraRes = await getUserAttribute(_id, 'extra');
     const prevExtra = extraRes.ok === 1 ? extraRes.item.extra : {};
+    const point = formData.get('point');
+    const total_point = formData.get('total_point');
     let image;
+
+    console.error('포인트', point);
+    console.error('토탈 포인트', total_point);
 
     if (attach instanceof File && attach.size > 0) {
       const fileRes = await uploadFile(formData);
@@ -118,6 +122,9 @@ export async function updateUserInfo(
           ownedItemCodes: JSON.parse(formData.get('ownedItemCodes') as string),
         }),
         ...(point && { point: parseInt(point.toString(), 10) }),
+        ...(total_point && {
+          total_point: parseInt(total_point.toString(), 10),
+        }),
       },
       ...(image ? { image } : {}),
     };

@@ -43,8 +43,8 @@ export default function CommunityComment({
   };
 
   return (
-    <div className="flex flex-col pt-4">
-      <div className="flex flex-col gap-3 px-4">
+    <div className="flex flex-1 flex-col pt-4">
+      <div className="flex flex-1 flex-col gap-3 px-4">
         <div className="flex items-center gap-1.5 font-medium text-[#4A4A4A]">
           <span>댓글</span>
           <span className="font-semibold">{commentList.length}</span>
@@ -55,6 +55,8 @@ export default function CommunityComment({
               key={comment._id}
               comment={comment}
               mine={myCommentIds.includes(comment._id)}
+              post_id={post_id}
+              onDeleteSuccess={refreshComments}
             />
           ))}
         </div>
@@ -71,6 +73,7 @@ export default function CommunityComment({
           setCurrentSection={setCurrentSection}
           viewPageList={viewPageList}
           totalSection={totalSection}
+          pagingCount={5}
         />
       </div>
       {/* 댓글 입력창 */}

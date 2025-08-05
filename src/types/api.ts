@@ -18,7 +18,16 @@ export type ServerValidationErrors<E> = Partial<
 // API 서버의 응답
 // E = never: E가 생략되면 errors 속성도 없음
 export type ApiRes<T, E = never> =
-  | { ok: 1; item: T }
+  | {
+      ok: 1;
+      item: T;
+      pagination?: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
+    }
   | { ok: 0; message: string; errors?: ServerValidationErrors<E> };
 
 // 서버 함수에서 반환할 타입(Promise를 반환해야 함)

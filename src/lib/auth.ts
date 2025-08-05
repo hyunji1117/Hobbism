@@ -26,10 +26,10 @@ declare module 'next-auth' {
     accessToken?: string;
     loginType?: string;
     user: {
-      _id?: number;
-      name?: string;
+      _id: number;
+      name: string;
       email?: string;
-      image?: string;
+      image: string;
       points?: number;
       address?: string;
       phone?: string;
@@ -163,11 +163,11 @@ export const authOptions: NextAuthOptions = {
       session.loginType = token.loginType;
 
       if (session.user) {
-        session.user._id = token._id;
-        session.user.name = token.name;
-        session.user.email = token.email;
+        session.user._id = token._id!;
+        session.user.name = token.name!;
+        session.user.email = token.email!;
         session.user.image =
-          typeof token.image === 'string' ? token.image : undefined;
+          typeof token.image === 'string' ? token.image! : '';
         session.user.points =
           typeof token.points === 'number' ? token.points : undefined;
         session.user.address =

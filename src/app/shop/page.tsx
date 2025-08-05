@@ -48,9 +48,6 @@ export default async function ShopPage() {
 
       {/* 전체(카테고리 별) 상품 */}
       <ShopList initialData={initialData} />
-
-      {/* 탭바 */}
-      <TabBar />
     </>
   );
 }

@@ -1,4 +1,5 @@
 'use client';
+import ScrollTopButton from '@/components/common/ScrollTopButton';
 import TokenSync from '@/components/features/auth/TokenSync';
 import { CartProvider } from '@/components/features/shop/ProductDetail/CartContext';
 import Header from '@/components/layout/header/Header';

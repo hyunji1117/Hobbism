@@ -1,55 +1,78 @@
-import CommunityFeed from '@/components/features/community/community-main/CommunityFeed';
-import CommunityMain from '@/components/features/community/community-main/CommunityMain';
+import CommunityFeedList from '@/components/features/community/community-main/CommunityFeedList';
+import CommunityFeedSkeleton from '@/components/features/community/community-main/CommunityFeedSkeleton';
 import { getBookmarks } from '@/data/actions/bookmark';
 import { fetchPosts } from '@/data/functions/CommunityFetch';
 import { authOptions } from '@/lib/auth';
-import { Post } from '@/types/';
+import { CirclePlus, Pencil } from 'lucide-react';
 import { getServerSession } from 'next-auth';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Suspense } from 'react';
 
 export default async function CommunityPage() {
-  const res = await fetchPosts('community');
+  const res = await fetchPosts('community', 1, 10);
 
-  if (res.ok !== 1) return null;
+  if (res.ok !== 1 || !res.pagination) return null;
 
   const session = await getServerSession(authOptions);
 
-  if (!session?.user?._id || !session.accessToken) {
+  if (!session?.user?._id || !session.accessToken || !session.user) {
     throw new Error('로그인이 필요합니다');
   }
 
   const bookmarkRes = await getBookmarks('post', session.accessToken);
 
   if (bookmarkRes.ok !== 1 || !res.item) return null;
-  const userBookmark = bookmarkRes.item;
+
+  const followRes = await getBookmarks('user', session.accessToken);
+
+  if (followRes.ok !== 1 || !followRes.item) return null;
+  const follow = followRes.item;
 
   return (
-    <main className="flex w-full flex-1 flex-col bg-white">
+    <main className="relative flex w-full flex-1 flex-col bg-white">
       {/* 메인 컨텐츠 */}
-      {/* <div className="mx-5">
-        여기에 뭐라도 있어야겠는데? 있을거면 컬러도 있어야겠는데? 검색?
-        카테고리로 필터링? 커뮤니티 준수 규칙? 팔로우 버튼만 있어도 색상좀 채울
-        수 있는데... 태그도 만들고 무한스크롤에 상세페이지 페이지네이션에 게시글
-        수정에 게시글 삭제에 상세 페이지 이동 방식도 수정해야하고 더보기 넣을 까
-        말까 할래말래 차라리 다크모드 였다면 더 예뻤을 듯 위로 올라가는 버튼
-        뭐라하지 암튼 플로팅 버튼도 있어야하네? 북마크도 해야하잖아? 공유에서
-        이미지 안올라가는것도 해결해야하고
-      </div> */}
-      {res.item.map((post: Post) => {
-        const bookmark = userBookmark.find(b => b.post._id === post._id);
+      <div className="flex flex-col py-3 text-[#4A4A4A]">
+        <div className="flex justify-between px-4">
+          <div className="flex flex-1 flex-col gap-1 self-end pb-5">
+            <p className="line-clamp-1 text-lg font-bold">
+              취미 생활을 공유해보세요
+            </p>
+            <p className="line-clamp-1 max-w-full truncate text-xs font-semibold">
+              피드를 작성하면 포인트를 얻을 수 있습니다
+            </p>
+            <p className="line-clamp-2 text-xs font-normal break-words text-[#999999]">
+              건전한 커뮤니티 환경을 위해 일부 글은 운영 정책에 따라 노출이
+              제한된거나 삭제될 수 있습니다{' '}
+            </p>
+          </div>
+          <div className="relative aspect-square min-w-1/3 shrink-0">
+            <Image
+              src={'/images/character/character-write.webp'}
+              alt="캐릭터 글작성"
+              fill
+              priority
+              sizes="200"
+            />
+          </div>
+        </div>
+        <Link
+          href={'/community/write'}
+          className="flex items-center justify-center gap-1 border-t border-[#f2f2f2] py-3"
+          prefetch={true}
+        >
+          <CirclePlus size={20} />
+          <span>피드 작성하기</span>
+        </Link>
+        <div className="h-4 bg-[#f7f7f7]"></div>
+      </div>
 
-        const isBookmarked = !!bookmark;
-        const bookmark_id = bookmark?._id;
-
-        return (
-          <CommunityFeed
-            key={post._id}
-            post={post}
-            page="main"
-            isBookmarked={isBookmarked}
-            bookmark_id={bookmark_id}
-          />
-        );
-      })}
+      <CommunityFeedList
+        posts={res.item}
+        postBookmarks={bookmarkRes.item}
+        userFollows={followRes.item}
+        totalPages={res.pagination.totalPages}
+      />
     </main>
   );
 }
