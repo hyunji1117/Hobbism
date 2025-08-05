@@ -39,9 +39,9 @@ export default async function SettingPage() {
     return null;
 
   return (
-    <div className="flex min-h-[calc(100%-48px)] flex-col">
-      <main className="scrollbar-hide flex h-full flex-col gap-2 overflow-y-scroll p-5">
-        <section>
+    <div className="flex min-h-[calc(100vh-48px)] flex-col text-[#4a4a4a]">
+      <main className="scrollbar-hide flex h-full flex-col gap-4 overflow-y-scroll p-5">
+        <section className="flex flex-col gap-1">
           <p>일반</p>
           <div className="flex flex-col gap-3 rounded-[8px] border">
             <ul className="px-3">
@@ -56,7 +56,7 @@ export default async function SettingPage() {
           </div>
         </section>
 
-        <section>
+        <section className="flex flex-col gap-1">
           <p>일반</p>
           <div className="flex flex-col gap-3 rounded-[8px] border">
             <ul className="px-3">
@@ -74,7 +74,7 @@ export default async function SettingPage() {
             </ul>
           </div>
         </section>
-        <section>
+        <section className="flex flex-col gap-1">
           <p>공지</p>
           <div className="flex flex-col gap-3 rounded-[8px] border">
             <ul className="px-3">
@@ -104,7 +104,7 @@ export default async function SettingPage() {
             </ul>
           </div>
         </section>
-        <section>
+        <section className="flex flex-col gap-1">
           <p>약관 및 정책</p>
           <div className="flex flex-col gap-3 rounded-[7px] border">
             <ul className="px-3">

@@ -99,7 +99,7 @@ export function UserProfileSection({
   return (
     <div className="flex flex-col gap-4">
       {/* 프로필 상단 영역 */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 text-[#4A4A4A]">
         {/* 프로필 이미지 */}
         <Image
           src={imageUrl}
@@ -113,7 +113,7 @@ export function UserProfileSection({
         <div className="flex flex-col justify-between">
           <div className="flex flex-col">
             <p className="text-xl font-semibold">{`${user.name} `}</p>
-            <p className="text-sm text-[#1A1A1A]">
+            <p className="text-sm text-[#999999]">
               {user.extra?.nickname ? `${user.extra.nickname}` : '-'}
             </p>
           </div>
@@ -147,7 +147,7 @@ export function UserProfileSection({
             <div className="flex items-center gap-2">
               <p className="text-sm font-bold text-[#999999]">팔로우</p>
               {/* <UsersRound size={20} /> */}
-              <p className="text-base font-semibold break-words whitespace-pre-wrap text-[#1A1A1A]">
+              <p className="text-base font-semibold break-words whitespace-pre-wrap text-[#4A4A4A]">
                 {followCount ?? 0}
               </p>
             </div>
@@ -165,7 +165,7 @@ export function UserProfileSection({
             <div className="flex items-center justify-between gap-2">
               <p className="text-sm font-bold text-[#999999]">팔로잉</p>
               {/* <UserPlus size={20} /> */}
-              <p className="text-base font-semibold break-words whitespace-pre-wrap text-[#1A1A1A]">
+              <p className="text-base font-semibold break-words whitespace-pre-wrap text-[#4A4A4A]">
                 {user.bookmark?.users ?? 0}
               </p>
             </div>

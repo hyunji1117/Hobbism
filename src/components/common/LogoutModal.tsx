@@ -15,7 +15,9 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
   const handleLogout = async () => {
     resetUser();
     sessionStorage.clear();
-    await signOut({ callbackUrl: '/login' });
+    localStorage.removeItem('userInfo-storage');
+    localStorage.removeItem('hideAd_2');
+    await signOut({ callbackUrl: '/' });
   };
 
   return (
