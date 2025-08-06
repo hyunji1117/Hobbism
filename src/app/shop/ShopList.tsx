@@ -178,7 +178,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
 
         <div ref={observerRef} className="h-5" />
         {loading && (
-          <div className="fixed bottom-15 left-1/2 max-w-[600px] -translate-x-1/2">
+          <div className="fixed bottom-15 left-1/2 z-10 max-w-[600px] -translate-x-1/2">
             <PulseLoader color="#4A4A4A" />
           </div>
         )}
