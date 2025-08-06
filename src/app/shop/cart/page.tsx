@@ -12,6 +12,8 @@ import CartList from '@/components/features/shopping-cart/CartList';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Loading from '@/app/loading';
+import { usePurchaseStore } from '@/store/order.store';
+import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -19,6 +21,7 @@ export default function CartPage() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   // 장바구니 데이터 로드
   useEffect(() => {
@@ -124,15 +127,30 @@ export default function CartPage() {
 
   const handelAddBuy = () => {
     const selectedItems = cartItems.filter(item => item.isChecked);
+    const purchaseData = selectedItems.map(item => ({
+      cartId: item._id,
+      id: item.product._id.toString(),
+      name: item.product.name,
+      originalPrice: item.product.extra.originalPrice,
+      price: item.product.price,
+      quantity: item.quantity,
+      size: item.product.size,
+      color: item.product.color,
+      productImg: item.product.image.path || '',
+    }));
 
-    if (selectedItems.length === 0) {
-      toast.error('결제할 상품을 선택해주세요.');
+    setIsLoading(true);
+
+    if (selectedItems.length < 1) {
+      toast.error('선택된 상품이 없습니다.');
       return;
     }
 
-    // 결제 로직 추가
-    console.log('결제할 상품:', selectedItems);
-    toast.success('결제 페이지로 이동합니다.');
+    console.log('purchaseData', purchaseData);
+
+    // 구매 데이터 저장 및 페이지 이동
+    usePurchaseStore.getState().setPurchaseData(purchaseData);
+    router.push(`/shop/purchase`);
   };
 
   if (isLoading) return <Loading />;

@@ -98,11 +98,11 @@ export const ShopProduct = ({
       </div>
       <p className={`${textPrice} font-semibold`}>
         {discountRate && (
-          <span className="sale pointer-events-none mr-1 text-[#FE508B]">
+          <span className="sale pointer-events-none mr-1 text-red-500">
             {discountRate}%
           </span>
         )}
-        {price}원
+        {price.toLocaleString()}원
       </p>
     </Link>
   );

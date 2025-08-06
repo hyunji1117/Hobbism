@@ -95,10 +95,10 @@ export default function SearchList({
         !loading &&
         !hasNextPage && (
           <div className="absolute top-1/2 left-1/2 w-full -translate-1/2">
-            <div className="relative left-1/2 aspect-square w-1/4 -translate-x-1/2">
+            <div className="relative left-1/2 aspect-square w-[38%] -translate-x-1/2">
               <Image
                 fill
-                src={'/images/ayoung/sad.webp'}
+                src={'/images/character/character-sad.webp'}
                 alt="Sorry"
                 priority={false}
                 sizes="(max-width: 768px) 130px"
@@ -116,7 +116,7 @@ export default function SearchList({
       <div ref={observerRef} className="h-10" />
       {/* ===== loading 중 렌더링 ===== */}
       {loading && (
-        <div className="mb-3 flex w-full justify-center">
+        <div className="fixed top-1/2 left-1/2 mb-3 -translate-1/2">
           <PulseLoader color="#4A4A4A" />
         </div>
       )}
