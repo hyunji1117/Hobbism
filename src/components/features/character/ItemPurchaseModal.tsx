@@ -9,7 +9,7 @@ import { usePointStore } from '@/store/point';
 import { Item } from '@/types';
 import { X } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface Props {
   onClose: () => void;
@@ -44,7 +44,6 @@ export default function ItemPurchaseModal({ onClose, item }: Props) {
     const res = await updateUserInfo(user._id, formData);
     setIsLoading(false);
     if (res.ok === 1) {
-      console.log('포인트 수정됨');
       subtractPoint(price);
       setOwnedItems(updatedCodes);
       setIsSuccess(true);
@@ -77,12 +76,12 @@ export default function ItemPurchaseModal({ onClose, item }: Props) {
           <>
             <div className="flex flex-col items-center gap-2">
               <Image
-                src="/images/character/character-sad.webp" // 포인트 부족 이미지
+                src="/images/character/character-sad.webp"
                 alt="포인트 부족"
                 width={200}
                 height={200}
               />
-              <p className="text-center font-medium whitespace-pre-line select-none">
+              <p className="text-center font-medium whitespace-pre-line text-[#4a4a4a] select-none">
                 {error}
               </p>
               <X
@@ -99,7 +98,7 @@ export default function ItemPurchaseModal({ onClose, item }: Props) {
             <div className="flex items-center gap-2 text-gray-600">
               <Image
                 src="/images/etc/point.webp"
-                alt="포인트 테스트"
+                alt="포인트"
                 width={50}
                 height={50}
               />
@@ -110,13 +109,13 @@ export default function ItemPurchaseModal({ onClose, item }: Props) {
             <div className="flex w-full gap-2">
               <Button
                 variant="outline"
-                className="flex-1 cursor-pointer"
+                className="flex-1 cursor-pointer text-[#4a4a4a] hover:bg-white/50"
                 onClick={onClose}
               >
                 닫기
               </Button>
               <Button
-                className="flex-1 cursor-pointer"
+                className="flex-1 cursor-pointer bg-[#4a4a4a] hover:bg-[#5a5a5a]"
                 onClick={() => handlePurchase(item.price)}
                 disabled={isLoading}
               >

@@ -22,7 +22,7 @@ export default function ItemCard({
     <div className="flex cursor-pointer flex-col gap-2" onClick={onClick}>
       <div
         className={cn(
-          'relative flex aspect-square items-center justify-center rounded-xl bg-gray-100 py-2.5',
+          'relative flex aspect-square items-center justify-center rounded-xl bg-gray-100 py-2.5 select-none',
           isEquipped && 'ring-2 ring-gray-500',
         )}
       >
@@ -32,8 +32,9 @@ export default function ItemCard({
           fill
           sizes="177.33px"
           priority
+          draggable={false}
           className={cn(
-            'object-contain p-2',
+            'object-contain p-2 select-none',
             !isOwned && 'brightness-[0.5] contrast-0 grayscale',
           )}
         />

@@ -31,7 +31,7 @@ export default function HobbyItem({
           alt={title}
           fill
           sizes="84px"
-          className="scale-150 object-cover object-center"
+          className="object-cover object-center"
           priority
         />
       </div>

@@ -82,13 +82,13 @@ export default function ChracterPageClient({ extra }: Props) {
         <span className="text-sm text-gray-500 select-none">취미선택</span>
       </Link>
 
-      <div className="z-40 mt-24 flex flex-1 flex-col items-center justify-center p-4">
+      <div className="z-40 mt-20 flex flex-1 flex-col items-center justify-center p-4">
         <div className="relative flex w-full flex-col items-center justify-center">
-          <div className="relative flex items-center justify-center rounded-full border-2 border-black bg-white px-6 py-2">
+          <div className="relative flex items-center justify-center rounded-full border-2 border-[#6A706E] bg-white px-6 py-2 text-[#4A4A4A]">
             <span className="text-center text-base font-semibold">
               {CHARACTER_MESSAGES[messageIndex]}
             </span>
-            <div className="absolute -bottom-[20px] left-1/2 h-0 w-0 -translate-x-1/2 border-10 border-transparent border-t-black"></div>
+            <div className="absolute -bottom-[20px] left-1/2 h-0 w-0 -translate-x-1/2 border-10 border-transparent border-t-[#6A706E]"></div>
             <div className="absolute -bottom-[17px] left-1/2 h-0 w-0 -translate-x-1/2 border-10 border-transparent border-t-white"></div>
           </div>
           <Image
@@ -96,21 +96,22 @@ export default function ChracterPageClient({ extra }: Props) {
             alt="캐릭터"
             width={350}
             height={350}
+            priority
             className="w-3/5 cursor-pointer"
             onClick={handleCharacterClick}
           />
 
-          <div className="flex items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm">
+          <div className="flex items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm text-[#4a4a4a]">
             <span>{levelInfo.name}</span>
-            <span>{extra?.nickname || '-'}</span>
+            <span className="font-semibold">{extra?.nickname || '-'}</span>
           </div>
         </div>
       </div>
 
-      <div className="relative mx-4 mb-12 flex w-[calc(100%-32px)] flex-col gap-3 rounded-lg border bg-white p-4">
+      <div className="relative z-50 mx-4 mb-12 flex w-[calc(100%-32px)] flex-col gap-2 rounded-lg border bg-white p-4">
         <Progress
           value={levelInfo.progress}
-          className="bg-primary/5 absolute -top-6 right-0 left-0 h-3.5"
+          className="bg-primary/5 absolute -top-6 right-0 left-0 z-50 h-3.5"
           indicatorClassName="bg-gradient-to-r from-[#CDD6A0] via-[#98B87E] to-[#3B673A]"
         />
 
@@ -119,12 +120,13 @@ export default function ChracterPageClient({ extra }: Props) {
             <p className="text-sm font-normal whitespace-pre-line text-gray-600 select-none">
               현재 나의 레벨
             </p>
-            <p className="text-sm font-normal whitespace-pre-line select-none">
+            <p className="text-sm font-normal whitespace-pre-line text-[#3B673A] select-none">
               {levelInfo.level}
             </p>
           </div>
           <p className="text-sm font-normal whitespace-pre-line select-none">
-            {`나의 취미 : ${hobbyTitle}`}
+            <span>나의 취미 : </span>
+            <span className="font-semibold text-[#3B673A]">{`${hobbyTitle}`}</span>
           </p>
         </div>
         <Separator />
@@ -137,11 +139,11 @@ export default function ChracterPageClient({ extra }: Props) {
             <Image
               src="/images/etc/point.webp"
               alt="포인트"
-              width={32}
-              height={32}
+              width={30}
+              height={30}
             />
 
-            <p className="flex items-center gap-2 text-base text-[22px] whitespace-pre-line text-gray-900 select-none">
+            <p className="flex items-center gap-2 text-xl whitespace-pre-line text-[#4a4a4a] select-none">
               <span className="text-gray-500 select-none">{point || 0}</span>/
               <span className="text-gray-900 select-none">
                 {extra?.total_point || 0}
