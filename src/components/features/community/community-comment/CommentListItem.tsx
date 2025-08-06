@@ -9,6 +9,7 @@ import { Ellipsis } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { deleteReply } from '@/data/actions/post';
 import { useAuthStore } from '@/store/auth.store';
+import Link from 'next/link';
 
 interface Props {
   comment: PostReply;
@@ -94,14 +95,17 @@ export default function CommentListItem({
       <div className="flex w-full justify-between text-[#4A4A4A]">
         {/* 프로필 영역 */}
         <div className="flex items-center gap-2">
-          <div className="relative aspect-square w-8 overflow-hidden rounded-full">
+          <Link
+            href={`/user/${comment.user._id}`}
+            className="relative aspect-square w-8 overflow-hidden rounded-full"
+          >
             <Image
               src={getUserImageUrl(comment.user.image)}
               alt={comment.user.name}
               fill
               className="object-cover object-center"
             />
-          </div>
+          </Link>
           <span className="font-medium">{comment.user.name}</span>
           <div className="h-full py-2">
             <Separator orientation="vertical" />

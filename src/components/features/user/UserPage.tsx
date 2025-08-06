@@ -71,7 +71,7 @@ export function UserPageClient({ user, posts, userBookmark }: Props) {
               className={cn(
                 'cursor-pointer rounded-none !shadow-none',
                 isMypage
-                  ? 'border-none data-[state=active]:bg-[#4A4A4A] data-[state=active]:text-white'
+                  ? 'border-none data-[state=active]:bg-[#999999] data-[state=active]:text-white'
                   : 'cursor-default border-b border-b-[#4A4A4A] font-bold data-[state=active]:bg-white data-[state=active]:text-[#4A4A4A]',
               )}
             >
@@ -82,7 +82,7 @@ export function UserPageClient({ user, posts, userBookmark }: Props) {
             {isMypage && (
               <TabsTrigger
                 value="shop"
-                className="cursor-pointer rounded-none border-none !shadow-none data-[state=active]:bg-[#4A4A4A] data-[state=active]:text-white"
+                className="cursor-pointer rounded-none border-none !shadow-none data-[state=active]:bg-[#999999] data-[state=active]:text-white"
               >
                 쇼핑 내역
               </TabsTrigger>
