@@ -43,7 +43,7 @@ async function refreshAccessToken(
 
     if (response.ok) {
       const data = await response.json();
-      console.log('accessToken 재발급 성공:::');
+
       return data.accessToken;
     }
   } catch (error) {
@@ -74,7 +74,6 @@ async function updateJwtToken(
 
 // 비로그인자 접근 차단
 export async function middleware(request: NextRequest) {
-  console.log('middleware 실행됨:::');
   const { pathname } = request.nextUrl;
 
   // 통과 경로

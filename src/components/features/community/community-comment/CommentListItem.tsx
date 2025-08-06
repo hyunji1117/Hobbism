@@ -10,6 +10,11 @@ import { useEffect, useRef, useState } from 'react';
 import { deleteReply } from '@/data/actions/post';
 import { useAuthStore } from '@/store/auth.store';
 import Link from 'next/link';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 interface Props {
   comment: PostReply;
@@ -37,7 +42,12 @@ export default function CommentListItem({
   //          function: 작성일 경과시간 함수          //
   const getElapsedTime = () => {
     const now = dayjs();
-    const writeTime = dayjs(comment.updatedAt);
+
+    console.log(comment.updatedAt);
+
+    const writeTime = dayjs(comment.updatedAt, 'YYYY.MM.DD HH:mm:ss');
+
+    if (!writeTime.isValid()) return '-';
 
     const gap = now.diff(writeTime, 's');
     if (gap < 60) return `${gap}초 전`;

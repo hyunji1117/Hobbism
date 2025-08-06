@@ -15,8 +15,8 @@ export default async function orderCompletedPage({
   const { orderId } = await params;
 
   return (
-    <section className="mt-19">
-      <div className="relative left-1/2 aspect-square w-[38%] -translate-x-1/2">
+    <section className="mb-12 flex flex-1 flex-col items-center justify-center">
+      <div className="relative flex aspect-square w-[38%] items-center justify-center">
         <Image
           fill
           src="/images/ayoung/bearWithBox.webp"
@@ -26,13 +26,15 @@ export default async function orderCompletedPage({
           style={{ objectFit: 'cover', objectPosition: 'center' }}
         />
       </div>
-      <h1 className="mt-5 mb-2 text-center text-2xl font-bold">주문 완료!</h1>
-      <p className="mb-10 text-center">
+      <h1 className="mt-5 mb-2 text-center text-2xl font-bold text-[#4a4a4a]">
+        주문 완료!
+      </h1>
+      <p className="mb-10 text-center text-[#4a4a4a]">
         고객님의 소중한 주문을 확인했어요. <br />
         지금부터 꼼꼼히 포장해드릴게요!
       </p>
 
-      <div className="absolute left-1/2 my-3 flex w-[90%] max-w-[600px] -translate-x-1/2 gap-2">
+      <div className="my-3 mb-10 flex w-full max-w-[600px] gap-2 px-4">
         <Link
           href={`/shop/order/${orderId}`}
           className="w-1/2 rounded-full border border-[#2C2F33] bg-white py-3 text-center font-semibold transition-all hover:bg-[#f4f4f4]"
