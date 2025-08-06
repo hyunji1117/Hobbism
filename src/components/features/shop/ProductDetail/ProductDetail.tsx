@@ -3,9 +3,9 @@
 import { Minus, Plus } from 'lucide-react';
 import {
   ProductDetailInfoProps,
-  ProductQuantitySelectorProps,
+  // ProductQuantitySelectorProps,
 } from '@/types/product';
-import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
+// import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
 // import { useEffect, useState } from 'react';
 // import { fetchCartList } from '@/data/functions/CartFetch.client';
 
@@ -33,17 +33,19 @@ export const ProductDetailInfo = ({
   // MD PICK 정보 가져오기
   const recommendInfo = extra?.recommendedBy
     ? recommendData[extra.recommendedBy]
-    : { name: '추천', color: 'bg-[#C3C3C3]', textColor: 'text-black' };
+    : { name: '', color: '', textColor: '' };
 
   const originalPrice = extra.originalPrice;
 
   return (
-    <section className="h-[145px] items-center justify-center px-5 py-4">
-      <span
-        className={`mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] text-[12px] ${recommendInfo.color} ${recommendInfo.textColor}`}
-      >
-        {recommendInfo.name} PICK
-      </span>
+    <section className="h-auto items-center justify-center px-5 py-4">
+      {recommendInfo.name && (
+        <span
+          className={`mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] text-[12px] ${recommendInfo.color} ${recommendInfo.textColor}`}
+        >
+          {recommendInfo.name} PICK
+        </span>
+      )}
       <h1 className="relative text-[24px] font-semibold text-black">
         {/* 상품명 */}
         {item.name}
@@ -70,27 +72,6 @@ export const ProductDetailInfo = ({
     </section>
   );
 };
-
-// 장바구니 담기 버튼 컴포넌트
-// export function ProductDetail({
-//   product,
-// }: {
-//   product: { id: string; name: string; price: number };
-// }) {
-//   const { addToCart } = useCart();
-
-//   const handleAdd = () => {
-//     addToCart({
-//       id: product.id,
-//       name: product.name,
-//       price: product.price,
-//       quantity: 1,
-//     });
-//     alert('장바구니에 담겼습니다.');
-//   };
-
-//   return <button onClick={handleAdd}>장바구니 담기</button>;
-// }
 
 // 수량 컨트롤
 export const ProductQuantitySelector = ({
@@ -178,13 +159,13 @@ export const ProductActionButtons = ({
     <div className="flex h-[54px] justify-between gap-3">
       <button
         onClick={onCartClick}
-        className="w-[40%] cursor-pointer rounded-[8px] border border-[#4B5563] px-4 py-2 text-[16px] text-black hover:bg-[#EAEAEA]"
+        className="w-[40%] cursor-pointer rounded-[8px] border border-[#C3C3C3] px-4 py-2 text-[16px] text-black hover:bg-[#EAEAEA]"
       >
         장바구니 담기
       </button>
       <button
         onClick={onBuyNowClick}
-        className="0 w-[57%] cursor-pointer rounded-[8px] bg-[#4B5563] px-4 py-2 text-[18px] font-semibold text-white hover:bg-[#2C2F33]"
+        className="w-[57%] cursor-pointer rounded-[8px] bg-[#4B5563] px-4 py-2 text-[18px] font-semibold text-white hover:bg-[#2C2F33]"
       >
         {/* bg-[#2C2F33] */}
         구매하기
