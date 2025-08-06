@@ -1,4 +1,4 @@
-import { Product } from '@/types/product';
+// import { Product } from '@/types/product';
 
 // 장바구니 상품 한 건 삭제
 export interface ProductListRes {
@@ -40,6 +40,7 @@ export interface CartItem {
   mainImages?: string[];
   isChecked: boolean;
   cartId?: number;
+  selectedOption?: string;
 }
 
 // CartItemCard 컴포넌트
