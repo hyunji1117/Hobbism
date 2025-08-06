@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -28,7 +26,8 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="rounded-3xl bg-[#FE508B] px-20 py-3 font-bold text-white shadow-md hover:bg-[#E6477B]"
+        prefetch={true}
+        className="rounded-3xl bg-[#4A4A4A] px-20 py-3 font-bold text-white shadow-md hover:bg-[#5e5e5e]"
       >
         홈으로
       </Link>
