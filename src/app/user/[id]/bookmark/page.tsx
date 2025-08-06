@@ -14,20 +14,23 @@ export default async function BookmarkPage({
   const bookmarks = res.item.post;
 
   return (
-    <>
-      <div className="grid grid-cols-2 gap-4 p-4">
-        {bookmarks.map(bookmark => {
-          console.log(bookmark._id);
-          return (
+    <div className="p-4">
+      {bookmarks.length === 0 ? (
+        <div className="flex items-center justify-center text-[#4a4a4a]">
+          북마크한 피드가 없습니다
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4">
+          {bookmarks.map(bookmark => (
             <FeedCard
               key={bookmark._id}
               images={bookmark.post.image}
               href={`/community/${bookmark.post._id}`}
               alt={bookmark.post.title}
             />
-          );
-        })}
-      </div>
-    </>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

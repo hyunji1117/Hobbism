@@ -113,7 +113,7 @@ export default function Header() {
     if (isEditPage) return '프로필 수정을';
     if (isCommunityUpdatePage) return '피드 수정을';
     return '';
-  }, [isCommunityWritePage, isEditPage, isCommunityUpdatePage]);
+  }, [isCommunityWritePage, isEditPage, isCommunityUpdatePage, isPurchasePage]);
 
   //          render: 로그인 페이지에서는 헤더 숨김 처리          //
   if (isLoginPage) return null;
@@ -208,14 +208,7 @@ export default function Header() {
             {isUserPage && !isMypage && !isFollowPage && !isBookmarkPage && (
               <Siren />
             )}
-            {isCommunityPage && (
-              <Link
-                href="/community/write"
-                className="flex items-center gap-2 rounded-md px-2 py-2"
-              >
-                <Pencil size={20} className="text-[#4A4A4A]" />
-              </Link>
-            )}
+
             {isCharacterPage && (
               <>
                 <Info

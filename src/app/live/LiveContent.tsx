@@ -4,6 +4,7 @@ import { LiveComment } from '@/components/features/live/LiveComment';
 import { LiveProgress } from '@/components/features/live/LiveProgress';
 import { LiveVideo } from '@/components/features/live/LiveVideo';
 import { LiveProduct, useLiveStore } from '@/store/live.store';
+import { X } from 'lucide-react';
 import moment from 'moment';
 import { useState } from 'react';
 
@@ -12,10 +13,7 @@ export default function LiveContent({ live }: { live: LiveProduct }) {
 
   //           state: 방송 중이 아닐 경우 보여 줄 overlay 화면 상태        //
   const [showOverlay, setShowOverlay] = useState(true);
-  //          effect: 오버레이 클릭 시 화면 꺼짐        //
-  const handleClickOverlay = () => {
-    setShowOverlay(false);
-  };
+  const [isOpen, setIsOpen] = useState(true);
 
   const isLiveNow = moment().isBetween(moment(live.start), moment(live.end));
 
@@ -23,13 +21,28 @@ export default function LiveContent({ live }: { live: LiveProduct }) {
   return (
     <>
       {isLiveNow ? (
-        <div className="absolute top-[5%] z-5">
-          <LiveProgress />
-        </div>
+        <>
+          <div className="absolute top-[5%] z-5">
+            <LiveProgress />
+          </div>
+          {isOpen && (
+            <div className="absolute bottom-0 left-1/2 z-15 flex w-[100%] -translate-x-1/2 items-center justify-between bg-[#1a1a1a]/80 p-4 text-xs text-white md:text-sm">
+              <p className="block lg:hidden">
+                모바일 환경에서는 댓글 작성 기능이 제한될 수 있습니다.
+              </p>
+              <p className="hidden lg:block">
+                유튜브 로그아웃 상태 시 댓글 작성 기능이 제한될 수 있습니다.
+              </p>
+              <button onClick={() => setIsOpen(false)}>
+                <X />
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         showOverlay && (
           <div
-            onClick={handleClickOverlay}
+            onClick={() => setShowOverlay(false)}
             className="absolute top-0 left-0 z-5 h-[100vh] w-full bg-black/80"
           >
             <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-center text-white">

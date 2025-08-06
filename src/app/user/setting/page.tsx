@@ -57,7 +57,7 @@ export default async function SettingPage() {
         </section>
 
         <section className="flex flex-col gap-1">
-          <p>일반</p>
+          <p>디스플레이</p>
           <div className="flex flex-col gap-3 rounded-[8px] border">
             <ul className="px-3">
               <li className="flex items-center gap-2.5 py-4">
@@ -91,15 +91,11 @@ export default async function SettingPage() {
               </li>
               <Separator />
               <li>
-                <Link
-                  href="/contact"
-                  prefetch={true}
-                  className="flex items-center gap-2.5 py-4"
-                >
+                <div className="flex cursor-pointer items-center gap-2.5 py-4">
                   <Headset />
                   <span className="flex-1">고객센터</span>
                   <ChevronRight />
-                </Link>
+                </div>
               </li>
             </ul>
           </div>

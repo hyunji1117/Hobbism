@@ -9,6 +9,12 @@ import { Ellipsis } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { deleteReply } from '@/data/actions/post';
 import { useAuthStore } from '@/store/auth.store';
+import Link from 'next/link';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 interface Props {
   comment: PostReply;
@@ -36,7 +42,12 @@ export default function CommentListItem({
   //          function: 작성일 경과시간 함수          //
   const getElapsedTime = () => {
     const now = dayjs();
-    const writeTime = dayjs(comment.updatedAt);
+
+    console.log(comment.updatedAt);
+
+    const writeTime = dayjs(comment.updatedAt, 'YYYY.MM.DD HH:mm:ss');
+
+    if (!writeTime.isValid()) return '-';
 
     const gap = now.diff(writeTime, 's');
     if (gap < 60) return `${gap}초 전`;
@@ -94,14 +105,17 @@ export default function CommentListItem({
       <div className="flex w-full justify-between text-[#4A4A4A]">
         {/* 프로필 영역 */}
         <div className="flex items-center gap-2">
-          <div className="relative aspect-square w-8 overflow-hidden rounded-full">
+          <Link
+            href={`/user/${comment.user._id}`}
+            className="relative aspect-square w-8 overflow-hidden rounded-full"
+          >
             <Image
               src={getUserImageUrl(comment.user.image)}
               alt={comment.user.name}
               fill
               className="object-cover object-center"
             />
-          </div>
+          </Link>
           <span className="font-medium">{comment.user.name}</span>
           <div className="h-full py-2">
             <Separator orientation="vertical" />

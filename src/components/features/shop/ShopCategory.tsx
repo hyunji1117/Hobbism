@@ -1,6 +1,5 @@
 'use client';
 
-import { useRef, useState } from 'react';
 import {
   Flower2,
   Grid2x2,
@@ -92,7 +91,7 @@ export const ShopCategory = ({
                 className="flex w-fit flex-col items-center"
                 onClick={() => setSelectedCategory(cat)}
               >
-                <div className="scrollbar-hide mb-0.5 aspect-square w-[48px] rounded-3xl bg-[#EAEAEA] p-2.5">
+                <div className="scrollbar-hide mb-0.5 h-[48px] w-[48px] rounded-3xl bg-[#EAEAEA] p-2.5">
                   <Icon
                     className={`btn-icon h-full w-full ${selectedCategory === cat ? categoryColors[cat] : 'stroke-[black]'}`}
                   />
@@ -104,7 +103,7 @@ export const ShopCategory = ({
         })}
       </Swiper>
 
-      <h2 className="pb-4 text-lg font-semibold">
+      <h2 className="text-md pb-4 font-semibold">
         {categoryLabels[selectedCategory]}
       </h2>
     </>

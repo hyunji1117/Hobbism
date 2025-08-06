@@ -10,9 +10,9 @@ export default function CharacterInfoModal({ onClose }: Props) {
   return (
     <Modal onClose={onClose}>
       <ModalBackdrop />
-      <ModalPanel className="w-80 p-6 text-center">
+      <ModalPanel className="w-80 p-6 text-center text-[#4a4a4a]">
         <div className="flex flex-col items-center justify-center gap-2">
-          <p className="text-lg font-semibold whitespace-pre-line text-gray-900 select-none">
+          <p className="text-lg font-semibold whitespace-pre-line text-[#4a4a4a] select-none">
             취미로 방을 가득채워보세요
           </p>
           <p className="whitespace-pre-line text-gray-900 select-none">
@@ -23,16 +23,16 @@ export default function CharacterInfoModal({ onClose }: Props) {
               레벨 기준 (누적 포인트)
             </h3>
             <ul className="space-y-1 text-left">
-              <li>LV1: 0 ~ 49P - 일덕</li>
-              <li>LV2: 50 ~ 149P - 이덕</li>
-              <li>LV3: 150 ~ 299P - 삼덕</li>
-              <li>LV4: 300 ~ 599P - 사덕</li>
-              <li>LV5: 600 ~ 999P - 오덕</li>
-              <li>LV6: 1000 ~ 1499P - 육덕</li>
-              <li>LV7: 1500 ~ 2199P - 칠덕</li>
-              <li>LV8: 2200 ~ 3199P - 팔덕</li>
-              <li>LV9: 3200 ~ 3999P - 구덕</li>
-              <li>LV10: 4000p 이상 - 십덕</li>
+              <li>LV1: 0P 이상 - 일덕</li>
+              <li>LV2: 500P 이상 - 이덕</li>
+              <li>LV3: 1200P이상 - 삼덕</li>
+              <li>LV4: 2000P 이상 - 사덕</li>
+              <li>LV5: 3000P 이상 - 오덕</li>
+              <li>LV6: 4500P 이상 - 육덕</li>
+              <li>LV7: 6500P 이상 - 칠덕</li>
+              <li>LV8: 9000P 이상 - 팔덕</li>
+              <li>LV9: 12000P 이상 - 구덕</li>
+              <li>LV10: 16000P 이상 - 십덕</li>
             </ul>
           </div>
         </div>

@@ -28,10 +28,10 @@ export function PaymentSelector({
   return (
     <>
       <div className="mx-3.5 mb-5">
-        <h2 className="mb-2 border-b border-b-[#EAEAEA] pb-2 text-lg font-bold">
+        <h2 className="mb-2 border-b border-b-[#EAEAEA] pb-2 text-lg font-bold text-[#4a4a4a]">
           결제 수단
         </h2>
-        <ul>
+        <ul className="text-[#4a4a4a]">
           <li className="mb-4 flex items-center gap-2">
             <input
               id="card"
@@ -122,7 +122,7 @@ export function PaymentSelector({
             <div>
               <ul className="grid w-full grid-cols-3 gap-2">
                 <li>
-                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                  <button className="flex h-[7vh] w-full cursor-pointer items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
                     <div className="relative aspect-square w-4 md:w-5">
                       <Image
                         src="/kakaoIcon.svg"
@@ -135,7 +135,7 @@ export function PaymentSelector({
                   </button>
                 </li>
                 <li>
-                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                  <button className="flex h-[7vh] w-full cursor-pointer items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
                     <div className="relative aspect-square w-3 bg-black md:w-4">
                       <Image
                         src="/naverIcon.svg"
@@ -149,7 +149,7 @@ export function PaymentSelector({
                   </button>
                 </li>
                 <li>
-                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                  <button className="flex h-[7vh] w-full cursor-pointer items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black focus:ring-black focus-visible:border-black focus-visible:ring-black">
                     <div className="relative aspect-square w-3.5 md:w-4">
                       <Image
                         src="/tossIcon.svg"

@@ -16,7 +16,7 @@ export default function LogoutModal({ onClose }: LogoutModalProps) {
     resetUser();
     sessionStorage.clear();
     localStorage.removeItem('userInfo-storage');
-    localStorage.removeItem('hideAd_2');
+
     await signOut({ callbackUrl: '/' });
   };
 

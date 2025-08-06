@@ -2,6 +2,7 @@
 
 import LiveContent from '@/app/live/LiveContent';
 import { useLiveStore } from '@/store/live.store';
+import Image from 'next/image';
 import { useEffect } from 'react';
 
 export default function LiveData() {
@@ -13,7 +14,7 @@ export default function LiveData() {
   }, [fetchLive]);
 
   if (!liveToShow || (Array.isArray(liveToShow) && liveToShow.length === 0)) {
-    return <div>라이브 상품이 없습니다.</div>;
+    return;
   }
 
   const liveToShowArray = Array.isArray(liveToShow) ? liveToShow : [liveToShow];
@@ -28,7 +29,21 @@ export default function LiveData() {
           </div>
         ))
       ) : (
-        <div>라이브 상품이 없습니다.</div>
+        <div className="absolute top-1/2 left-1/2 w-full -translate-1/2">
+          <div className="relative left-1/2 aspect-square w-[40%] -translate-x-1/2">
+            <Image
+              fill
+              src="/images/character/character-sad.webp"
+              alt=""
+              priority={false}
+              sizes="(max-width: 768px) 100vw"
+              style={{ objectFit: 'cover', objectPosition: 'center' }}
+            />
+          </div>
+          <p className="text-center text-sm text-gray-600">
+            판매 중인 라이브 상품이 없습니다.
+          </p>
+        </div>
       )}
     </>
   );

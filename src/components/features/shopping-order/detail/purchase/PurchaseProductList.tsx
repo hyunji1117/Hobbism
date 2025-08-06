@@ -5,7 +5,7 @@ export function PurchaseProductList() {
   const { purchaseData } = usePurchaseStore();
   return (
     <>
-      <div className="mx-3.5 rounded-2xl border border-[#EAEAEA] p-3">
+      <div className="mx-3.5 rounded-2xl border border-[#EAEAEA] p-3 text-[#4a4a4a]">
         <h2 className="border-b border-b-[#EAEAEA] pb-2 text-lg font-bold">
           주문 상품 {purchaseData.length}개
         </h2>

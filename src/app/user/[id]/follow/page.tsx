@@ -22,14 +22,14 @@ export default async function FollowPage({
         <TabsList className="h-14 w-full rounded-none border-b bg-white px-0 py-0 text-[#4A4A4A]">
           <TabsTrigger
             value="follow"
-            className="rounded-none border-none !shadow-none data-[state=active]:bg-gray-200"
+            className="rounded-none border-none !shadow-none data-[state=active]:bg-[#4a4a4a] data-[state=active]:text-white"
           >
             팔로우
           </TabsTrigger>
 
           <TabsTrigger
             value="following"
-            className="rounded-none border-none !shadow-none data-[state=active]:bg-gray-200"
+            className="rounded-none border-none !shadow-none data-[state=active]:bg-[#4a4a4a] data-[state=active]:text-white"
           >
             팔로잉
           </TabsTrigger>

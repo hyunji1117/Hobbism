@@ -111,7 +111,7 @@ export default function PurchaseClient({
           <button
             type="submit"
             disabled={isLoading}
-            className="fixed bottom-[10vh] left-1/2 w-[93vw] max-w-[572px] -translate-x-1/2 rounded-xl bg-black py-4 text-lg font-semibold text-white md:w-full"
+            className="fixed bottom-[2%] left-1/2 w-[93vw] max-w-[572px] -translate-x-1/2 cursor-pointer rounded-xl bg-[#4a4a4a] py-4 text-lg font-semibold text-white md:w-full"
           >
             {totalAmount.toLocaleString()}원 결제하기
           </button>

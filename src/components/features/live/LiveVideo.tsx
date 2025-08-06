@@ -49,8 +49,12 @@ export const LiveVideo = ({
           <div className="ml-1 text-[10px]">
             <p>{name}</p>
             <p className="font-bold">
-              <span>{rate}%</span>
-              {price}
+              {rate != 0 && (
+                <span className="sale pointer-events-none mr-1 text-red-500">
+                  {rate}%
+                </span>
+              )}
+              {Number(price).toLocaleString()}원
             </p>
           </div>
         </span>

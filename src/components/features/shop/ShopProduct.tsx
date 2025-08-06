@@ -5,9 +5,6 @@ import { useLiveStore } from '@/store/live.store';
 import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect } from 'react';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 //        interface: 상품 인터페이스        //
 interface ShopProductProps {
@@ -16,7 +13,7 @@ interface ShopProductProps {
   name: string;
   mainImageSrc: string;
   category: string[];
-  discountRate: number;
+  discountRate?: number;
   recommendedBy: string;
   textPrice: string;
 }
@@ -97,12 +94,12 @@ export const ShopProduct = ({
         )}
       </div>
       <p className={`${textPrice} font-semibold`}>
-        {discountRate && (
-          <span className="sale pointer-events-none mr-1 text-[#FE508B]">
+        {discountRate != 0 && (
+          <span className="sale pointer-events-none mr-1 text-red-500">
             {discountRate}%
           </span>
         )}
-        {price}원
+        {Number(price).toLocaleString()}원
       </p>
     </Link>
   );

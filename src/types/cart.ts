@@ -1,4 +1,4 @@
-import { Product } from '@/types/product';
+// import { Product } from '@/types/product';
 
 // 장바구니 상품 한 건 삭제
 export interface ProductListRes {
@@ -16,6 +16,7 @@ export interface ProductListRes {
 }
 
 export interface CartItem {
+  _id: number;
   product: {
     _id: number;
     image: {
@@ -30,7 +31,6 @@ export interface CartItem {
       originalPrice: number;
     };
   };
-  _id: number;
   id: string;
   name: string;
   price: number;
@@ -38,6 +38,9 @@ export interface CartItem {
   size?: string;
   color?: string;
   mainImages?: string[];
+  isChecked: boolean;
+  cartId?: number;
+  selectedOption?: string;
 }
 
 // CartItemCard 컴포넌트
@@ -48,6 +51,7 @@ export interface CardItemCardProps {
   price: number;
   quantity: number;
   isChecked?: boolean;
+  isAllChecked?: boolean;
   onQuantityChange?: (id: number, quantity: number) => void;
   onRemove?: (id: number) => void;
   onCheck?: (id: number, checked: boolean) => void;
@@ -84,6 +88,9 @@ export interface AddToCartRes {
 export interface CartQuantityUpdateRes {
   ok: number;
   item: {
+    quantity: number;
+  };
+  data: {
     quantity: number;
   };
 }

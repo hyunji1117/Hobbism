@@ -15,7 +15,7 @@ export function PaymentSummary() {
   );
 
   return (
-    <div className="mx-3.5 mb-5">
+    <div className="mx-3.5 mb-5 text-[#4a4a4a]">
       <span className="mb-2 flex w-full justify-between border-b border-b-[#EAEAEA] pb-2 text-lg font-bold">
         <h2>총 결제 금액</h2>
         <p>{totals.total.toLocaleString()}원</p>

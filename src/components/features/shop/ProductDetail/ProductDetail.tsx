@@ -1,13 +1,15 @@
 'use client';
 
+// import { useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+// import { fetchProductDetail } from '@/utils/api';
 import {
   ProductDetailInfoProps,
   ProductQuantitySelectorProps,
 } from '@/types/product';
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
-// import { useEffect, useState } from 'react';
-// import { fetchCartList } from '@/data/functions/CartFetch.client';
 
 // 상품 상세 정보 컴포넌트
 export const ProductDetailInfo = ({
@@ -18,7 +20,6 @@ export const ProductDetailInfo = ({
   sizes,
   colors,
 }: ProductDetailInfoProps) => {
-  // MD PICK 한글 이름, 색상 매핑
   const recommendData: Record<
     string,
     { name: string; color: string; textColor: string }
@@ -30,37 +31,34 @@ export const ProductDetailInfo = ({
     ayoung: { name: '아영', color: 'bg-[#6E67DA]', textColor: 'text-white' },
   };
 
-  // MD PICK 정보 가져오기
   const recommendInfo = extra?.recommendedBy
     ? recommendData[extra.recommendedBy]
-    : { name: '추천', color: 'bg-[#C3C3C3]', textColor: 'text-black' };
+    : null;
 
   const originalPrice = extra.originalPrice;
 
   return (
     <section className="h-[145px] items-center justify-center px-5 py-4">
-      <span
-        className={`mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] text-[12px] ${recommendInfo.color} ${recommendInfo.textColor}`}
-      >
-        {recommendInfo.name} PICK
-      </span>
+      {recommendInfo && (
+        <span
+          className={`mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] text-[12px] ${recommendInfo.color} ${recommendInfo.textColor}`}
+        >
+          {recommendInfo.name} PICK
+        </span>
+      )}
       <h1 className="relative text-[24px] font-semibold text-black">
-        {/* 상품명 */}
         {item.name}
       </h1>
       <span className="flex flex-col pt-2 text-[12px] text-[#C3C3C3] line-through">
-        {/* 원가 */}
         {originalPrice.toLocaleString()}원
       </span>
       <div className="mt-1 flex items-center">
-        {/* 할인률 */}
         {discountRate > 0 && (
           <span className="pr-2 text-[24px] font-semibold text-[#F05656]">
             {discountRate.toLocaleString()}%
           </span>
         )}
         <span className="justify-self-center text-[24px] font-semibold text-black">
-          {/* 할인된 금액 */}
           {item.price.toLocaleString()}원
         </span>
         <span className="ml-auto flex h-[28px] w-[76px] items-center justify-center rounded-[4px] bg-[#F3F4F6] text-[14px] text-black">
@@ -71,26 +69,76 @@ export const ProductDetailInfo = ({
   );
 };
 
-// 장바구니 담기 버튼 컴포넌트
-// export function ProductDetail({
-//   product,
-// }: {
-//   product: { id: string; name: string; price: number };
-// }) {
-//   const { addToCart } = useCart();
+// ProductDetail 컴포넌트
+export const ProductDetail = ({
+  product,
+  options,
+}: {
+  product: { id: string; name: string; price: number };
+  options?: { id: string; name: string; price: number }[];
+}) => {
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
 
-//   const handleAdd = () => {
-//     addToCart({
-//       id: product.id,
-//       name: product.name,
-//       price: product.price,
-//       quantity: 1,
-//     });
-//     alert('장바구니에 담겼습니다.');
-//   };
+  const handleOptionSelect = (option: string) => {
+    setSelectedOption(option); // 선택된 옵션 저장
+  };
 
-//   return <button onClick={handleAdd}>장바구니 담기</button>;
-// }
+  const handleIncrease = () => setQuantity(prev => prev + 1);
+  const handleDecrease = () => setQuantity(prev => Math.max(1, prev - 1));
+
+  return (
+    <div>
+      {/* 상품 상세 정보 */}
+      <ProductDetailInfo
+        item={{
+          _id: parseInt(product.id),
+          name: product.name,
+          price: product.price,
+        }}
+        price={product.price}
+        discountRate={0}
+        extra={{
+          recommendedBy: 'MD 이름',
+          originalPrice: product.price * 1.2,
+        }}
+        sizes={[]}
+        colors={[]}
+      />
+
+      {/* 옵션 선택 */}
+      {options && (
+        <div className="mt-4">
+          <h3 className="text-[16px] font-semibold">옵션 선택</h3>
+          <ul className="mt-2">
+            {options.map(option => (
+              <li key={option.id}>
+                <button
+                  onClick={() => handleOptionSelect(option.name)}
+                  className="w-full rounded-[8px] border border-[#EAEAEA] p-2 text-left text-[14px] hover:bg-[#F3F4F6]"
+                >
+                  {option.name} - {option.price.toLocaleString()}원
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {selectedOption && (
+        <ProductQuantitySelector
+          selectedOption={selectedOption}
+          quantity={quantity}
+          onIncrease={handleIncrease}
+          onDecrease={handleDecrease}
+          price={product.price}
+          originalPrice={product.price * 1.2}
+          item={{ name: product.name }}
+        />
+      )}
+    </div>
+  );
+};
 
 // 수량 컨트롤
 export const ProductQuantitySelector = ({
@@ -112,16 +160,16 @@ export const ProductQuantitySelector = ({
 }) => {
   return (
     <section className="mx-5 my-4 h-[100px] rounded-[8px] bg-[#EAEAEA] p-3">
-      {selectedOption ? (
-        <h2 className="mb-4 text-[18px] font-semibold text-black">
-          {item.name}
-        </h2>
-      ) : item?.name ? (
-        <h2 className="mb-4 text-[18px] font-semibold text-black">
-          {item.name}
-        </h2>
-      ) : null}
-      <div id="counter" className="flex gap-4">
+      <div className="flex items-center">
+        <h2 className="text-[18px] font-semibold text-black">{item.name}</h2>
+        {/* selectedOption이 있을 경우에만 표시 */}
+        {selectedOption && (
+          <span className="ml-5 text-[14px] font-medium text-[#4B5563]">
+            {selectedOption}
+          </span>
+        )}
+      </div>
+      <div id="counter" className="mt-4 flex gap-4">
         <button
           type="button"
           className={`flex h-[28px] w-[28px] cursor-pointer items-center justify-center rounded-full border ${
@@ -178,15 +226,14 @@ export const ProductActionButtons = ({
     <div className="flex h-[54px] justify-between gap-3">
       <button
         onClick={onCartClick}
-        className="w-[40%] cursor-pointer rounded-[8px] border border-[#4B5563] px-4 py-2 text-[16px] text-black hover:bg-[#EAEAEA]"
+        className="w-[40%] cursor-pointer rounded-[8px] border border-[#C3C3C3] px-4 py-2 text-[16px] text-black hover:bg-[#EAEAEA]"
       >
         장바구니 담기
       </button>
       <button
         onClick={onBuyNowClick}
-        className="0 w-[57%] cursor-pointer rounded-[8px] bg-[#4B5563] px-4 py-2 text-[18px] font-semibold text-white hover:bg-[#2C2F33]"
+        className="w-[57%] cursor-pointer rounded-[8px] bg-[#4B5563] px-4 py-2 text-[18px] font-semibold text-white hover:bg-[#2C2F33]"
       >
-        {/* bg-[#2C2F33] */}
         구매하기
       </button>
     </div>

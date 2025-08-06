@@ -1,6 +1,5 @@
 'use client';
 
-import { SmallLoading } from '@/components/common/SmallLoading';
 import { ShopAd } from '@/components/features/shop/ShopAd';
 import { ShopCategory } from '@/components/features/shop/ShopCategory';
 import { ShopProduct } from '@/components/features/shop/ShopProduct';
@@ -94,7 +93,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
   const handleCategoryChange = async (newCategory: string) => {
     setLoading(true);
     setSelectedCategory(newCategory);
-    setProducts([]); // 여기선 지우지 않아도 됩니다. 대신 UI 1번처럼 로딩 표시를 먼저
+    setProducts([]);
 
     let targetPage = 1;
     let firstPageData: Product[] = [];
@@ -177,9 +176,9 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
           <div className="grid grid-cols-2 gap-2.5">{productsList}</div>
         </div>
 
-        <div ref={observerRef} className="h-10" />
+        <div ref={observerRef} className="h-5" />
         {loading && (
-          <div className="flex w-full justify-center">
+          <div className="fixed bottom-15 left-1/2 z-10 max-w-[600px] -translate-x-1/2">
             <PulseLoader color="#4A4A4A" />
           </div>
         )}
