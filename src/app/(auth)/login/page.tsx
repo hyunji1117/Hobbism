@@ -1,5 +1,11 @@
 import SocialLoginButtons from '@/components/features/auth/SocialLoginButtons';
+import { Metadata } from 'next';
 import Image from 'next/image';
+
+export const metadata: Metadata = {
+  title: '로그인 & 회원가입',
+  description: '로그인 및 회원가입 페이지 입니다.',
+};
 
 //로그인 페이지
 export default function Login() {
