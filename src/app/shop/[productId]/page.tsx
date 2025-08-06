@@ -4,9 +4,6 @@ import { CartProvider } from '@/components/features/shop/ProductDetail/CartConte
 import { ProductDetailInfo } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { fetchProductDetail } from '@/data/functions/ProductFetch';
 import CartAction from '@/components/features/shop/ProductDetail/ProductDetailClient'; // GoBackButton,
-// import { CartIcon } from '@/components/features/shopping-cart/CartIcon';
-// import { ProductOption } from '@/types/product';
-// import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
 
 export default async function ProductPage({
   params,
@@ -60,6 +57,8 @@ export default async function ProductPage({
           recommendedBy: product.extra.recommendedBy,
           originalPrice: product.extra.originalPrice,
         }}
+        sizes={[]}
+        colors={[]}
       />
 
       <h2 className="p-5 text-[18px] font-semibold">상품정보</h2>
