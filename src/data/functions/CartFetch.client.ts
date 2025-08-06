@@ -1,7 +1,9 @@
+//        장바구니 관련 API 요청 처리 유틸리티        //
 'use client';
 
 import { Product, ProductListRes } from '@/types';
 import { useAuthStore } from '@/store/auth.store';
+import { CartItem } from '@/types/cart';
 import {
   AddToCartRes,
   CartListRes,
@@ -70,7 +72,7 @@ export async function fetchAddToCart({
   }
 }
 
-// 장바구니 목록 조회(로그인)
+//        장바구니 목록 조회(로그인)        //
 export async function fetchCartList(
   page: number = 1,
   limit: number = 10,
@@ -105,16 +107,16 @@ export async function fetchCartList(
     throw new Error('서버 응답 데이터 오류');
   }
 
-  const validatedItems = data.item.map(item => ({
+  const validatedItems = data.item.map((item: CartItem) => ({
     ...item,
-    price: item.price || 0, // 기본값 설정
-    quantity: item.quantity || 1, // 기본값 설정
+    price: item.price || 0,
+    quantity: item.quantity || 1,
   }));
 
   return { ...data, item: validatedItems };
 }
 
-// 장바구니 상품 한 건 삭제
+//        장바구니 상품 한 건 삭제        //
 export async function deleteCartItem(id: number): Promise<DeleteCartsRes> {
   const res = await fetch(`${API_URL}/carts/${id}`, {
     method: 'DELETE',
@@ -136,10 +138,11 @@ export async function deleteCartItem(id: number): Promise<DeleteCartsRes> {
   return responseData;
 }
 
-// 장바구니 여러건 삭제
+//        장바구니 여러건 삭제        //
 export async function fetchDeleteAllCarts(
   cartIds: number[],
 ): Promise<DeleteCartsRes> {
+  console.log('장바구니 삭제 요청 ID들:', cartIds);
   const res = await fetch(`${API_URL}/carts`, {
     method: 'DELETE',
     headers: {
@@ -159,46 +162,7 @@ export async function fetchDeleteAllCarts(
   return data;
 }
 
-// // 장바구니 합치기
-// export async function fetchMergeCarts(
-//   products: { _id: number; quantity: number }[],
-// ): Promise<CartListRes> {
-//   try {
-//     // 요청 데이터 로그
-//     console.log('장바구니 합치기 요청 데이터:', { products });
-
-//     const res = await fetch(`${API_URL}/carts`, {
-//       method: 'PUT',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Client-Id': CLIENT_ID,
-//         Authorization: `Bearer ${accessToken}`,
-//       },
-//       body: JSON.stringify({ products }),
-//       cache: 'no-store',
-//     });
-
-//     if (!res.ok) {
-//       console.error('API 요청 실패:', {
-//         status: res.status,
-//         statusText: res.statusText,
-//         url: res.url,
-//       });
-//       throw new Error(`장바구니 합치기 실패: ${res.statusText}`);
-//     }
-
-//     // 응답 데이터 로그
-//     const data: CartListRes = await res.json();
-//     console.log('장바구니 합치기 응답 데이터:', data);
-
-//     return data;
-//   } catch (error) {
-//     console.error('장바구니 합치기 중 오류 발생:', error);
-//     throw error;
-//   }
-// }
-
-// 장바구니 상품 수량 수정
+//        장바구니 상품 수량 수정        //
 export async function fetchUpdateCartItemQuantity(
   id: number,
   quantity: number,

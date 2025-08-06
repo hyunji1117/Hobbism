@@ -1,21 +1,25 @@
+//        장바구니 인터렉션 처리 컴포넌트         //
 'use client';
 
 import {
   fetchUpdateCartItemQuantity,
   deleteCartItem,
+  fetchDeleteAllCarts,
 } from '@/data/functions/CartFetch.client';
 import { Minus, Plus, X } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-export interface CardItemCardProps {
+export interface CartItemCardProps {
   id: number;
   path: string;
   name: string;
   price: number;
   quantity: number;
   isChecked?: boolean;
+  isSelected?: boolean;
+  isAllChecked?: boolean;
   onQuantityChange?: (id: number, quantity: number) => void;
   onRemove?: (id: number) => void;
   onCheck?: (id: number, checked: boolean) => void;
@@ -30,14 +34,17 @@ export function CartItemCard({
   price,
   quantity,
   isChecked = false,
+  isSelected = true,
+  isAllChecked = false,
   onQuantityChange,
   onRemove,
   onCheck,
-}: CardItemCardProps) {
+}: CartItemCardProps) {
   // 로컬 상태 관리
   const [localQuantity, setLocalQuantity] = useState(quantity);
   const [localChecked, setLocalChecked] = useState(isChecked);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [isSelectedState, setIsSelected] = useState(isSelected);
 
   // 개별 체크박스 상태 변경
   const handleCheckedChange = () => {
@@ -46,7 +53,7 @@ export function CartItemCard({
     onCheck?.(id, newChecked); // 부모 컴포넌트에 체크 상태 전달
   };
 
-  // 수량 증가
+  //        수량 증가         //
   const handleUp = async () => {
     if (localQuantity < 99) {
       const newQuantity = localQuantity + 1;
@@ -56,12 +63,12 @@ export function CartItemCard({
         onQuantityChange?.(cartId, newQuantity);
       } catch (error) {
         console.error('수량 증가 중 오류 발생:', error);
-        alert('수량 변경에 실패했습니다. 다시 시도해주세요.');
+        toast.error('수량 변경에 실패했습니다. 다시 시도해주세요.');
       }
     }
   };
 
-  // 수량 감소
+  //        수량 감소       //
   const handleDown = async () => {
     if (localQuantity > 1) {
       const newQuantity = localQuantity - 1;
@@ -71,13 +78,14 @@ export function CartItemCard({
         onQuantityChange?.(cartId, newQuantity);
       } catch (error) {
         console.error('수량 감소 중 오류 발생:', error);
-        alert('수량 변경에 실패했습니다. 다시 시도해주세요.');
+        toast.error('수량 변경에 실패했습니다. 다시 시도해주세요.');
       }
     }
   };
 
-  // 한건 상품 삭제
+  //        한건 상품 삭제        //
   const handleRemove = async () => {
+    console.log();
     try {
       await deleteCartItem(cartId); // API 호출
       setIsDeleted(true); // 삭제 상태로 변경
@@ -85,9 +93,27 @@ export function CartItemCard({
       toast.success('선택하신 상품이 삭제되었습니다.');
     } catch (error) {
       console.error('삭제 실패:', error);
-      alert('삭제에 실패했습니다. 다시 시도해주세요.');
+      toast.error('삭제에 실패했습니다. 다시 시도해주세요.');
     }
   };
+
+  //        여러건 상품 삭제        //
+  const handleRemoveAll = async () => {
+    try {
+      await fetchDeleteAllCarts([cartId]); // API 호출
+      setIsSelected(true); // 선택 상태로 변경
+      onRemove?.(cartId); // 부모 컴포넌트에 삭제된 상품 ID 전달
+      toast.success('상품이 선택되었습니다.');
+    } catch (error) {
+      console.error('상품 선택 실패:', error);
+      toast.error('상품이 선택되지 않았습니다.');
+    }
+  };
+
+  //       전체 선택 상태 업데이트**        //
+  useEffect(() => {
+    setLocalChecked(isAllChecked);
+  }, [isAllChecked]);
 
   if (isDeleted) {
     return null; // 삭제된 상태라면 UI에서 제거

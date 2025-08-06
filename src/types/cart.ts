@@ -50,6 +50,7 @@ export interface CardItemCardProps {
   price: number;
   quantity: number;
   isChecked?: boolean;
+  isAllChecked?: boolean;
   onQuantityChange?: (id: number, quantity: number) => void;
   onRemove?: (id: number) => void;
   onCheck?: (id: number, checked: boolean) => void;
