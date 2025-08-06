@@ -91,7 +91,7 @@ export const ShopCategory = ({
                 className="flex w-fit flex-col items-center"
                 onClick={() => setSelectedCategory(cat)}
               >
-                <div className="scrollbar-hide mb-0.5 aspect-square h-auto w-[48px] rounded-3xl bg-[#EAEAEA] p-2.5">
+                <div className="scrollbar-hide mb-0.5 h-[48px] w-[48px] rounded-3xl bg-[#EAEAEA] p-2.5">
                   <Icon
                     className={`btn-icon h-full w-full ${selectedCategory === cat ? categoryColors[cat] : 'stroke-[black]'}`}
                   />
