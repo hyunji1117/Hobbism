@@ -1,5 +1,6 @@
 'use server';
 
+import { getUserAttribute, updateUserInfo } from '@/data/actions/user';
 import { deleteCartItem } from '@/data/functions/CartFetch.server';
 import { ApiRes, ApiResPromise } from '@/types';
 import { CartItem } from '@/types/cart';
@@ -65,7 +66,36 @@ export async function createOrder(
   }
 
   if (data.ok) {
+    const order = data.item;
     const orderId = data.item._id;
+    const userId = order.user_id;
+    const totalAmount = order.cost.total;
+
+    const point = Math.floor(totalAmount / 100 / 10) * 10;
+
+    const extraRes = await getUserAttribute(userId, 'extra');
+    const prevTotalPoint =
+      extraRes.ok === 1 && extraRes.item.extra.total_point
+        ? extraRes.item.extra.total_point
+        : 0;
+
+    const prevPoint =
+      extraRes.ok === 1 && extraRes.item.extra.point
+        ? extraRes.item.extra.point
+        : 0;
+
+    const updatedTotalPoint = prevTotalPoint + point;
+    const updatedPoint = prevPoint + point;
+
+    const userUpdateFormData = new FormData();
+    userUpdateFormData.set('accessToken', accessToken);
+    userUpdateFormData.set('point', String(updatedPoint));
+    userUpdateFormData.set('total_point', String(updatedTotalPoint));
+
+    const updateRes = await updateUserInfo(userId, userUpdateFormData);
+    if (updateRes.ok !== 1) {
+      console.warn('유저 정보 업데이트 실패:', updateRes.message);
+    }
 
     revalidatePath(`/shop/orderCompleted/${orderId}`);
     redirect(`/shop/orderCompleted/${orderId}`);

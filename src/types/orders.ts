@@ -12,6 +12,8 @@ export type OrderProductType = Product & {
   color?: string;
   price: number;
   originalPrice?: number;
+  cost?: OrderedCost;
+  user_id?: number;
 };
 
 export interface OrderedUser {

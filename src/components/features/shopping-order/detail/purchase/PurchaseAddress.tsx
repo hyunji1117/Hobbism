@@ -101,12 +101,15 @@ export function PurchaseAddress({
           {!isOpen ? (
             <button
               onClick={() => setIsOpen(true)}
-              className="text-right font-semibold underline"
+              className="cursor-pointer text-right font-semibold underline"
             >
               <span>배송지 변경</span>
             </button>
           ) : (
-            <button onClick={() => handleCloseForm()}>
+            <button
+              onClick={() => handleCloseForm()}
+              className="cursor-pointer"
+            >
               <X />
             </button>
           )}
@@ -115,7 +118,7 @@ export function PurchaseAddress({
           <form
             id="address-form"
             onSubmit={handleSubmit(onSubmit)}
-            className="mb-4 flex flex-col gap-2 px-3"
+            className="mb-4 flex flex-col gap-2 px-3 text-[#4a4a4a]"
           >
             <div>
               <div className="mb-2 flex items-center justify-between">
