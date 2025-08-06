@@ -1,6 +1,8 @@
 'use server';
 
+import { deleteCartItem } from '@/data/functions/CartFetch.server';
 import { ApiRes, ApiResPromise } from '@/types';
+import { CartItem } from '@/types/cart';
 import { OrderProductType } from '@/types/orders';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -16,6 +18,10 @@ export async function createOrder(
   const products = JSON.parse(raw);
   const accessToken = formData.get('accessToken') as string;
   const selectedPayment = formData.get('selectedPayment') as string;
+
+  const cartIds = products
+    .map((item: CartItem) => item.cartId)
+    .filter((id): id is number => typeof id === 'number');
 
   let res: Response;
   let data: ApiRes<OrderProductType>;
@@ -47,6 +53,12 @@ export async function createOrder(
 
     data = await res.json();
     console.log('주문 생성 응답:', data);
+
+    if (cartIds.length > 0) {
+      await Promise.all(
+        cartIds.map((id: number) => deleteCartItem(id, formData)),
+      );
+    }
   } catch (error) {
     console.error(error);
     return { ok: 0, message: '일시적인 네트워크 문제로 주문에 실패했습니다.' };

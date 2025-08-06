@@ -80,8 +80,6 @@ export const LiveCalendar = () => {
               </li>
             ) : (
               weeklyLives.map(live => {
-                console.log(live.extra.live);
-
                 if (!live.extra.live) return;
                 return (
                   <li
