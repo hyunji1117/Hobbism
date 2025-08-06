@@ -134,8 +134,8 @@ export default function CartPage() {
       originalPrice: item.product.extra.originalPrice,
       price: item.product.price,
       quantity: item.quantity,
-      size: item.product.size,
-      color: item.product.color,
+      size: item.size,
+      color: item.color,
       productImg: item.product.image.path || '',
     }));
 
