@@ -33,17 +33,19 @@ export const ProductDetailInfo = ({
   // MD PICK 정보 가져오기
   const recommendInfo = extra?.recommendedBy
     ? recommendData[extra.recommendedBy]
-    : { name: '추천', color: 'bg-[#C3C3C3]', textColor: 'text-black' };
+    : { name: '', color: '', textColor: '' };
 
   const originalPrice = extra.originalPrice;
 
   return (
     <section className="h-[145px] items-center justify-center px-5 py-4">
-      <span
-        className={`mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] text-[12px] ${recommendInfo.color} ${recommendInfo.textColor}`}
-      >
-        {recommendInfo.name} PICK
-      </span>
+      {recommendInfo.name && (
+        <span
+          className={`mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] text-[12px] ${recommendInfo.color} ${recommendInfo.textColor}`}
+        >
+          {recommendInfo.name} PICK
+        </span>
+      )}
       <h1 className="relative text-[24px] font-semibold text-black">
         {/* 상품명 */}
         {item.name}
