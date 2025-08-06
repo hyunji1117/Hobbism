@@ -39,7 +39,7 @@ export interface CartItem {
   color?: string;
   mainImages?: string[];
   isChecked: boolean;
-  cartId: number;
+  cartId?: number;
 }
 
 // CartItemCard 컴포넌트
