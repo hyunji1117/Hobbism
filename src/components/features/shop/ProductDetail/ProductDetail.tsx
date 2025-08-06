@@ -159,13 +159,13 @@ export const ProductActionButtons = ({
     <div className="flex h-[54px] justify-between gap-3">
       <button
         onClick={onCartClick}
-        className="w-[40%] cursor-pointer rounded-[8px] border border-[#4B5563] px-4 py-2 text-[16px] text-black hover:bg-[#EAEAEA]"
+        className="w-[40%] cursor-pointer rounded-[8px] border border-[#C3C3C3] px-4 py-2 text-[16px] text-black hover:bg-[#EAEAEA]"
       >
         장바구니 담기
       </button>
       <button
         onClick={onBuyNowClick}
-        className="0 w-[57%] cursor-pointer rounded-[8px] bg-[#4B5563] px-4 py-2 text-[18px] font-semibold text-white hover:bg-[#2C2F33]"
+        className="w-[57%] cursor-pointer rounded-[8px] bg-[#4B5563] px-4 py-2 text-[18px] font-semibold text-white hover:bg-[#2C2F33]"
       >
         {/* bg-[#2C2F33] */}
         구매하기
