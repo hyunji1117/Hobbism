@@ -4,13 +4,15 @@ import { HOBBY_ITEMS } from '@/constant/hobby';
 import { getUserAttribute } from '@/data/actions/user';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
 export default async function HobbyPage() {
   const session = await getServerSession(authOptions);
   console.log('session', session);
 
   if (!session?.user?._id) {
-    throw new Error('로그인이 필요합니다');
+    redirect('/login');
+    // throw new Error('로그인이 필요합니다');
   }
 
   const res = await getUserAttribute(session?.user._id, 'extra/hobby');
@@ -22,7 +24,7 @@ export default async function HobbyPage() {
   const selectedHobby = res.item?.extra?.hobby ?? null;
 
   return (
-    <main className="flex min-h-full flex-col gap-2 bg-white px-4 pt-12">
+    <main className="flex min-h-full flex-1 flex-col gap-2 bg-white px-4 pt-12 text-[#4a4a4a]">
       <div className="mt-3 flex flex-col gap-2">
         <p className="text-xl font-semibold">다양한 취미를 즐겨보세요</p>
         <p className="text-base font-medium text-gray-500">

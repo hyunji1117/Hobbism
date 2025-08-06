@@ -30,7 +30,7 @@ export default function SaveButton({ selected }: { selected: string }) {
     <div className="sticky right-0 bottom-0 left-0 bg-transparent py-3">
       <button
         onClick={handleSave}
-        className="w-full cursor-pointer rounded-lg bg-black py-3 text-lg text-white"
+        className="w-full cursor-pointer rounded-full bg-[#4a4a4a] py-3 text-sm text-white"
       >
         변경하기
       </button>
