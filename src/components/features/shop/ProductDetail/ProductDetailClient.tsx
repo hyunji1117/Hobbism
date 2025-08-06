@@ -75,6 +75,8 @@ export default function CartAction({
           const response = await fetchAddToCart({
             product_id: Number(item.id),
             quantity,
+            size: selectedColor,
+            color: selectedColor,
           });
           console.log('장바구니 추가 성공 응답:', response);
 
@@ -95,7 +97,7 @@ export default function CartAction({
         const response = await fetchAddToCart({
           product_id: Number(item.id),
           quantity,
-          size: selectedSize?.toString(),
+          size: selectedSize,
           color: selectedColor,
         });
         console.log('장바구니 추가 성공 응답:', response);

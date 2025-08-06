@@ -1,7 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+// import { useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+// import { fetchProductDetail } from '@/utils/api';
 import {
   ProductDetailInfoProps,
   ProductQuantitySelectorProps,
@@ -122,7 +125,6 @@ export const ProductDetail = ({
         </div>
       )}
 
-      {/* ProductQuantitySelector */}
       {selectedOption && (
         <ProductQuantitySelector
           selectedOption={selectedOption}
