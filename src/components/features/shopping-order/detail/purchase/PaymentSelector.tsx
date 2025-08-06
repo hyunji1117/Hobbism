@@ -149,7 +149,7 @@ export function PaymentSelector({
                   </button>
                 </li>
                 <li>
-                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black">
+                  <button className="flex h-[7vh] w-full items-center justify-center rounded-lg border border-[#e6e6e6] px-4 py-3 text-[#111111] outline-none focus:border-black focus:ring-black focus-visible:border-black focus-visible:ring-black">
                     <div className="relative aspect-square w-3.5 md:w-4">
                       <Image
                         src="/tossIcon.svg"
