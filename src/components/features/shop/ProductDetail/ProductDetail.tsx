@@ -3,9 +3,9 @@
 import { Minus, Plus } from 'lucide-react';
 import {
   ProductDetailInfoProps,
-  ProductQuantitySelectorProps,
+  // ProductQuantitySelectorProps,
 } from '@/types/product';
-import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
+// import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
 // import { useEffect, useState } from 'react';
 // import { fetchCartList } from '@/data/functions/CartFetch.client';
 
@@ -38,7 +38,7 @@ export const ProductDetailInfo = ({
   const originalPrice = extra.originalPrice;
 
   return (
-    <section className="h-[145px] items-center justify-center px-5 py-4">
+    <section className="h-auto items-center justify-center px-5 py-4">
       {recommendInfo.name && (
         <span
           className={`mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] text-[12px] ${recommendInfo.color} ${recommendInfo.textColor}`}
@@ -72,27 +72,6 @@ export const ProductDetailInfo = ({
     </section>
   );
 };
-
-// 장바구니 담기 버튼 컴포넌트
-// export function ProductDetail({
-//   product,
-// }: {
-//   product: { id: string; name: string; price: number };
-// }) {
-//   const { addToCart } = useCart();
-
-//   const handleAdd = () => {
-//     addToCart({
-//       id: product.id,
-//       name: product.name,
-//       price: product.price,
-//       quantity: 1,
-//     });
-//     alert('장바구니에 담겼습니다.');
-//   };
-
-//   return <button onClick={handleAdd}>장바구니 담기</button>;
-// }
 
 // 수량 컨트롤
 export const ProductQuantitySelector = ({
