@@ -94,7 +94,7 @@ export const RandomHobbyContent = ({
         </h2>
 
         {/* 이미지 자리 */}
-        <div className="relative my-8 aspect-[1.9/1] w-[80%]">
+        <div className="relative my-8 aspect-[1.5/1] w-[80%]">
           <Image
             fill
             src={`${randomHobby?.src}`}
