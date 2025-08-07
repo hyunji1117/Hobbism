@@ -79,13 +79,6 @@ export default async function CommunityPage() {
           totalPages={res.pagination.totalPages}
         />
       )}
-
-      <CommunityFeedList
-        posts={res.item}
-        postBookmarks={bookmarkRes.item}
-        userFollows={followRes.item}
-        totalPages={res.pagination.totalPages}
-      />
     </main>
   );
 }

@@ -121,7 +121,7 @@ export function UserShopTab() {
             </li>
           ))
         ) : (
-          <li className="py-8 text-center text-gray-500">
+          <li className="mt-4 text-center text-sm text-gray-400">
             쇼핑 내역이 없습니다.
           </li>
         )}

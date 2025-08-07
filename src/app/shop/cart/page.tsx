@@ -140,12 +140,12 @@ export default function CartPage() {
       productImg: item.product.image.path || '',
     }));
 
-    setIsLoading(true);
-
     if (selectedItems.length < 1) {
       toast.error('선택된 상품이 없습니다.');
       return;
     }
+
+    setIsLoading(true);
 
     console.log('purchaseData', purchaseData);
 

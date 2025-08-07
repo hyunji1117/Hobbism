@@ -88,13 +88,13 @@ export const RandomHobbyContent = ({
   //         render: 오늘의 취미 뽑기 렌더        //
   return (
     <>
-      <div className="flex w-full flex-col items-center rounded-2xl p-4">
+      <div className="flex w-full flex-1 flex-col items-center rounded-2xl p-4">
         <h2 className="border-b border-gray-200 pb-4 text-xl font-bold">
           🎉 오늘의 취미는... {randomHobby?.categoryKr}! 🎉
         </h2>
 
         {/* 이미지 자리 */}
-        <div className="relative my-8 aspect-[1.9/1] w-[80%]">
+        <div className="relative my-8 aspect-[1.5/1] w-[80%]">
           <Image
             fill
             src={`${randomHobby?.src}`}

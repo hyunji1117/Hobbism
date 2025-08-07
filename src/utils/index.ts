@@ -25,6 +25,7 @@ export function getUserImageUrl(image?: string): string {
   if (!image) return '/images/default-profile-image.webp';
 
   if (image.startsWith('http://') || image.startsWith('https://')) {
+    console.log('getuseImage', image);
     return image;
   }
 
