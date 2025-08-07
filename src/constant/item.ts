@@ -5,7 +5,7 @@ export const ITEM_DATA = {
     name: '소파',
     code: 'sofa',
     image: '/images/items/interior/sofa.webp',
-    price: 300,
+    price: 700,
     width: 600,
     height: 400,
     position: {
@@ -22,7 +22,7 @@ export const ITEM_DATA = {
     name: '거울',
     code: 'mirror',
     image: '/images/items/interior/mirror.webp',
-    price: 300,
+    price: 600,
     width: 480,
     height: 480,
     position: {
