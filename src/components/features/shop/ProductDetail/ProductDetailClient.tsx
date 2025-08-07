@@ -46,53 +46,38 @@ export default function CartAction({
   const resetOptions = () => {
     setSelectedSize(undefined);
     setSelectedColor(undefined);
+    setLoading(false); // 옵션 초기화 시 버튼도 활성화
   };
 
+  // 옵션 선택 시 버튼 활성화
+  const handleOptionSelect = (type: 'size' | 'color', value: string) => {
+    if (type === 'size') setSelectedSize(value);
+    if (type === 'color') setSelectedColor(value);
+    setLoading(false);
+  };
+
+  // 장바구니 담기
   const handleAddToCart = async () => {
+    if (loading) return; // 이미 비활성화면 중복 방지
+
     if (isBottomSheetOpen) {
       // 옵션이 있는 경우
       if (hasOptions) {
         const sizeRequired = options?.size?.length && !selectedSize;
         const colorRequired = options?.color?.length && !selectedColor;
 
-        // 옵션이 두 개 이상일 경우
         if (sizeRequired && colorRequired) {
           toast.error('옵션을 모두 선택해 주세요!');
           return;
         }
-
-        // 옵션이 하나만 있을 경우
         if (sizeRequired || colorRequired) {
           toast.error('옵션을 선택해 주세요!');
           return;
         }
       }
 
-      // 옵션이 없는 경우
-      if (!hasOptions) {
-        setLoading(true);
-        try {
-          const response = await fetchAddToCart({
-            product_id: Number(item.id),
-            quantity,
-            size: selectedColor,
-            color: selectedColor,
-          });
-          console.log('장바구니 추가 성공 응답:', response);
+      setLoading(true); // 버튼 비활성화
 
-          toast.success('장바구니에 상품이 추가되었습니다!');
-          setIsBottomSheetOpen(false);
-          resetOptions(); // 옵션 초기화
-        } catch (error) {
-          console.error('장바구니 추가 중 오류 발생:', error);
-          toast.error('장바구니 추가에 실패했습니다.');
-        } finally {
-          setLoading(false);
-        }
-        return; // 옵션이 없는 경우 처리 후 함수 종료
-      }
-
-      setLoading(true);
       try {
         const response = await fetchAddToCart({
           product_id: Number(item.id),
@@ -103,11 +88,12 @@ export default function CartAction({
         console.log('장바구니 추가 성공 응답:', response);
 
         toast.success('장바구니에 상품이 추가되었습니다!');
-        setIsBottomSheetOpen(false);
+        setIsBottomSheetOpen(false); // 바텀시트 닫기
         resetOptions(); // 옵션 초기화
       } catch (error) {
         console.error('장바구니 추가 중 오류 발생:', error);
         toast.error('장바구니 추가에 실패했습니다.');
+        setLoading(false); // 실패 시 다시 활성화
       } finally {
         setLoading(false);
       }
@@ -160,10 +146,15 @@ export default function CartAction({
     trackMouse: true,
   });
 
+  // 옵션이 모두 선택되어야 버튼 활성화
+  const isOptionSelected =
+    (options?.size?.length ? !!selectedSize : true) &&
+    (options?.color?.length ? !!selectedColor : true);
+
   return (
     <>
       {/* 상품 액션 버튼 */}
-      <div className="bt-rounded-[8px] fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-5 py-3">
+      <div className="bt-rounded-[8px] fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-4 py-3">
         <ProductActionButtons
           onCartClick={handleAddToCart}
           onBuyNowClick={handleBuyNow}
@@ -178,6 +169,8 @@ export default function CartAction({
             name: `사이즈 ${size}`,
             price: item.price,
           }))}
+          // 버튼 비활성화 조건 전달
+          cartButtonDisabled={loading || (hasOptions && !isOptionSelected)}
         />
       </div>
 
@@ -198,7 +191,7 @@ export default function CartAction({
       {isBottomSheetOpen && (
         <div
           {...swipeHandlers}
-          className={`fixed z-20 flex w-full max-w-[600px] flex-col rounded-t-[16px] bg-white shadow-lg ${
+          className={`fixed z-20 flex w-full max-w-[600px] min-w-[300px] flex-col rounded-t-[16px] bg-white shadow-lg ${
             hasOptions ? 'bottom-[78px]' : 'bottom-[78px]'
           }`}
         >
@@ -210,12 +203,12 @@ export default function CartAction({
             <>
               {/* 사이즈 옵션 */}
               {options.size && (
-                <div className="bg-white px-5 pt-3.5">
+                <div className="bg-white px-4 pt-3.5">
                   <OptionSelector
                     name="사이즈"
                     options={options.size}
                     selectedOption={selectedSize || ''}
-                    onSelect={value => setSelectedSize(value)}
+                    onSelect={value => handleOptionSelect('size', value)}
                     onOpen={() => setSelectedSize('')}
                   />
                 </div>
@@ -227,7 +220,7 @@ export default function CartAction({
                     name="색상"
                     options={options.color}
                     selectedOption={selectedColor || ''}
-                    onSelect={value => setSelectedColor(value)}
+                    onSelect={value => handleOptionSelect('color', value)}
                     onOpen={() => setSelectedColor('')}
                   />
                 </div>
@@ -236,9 +229,9 @@ export default function CartAction({
               {(selectedSize || selectedColor) && (
                 <ProductQuantitySelector
                   selectedOption={`${
-                    selectedSize ? `size: ${selectedSize}` : ''
+                    selectedSize ? `${selectedSize}` : ''
                   }${selectedSize && selectedColor ? ' | ' : ''}${
-                    selectedColor ? `color: ${selectedColor}` : ''
+                    selectedColor ? `${selectedColor}` : ''
                   }`}
                   quantity={quantity}
                   onIncrease={() => setQuantity(prev => prev + 1)}
