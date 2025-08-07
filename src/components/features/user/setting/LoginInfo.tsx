@@ -11,7 +11,7 @@ export function UserLoginInfo() {
   return (
     <li className="flex items-center gap-2.5 py-4">
       <UserRound />
-      <span className="flex-1">로그인 정보</span>
+      <span className="flex-1 truncate">로그인 정보</span>
       <span className="text-sm text-[#555555]">
         {currentUser?.email ?? '-'}
       </span>

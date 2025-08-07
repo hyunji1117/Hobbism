@@ -35,7 +35,7 @@ export default async function ShopPage() {
       </section>
 
       {/* 라이브 특별 기획 상품 */}
-      <section className="ml-5">
+      <section className="ml-5 text-[#4a4a4a]">
         <h2 className="py-4 text-lg font-semibold">라이브 특별 기획 상품</h2>
         <ShopLiveProducts liveData={initialLiveFiltered} />
       </section>

@@ -16,7 +16,7 @@ export default async function BookmarkPage({
   return (
     <div className="p-4">
       {bookmarks.length === 0 ? (
-        <div className="flex items-center justify-center text-[#4a4a4a]">
+        <div className="mt-8 flex items-center justify-center text-sm text-gray-400">
           북마크한 피드가 없습니다
         </div>
       ) : (

@@ -48,12 +48,14 @@ export default async function NoticeDetailPage({
           {/* 본문 영역 */}
           <div className="flex flex-col gap-3 py-8 whitespace-pre-wrap text-[#4D4D4D]">
             {notice.image && (
-              <Image
-                src={getUserImageUrl(notice.image as string)}
-                alt="공지사항 이미지"
-                width={600}
-                height={600}
-              />
+              <div className="relative aspect-square w-full">
+                <Image
+                  src={getUserImageUrl(notice.image as string)}
+                  alt="공지사항 이미지"
+                  fill
+                  sizes="600"
+                />
+              </div>
             )}
             <div>{notice.content}</div>
           </div>

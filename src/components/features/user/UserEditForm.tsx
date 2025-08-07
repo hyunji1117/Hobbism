@@ -95,6 +95,7 @@ export function UserEditForm({ user }: Props) {
       formData.append('introduction', data.introduction);
       formData.append('accessToken', data.accessToken);
       if (data.attach) {
+        console.log('attach', data.attach);
         formData.append('attach', data.attach);
       }
 
@@ -133,6 +134,8 @@ export function UserEditForm({ user }: Props) {
     const convertImageToFile = async () => {
       const preview = getUserImageUrl(user.image);
       if (!preview) return;
+
+      console.log('프로필 이미지 미리보기', preview);
       setPreview(preview);
       const file = await converUrlToFile(preview);
       setValue('attach', file);

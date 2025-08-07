@@ -164,7 +164,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
   //          render: 전체 카테고리 별 상품 렌더링        //
   return (
     <>
-      <section>
+      <section className="text-[#4a4a4a]">
         <div className="ml-5">
           <ShopCategory
             selectedCategory={selectedCategory}

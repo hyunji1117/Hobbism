@@ -90,7 +90,7 @@ export function UserPageClient({ user, posts, userBookmark }: Props) {
           </TabsList>
 
           {/* 피드 탭 내용 */}
-          <TabsContent value="feed">
+          <TabsContent value="feed" className="flex-1">
             <UserFeedTab posts={posts} />
           </TabsContent>
 
