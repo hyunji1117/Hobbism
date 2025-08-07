@@ -23,7 +23,7 @@ export const metadata = {
     siteName: 'Hobbism',
     images: [
       {
-        url: 'https://hobbism.vercel.app/hobbism.png',
+        url: 'https://hobbism.vercel.app/images/hobbism.png',
         width: 1200,
         height: 630,
         alt: 'Hobbism',
