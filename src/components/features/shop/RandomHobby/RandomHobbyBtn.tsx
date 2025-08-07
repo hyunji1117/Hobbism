@@ -21,10 +21,10 @@ export const RandomHobbyBtn = () => {
   return (
     <>
       <div onClick={handleClick}>
-        <div className="relative my-6 aspect-[4/1] w-full">
+        <div className="relative my-6 aspect-[4/1] w-full cursor-pointer">
           <Image
             fill
-            src="/images/ayoung/ad/ad00.webp"
+            src="/images/etc/hobby-banner.webp"
             alt="오늘의 취미 뽑기"
             sizes="100vw, (max-width: 1200px) 50vw, 33vw"
             priority={false}

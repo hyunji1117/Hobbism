@@ -10,6 +10,7 @@ import {
   Shirt,
   Gamepad2,
 } from 'lucide-react';
+import Image from 'next/image';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -33,6 +34,17 @@ export const ShopCategory = ({
     'FASHION',
     'GOODS',
   ] as const; // as const: 문자열 리터럴 타입'
+
+  const categoryImages = {
+    ALL: '/images/etc/all.webp',
+    PERFUME: '/images/hobby/perfume.webp',
+    RUNNING: '/images/hobby/running.webp',
+    HOMECAFE: '/images/hobby/homecafe.webp',
+    INTERIOR: '/images/etc/plant.webp',
+    DOLL: '/images/hobby/doll.webp',
+    FASHION: '/images/hobby/fashion.webp',
+    GOODS: '/images/hobby/goods.webp',
+  };
 
   // 영어 한글 변환
   const categoryLabels: { [key: string]: string } = {
@@ -88,13 +100,28 @@ export const ShopCategory = ({
           return (
             <SwiperSlide key={cat}>
               <button
-                className="flex w-fit flex-col items-center"
+                className="flex w-fit cursor-pointer flex-col items-center"
                 onClick={() => setSelectedCategory(cat)}
               >
-                <div className="scrollbar-hide mb-0.5 h-[48px] w-[48px] rounded-3xl bg-[#EAEAEA] p-2.5">
-                  <Icon
-                    className={`btn-icon h-full w-full ${selectedCategory === cat ? categoryColors[cat] : 'stroke-[black]'}`}
+                <div
+                  className={`scrollbar-hide mb-0.5 h-[48px] w-[48px] rounded-xl p-0.5 ${
+                    cat === 'ALL' && selectedCategory === cat
+                      ? 'bg-gradient-to-b from-[#cdd6a0] to-[#98b87e]'
+                      : 'bg-[#F5F5F5]'
+                  }`}
+                >
+                  <Image
+                    src={categoryImages[cat]}
+                    alt={cat}
+                    width={40}
+                    height={40}
+                    className={`h-full w-full object-contain ${
+                      selectedCategory === cat ? '' : 'grayscale'
+                    }`}
                   />
+                  {/* <Icon
+                    className={`btn-icon h-full w-full ${selectedCategory === cat ? categoryColors[cat] : 'stroke-[black]'}`}
+                  /> */}
                 </div>
                 <p className="text-[12px] select-none">{categoryLabels[cat]}</p>
               </button>
