@@ -108,6 +108,7 @@ export default function CommentListItem({
           <Link
             href={`/user/${comment.user._id}`}
             className="relative aspect-square w-8 overflow-hidden rounded-full"
+            prefetch={true}
           >
             <Image
               src={getUserImageUrl(comment.user.image)}

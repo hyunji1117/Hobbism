@@ -72,7 +72,7 @@ export default function ChracterPageClient({ extra }: Props) {
         );
       })}
 
-      <Link href="/hobby" className="absolute right-4">
+      <Link href="/hobby" className="absolute right-4" prefetch={true}>
         <Image
           src="/images/etc/hobby.webp"
           alt="취미 아이콘"
