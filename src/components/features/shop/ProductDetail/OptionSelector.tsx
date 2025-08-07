@@ -48,14 +48,14 @@ export const OptionSelector = ({
 
       {isOpen && (
         <ul
-          className="border-t border-[#EAEAEA]"
+          className="border-[#EAEAEA]"
           role="listbox"
           aria-label={`${name} 옵션 선택`}
         >
           {options.map(option => (
             <li
               key={option.toString()}
-              className="cursor-pointer border-b border-[#EAEAEA] p-2 text-[#666]"
+              className="cursor-pointer border-t border-[#EAEAEA] p-2 text-[#666]"
               onClick={() => {
                 onSelect(option.toString());
                 setIsOpen(false);

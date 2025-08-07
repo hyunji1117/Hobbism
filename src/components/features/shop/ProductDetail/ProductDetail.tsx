@@ -1,15 +1,7 @@
 'use client';
 
-// import { useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-// import { fetchProductDetail } from '@/utils/api';
-import {
-  ProductDetailInfoProps,
-  ProductQuantitySelectorProps,
-} from '@/types/product';
-import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
 
 // 상품 상세 정보 컴포넌트
 export const ProductDetailInfo = ({
@@ -19,11 +11,8 @@ export const ProductDetailInfo = ({
   extra,
   sizes,
   colors,
-}: ProductDetailInfoProps) => {
-  const recommendData: Record<
-    string,
-    { name: string; color: string; textColor: string }
-  > = {
+}) => {
+  const recommendData = {
     inhwan: { name: '인환', color: 'bg-[#FE508B]', textColor: 'text-white' },
     hyunji: { name: '현지', color: 'bg-[#FAB91D]', textColor: 'text-black' },
     woomin: { name: '우민', color: 'bg-[#51AAED]', textColor: 'text-white' },
@@ -38,7 +27,7 @@ export const ProductDetailInfo = ({
   const originalPrice = extra.originalPrice;
 
   return (
-    <section className="h-[145px] items-center justify-center px-5 py-4">
+    <section className="h-auto items-center justify-center px-5 py-4">
       {recommendInfo && (
         <span
           className={`mb-2 flex h-[28px] w-[76px] items-center justify-center rounded-[6px] text-[12px] ${recommendInfo.color} ${recommendInfo.textColor}`}
@@ -61,7 +50,7 @@ export const ProductDetailInfo = ({
         <span className="justify-self-center text-[24px] font-semibold text-black">
           {item.price.toLocaleString()}원
         </span>
-        <span className="ml-auto flex h-[28px] w-[76px] items-center justify-center rounded-[4px] bg-[#F3F4F6] text-[14px] text-black">
+        <span className="ml-auto flex h-[30px] w-[76px] items-center justify-center rounded-[3px] bg-[#F3F4F6] text-[14px] text-black">
           무료배송
         </span>
       </div>
@@ -80,12 +69,32 @@ export const ProductDetail = ({
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
 
+  // 중복 담기 방지 상태
+  const [isRequesting, setIsRequesting] = useState(false);
+
   const handleOptionSelect = (option: string) => {
     setSelectedOption(option); // 선택된 옵션 저장
   };
 
   const handleIncrease = () => setQuantity(prev => prev + 1);
   const handleDecrease = () => setQuantity(prev => Math.max(1, prev - 1));
+
+  // 장바구니 담기 API 예시 함수
+  const addToCartApi = async () => {
+    // 실제 API 호출로 교체
+    return new Promise(resolve => setTimeout(resolve, 1000));
+  };
+
+  // 장바구니 담기 클릭 핸들러
+  const handleCartClick = async () => {
+    if (isRequesting) return;
+    setIsRequesting(true);
+    try {
+      await addToCartApi();
+    } finally {
+      setIsRequesting(false);
+    }
+  };
 
   return (
     <div>
@@ -136,6 +145,20 @@ export const ProductDetail = ({
           item={{ name: product.name }}
         />
       )}
+
+      {/* 상품 액션 버튼 */}
+      <ProductActionButtons
+        onCartClick={handleCartClick}
+        onBuyNowClick={() => {}} // 구매하기 로직 필요시 구현
+        product={{
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          productImg: '', // 필요시 이미지 전달
+        }}
+        options={options}
+        cartButtonDisabled={isRequesting}
+      />
     </div>
   );
 };
@@ -159,12 +182,12 @@ export const ProductQuantitySelector = ({
   item: { name: string };
 }) => {
   return (
-    <section className="mx-5 my-4 h-[100px] rounded-[8px] bg-[#EAEAEA] p-3">
-      <div className="flex items-center">
+    <section className="mx-4 my-4 h-auto rounded-[8px] bg-[#EAEAEA] p-3">
+      <div className="flex items-start justify-between">
         <h2 className="text-[18px] font-semibold text-black">{item.name}</h2>
         {/* selectedOption이 있을 경우에만 표시 */}
         {selectedOption && (
-          <span className="ml-5 text-[14px] font-medium text-[#4B5563]">
+          <span className="pl-4 text-[14px] font-medium whitespace-nowrap text-[#4B5563]">
             {selectedOption}
           </span>
         )}
@@ -214,6 +237,7 @@ interface ProductActionButtonsProps {
     productImg: string;
   };
   options?: { id: string; name: string; price: number }[];
+  cartButtonDisabled?: boolean;
 }
 
 export const ProductActionButtons = ({
@@ -221,18 +245,22 @@ export const ProductActionButtons = ({
   onBuyNowClick,
   product,
   options,
+  cartButtonDisabled = false,
 }: ProductActionButtonsProps) => {
   return (
-    <div className="flex h-[54px] justify-between gap-3">
+    <div className="mb-1 flex h-[50px] justify-between gap-3">
       <button
         onClick={onCartClick}
-        className="w-[40%] cursor-pointer rounded-[8px] border border-[#C3C3C3] px-4 py-2 text-[16px] text-black hover:bg-[#EAEAEA]"
+        disabled={cartButtonDisabled}
+        className={`w-[40%] min-w-[105px] cursor-pointer rounded-[5px] border border-[#C3C3C3] px-2 py-2 text-[16px] text-black hover:bg-[#EAEAEA] ${
+          cartButtonDisabled ? 'cursor-not-allowed opacity-50' : ''
+        }`}
       >
         장바구니 담기
       </button>
       <button
         onClick={onBuyNowClick}
-        className="w-[57%] cursor-pointer rounded-[8px] bg-[#4B5563] px-4 py-2 text-[18px] font-semibold text-white hover:bg-[#2C2F33]"
+        className="w-[60%] min-w-[105px] cursor-pointer rounded-[5px] bg-[#4B5563] px-2 py-2 text-[18px] font-semibold text-white hover:bg-[#2C2F33]"
       >
         구매하기
       </button>
@@ -253,7 +281,7 @@ export const TotalPrice = ({
   const totalPrice = quantity * (price ?? originalPrice);
 
   return (
-    <section className="z-20 flex h-[54px] items-center justify-between border-t border-[#EAEAEA] bg-white px-4 pt-4">
+    <section className="z-20 mb-1 flex h-[50px] items-center justify-between border-t border-[#EAEAEA] bg-white px-4 pt-4">
       <span className="text-[18px] font-semibold text-black">총 결제 금액</span>
       <span className="text-[24px] font-semibold text-black">
         {totalPrice.toLocaleString()}원
