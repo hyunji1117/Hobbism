@@ -196,7 +196,7 @@ export default function CartAction({
           }`}
         >
           <div className="flex justify-center">
-            <div className="mt-2.5 h-[4px] w-[109px] rounded-full bg-[#3D3D3D]" />
+            <div className="mt-1.5 h-[4px] w-[100px] rounded-full bg-[#EAEAEA]" />
           </div>
 
           {hasOptions ? (
