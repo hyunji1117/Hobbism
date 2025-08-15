@@ -16,7 +16,7 @@ export interface ProductListRes {
 }
 
 export interface CartItem {
-  _id: number;
+  _id: number | string;
   product: {
     _id: number;
     image: {
