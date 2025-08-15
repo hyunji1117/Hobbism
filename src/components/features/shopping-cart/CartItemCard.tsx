@@ -120,7 +120,7 @@ export function CartItemCard({
     }
   };
 
-  //       전체 선택 상태 업데이트**        //
+  //       전체 선택 상태 업데이트        //
   useEffect(() => {
     setLocalChecked(isAllChecked);
   }, [isAllChecked]);
