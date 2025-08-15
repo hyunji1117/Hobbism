@@ -1,10 +1,6 @@
 //        장바구니에 추가된 상품 목록 렌더링 컴포넌트        //
 import { CartItem } from '@/types/cart';
 import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
-// import { useAuthStore } from '@/store/auth.store';
-
-// const API_URL = process.env.NEXT_PUBLIC_API_URL;
-// const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
 
 interface CartListProps {
   cartItems: CartItem[];
@@ -25,8 +21,6 @@ const CartList: React.FC<CartListProps> = ({
     <div>
       {cartItems.map(item => (
         <div key={item._id} className="mb-0">
-          {/* <Link href={`/shop/${item.product._id}`} prefetch={true}> */}
-          {/* 상품 상세 페이지로 이동 */}
           <CartItemCard
             cartId={item._id}
             id={item.product._id}
@@ -42,7 +36,6 @@ const CartList: React.FC<CartListProps> = ({
             onQuantityChange={onQuantityChange}
             isAllChecked={isAllChecked}
           />
-          {/* </Link> */}
         </div>
       ))}
     </div>
