@@ -14,14 +14,23 @@ import toast from 'react-hot-toast';
 import Loading from '@/app/loading';
 import { usePurchaseStore } from '@/store/order.store';
 import { useRouter } from 'next/navigation';
+import { useCartState } from '@/store/cartStore';
+
+// 로컬에서만 사용하는 확장된 CartItem 타입
+interface ExtendedCartItem extends CartItem {
+  isChecked: boolean;
+}
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<ExtendedCartItem[]>([]);
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
+
+  // Zustand state 사용
+  const { refreshCartCount } = useCartState();
 
   // 장바구니 데이터 로드
   useEffect(() => {
@@ -29,13 +38,15 @@ export default function CartPage() {
       try {
         setIsLoading(true);
         const data = await fetchCartList(1, 10);
-        setCartItems(
-          data.item.map(item => ({
-            ...item,
-            isChecked: false,
-            selectedOption: item.selectedOption,
-          })),
-        );
+        const items = data.item.map(item => ({
+          ...item,
+          isChecked: false,
+          selectedOption: item.selectedOption,
+        }));
+
+        setCartItems(items);
+        // 🎯 전역 장바구니 개수 업데이트
+        await refreshCartCount();
       } catch (err) {
         console.error('장바구니 데이터를 가져오는 중 오류 발생:', err);
         setErrorMessage('장바구니 데이터를 불러오는 데 실패했습니다.');
@@ -45,11 +56,11 @@ export default function CartPage() {
     };
 
     loadCartItems();
-  }, []);
+  }, [refreshCartCount]);
 
   // 전체 선택 토글 핸들러
-  const handleCheckAll = async (checked: boolean) => {
-    setIsAllChecked(checked); // 전체 선택 상태 업데이트
+  const handleCheckAll = (checked: boolean) => {
+    setIsAllChecked(checked);
     setCartItems(prev =>
       prev.map(item => ({
         ...item,
@@ -66,14 +77,10 @@ export default function CartPage() {
 
   // 총 결제 금액 계산
   useEffect(() => {
-    const calculateTotalPrice = () => {
-      const total = cartItems
-        .filter(item => item.isChecked)
-        .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-      setTotalPrice(total);
-    };
-
-    calculateTotalPrice();
+    const total = cartItems
+      .filter(item => item.isChecked)
+      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    setTotalPrice(total);
   }, [cartItems]);
 
   // 개별 상품 체크 핸들러
@@ -83,7 +90,12 @@ export default function CartPage() {
         item.product._id === id ? { ...item, isChecked: checked } : item,
       ),
     );
-    setIsAllChecked(cartItems.every(item => item.isChecked));
+
+    // 전체 선택 상태 업데이트
+    const updatedItems = cartItems.map(item =>
+      item.product._id === id ? { ...item, isChecked: checked } : item,
+    );
+    setIsAllChecked(updatedItems.every(item => item.isChecked));
   };
 
   // 수량 변경 핸들러
@@ -97,14 +109,20 @@ export default function CartPage() {
             : item,
         ),
       );
+      // 🎯 수량 변경 후 전역 개수 업데이트 (일관성을 위해)
+      await refreshCartCount();
     } catch (error) {
       console.error('수량 변경 중 오류 발생:', error);
+      toast.error('수량 변경에 실패했습니다.');
     }
   };
 
+  // 선택된 상품 삭제
   const handleRemoveAll = async () => {
     const selectedItems = cartItems.filter(item => item.isChecked);
-    const selectedIds = selectedItems.map(item => item._id);
+    const selectedIds = selectedItems
+      .map(item => item._id)
+      .filter((id): id is number => typeof id === 'number');
 
     if (selectedIds.length === 0) {
       toast.error('선택된 상품이 없습니다.');
@@ -114,9 +132,14 @@ export default function CartPage() {
     try {
       setIsLoading(true);
       await fetchDeleteAllCarts(selectedIds);
-      setCartItems(prevItems =>
-        prevItems.filter(item => !selectedIds.includes(item._id)),
+      const remainingItems = cartItems.filter(
+        item => !selectedIds.includes(item._id as number),
       );
+
+      setCartItems(remainingItems);
+      // 🎯 상품 삭제 후 전역 장바구니 개수 업데이트
+      await refreshCartCount();
+
       toast.success('선택된 상품이 삭제되었습니다.');
     } catch (error) {
       console.error('여러 건 삭제 중 오류 발생:', error);
@@ -126,8 +149,15 @@ export default function CartPage() {
     }
   };
 
-  const handelAddBuy = () => {
+  // 구매하기
+  const handleAddBuy = () => {
     const selectedItems = cartItems.filter(item => item.isChecked);
+
+    if (selectedItems.length === 0) {
+      toast.error('선택된 상품이 없습니다.');
+      return;
+    }
+
     const purchaseData = selectedItems.map(item => ({
       cartId: item._id,
       id: item.product._id.toString(),
@@ -140,18 +170,9 @@ export default function CartPage() {
       productImg: item.product.image.path || '',
     }));
 
-    if (selectedItems.length < 1) {
-      toast.error('선택된 상품이 없습니다.');
-      return;
-    }
-
     setIsLoading(true);
-
-    console.log('purchaseData', purchaseData);
-
-    // 구매 데이터 저장 및 페이지 이동
     usePurchaseStore.getState().setPurchaseData(purchaseData);
-    router.push(`/shop/purchase`);
+    router.push('/shop/purchase');
   };
 
   if (isLoading) return <Loading />;
@@ -167,23 +188,13 @@ export default function CartPage() {
           aria-label={isAllChecked ? '전체 상품 선택 해제' : '전체 상품 선택'}
           className="absolute top-3.5"
         >
-          {isAllChecked ? (
-            <Image
-              src="/check-on.svg"
-              alt="전체 선택 설정 버튼"
-              width={20}
-              height={20}
-              className="ml-5"
-            />
-          ) : (
-            <Image
-              src="/check-off.svg"
-              alt="전체 선택 설정 버튼"
-              width={20}
-              height={20}
-              className="ml-5"
-            />
-          )}
+          <Image
+            src={isAllChecked ? '/check-on.svg' : '/check-off.svg'}
+            alt="전체 선택 설정 버튼"
+            width={20}
+            height={20}
+            className="ml-5"
+          />
         </button>
         <span className="relative top-3 left-14 text-lg leading-6 font-semibold">
           전체 선택
@@ -230,7 +241,7 @@ export default function CartPage() {
       <div className="top-3 px-4 py-3 text-center">
         <button
           className="mb-50 h-[3.5rem] w-full max-w-[21.875rem] cursor-pointer rounded-md bg-[#4B5563] text-xl font-semibold text-white hover:bg-[#2C2F33]"
-          onClick={handelAddBuy}
+          onClick={handleAddBuy}
         >
           결제하기
         </button>

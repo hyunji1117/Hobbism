@@ -13,7 +13,22 @@ import {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || '';
-const accessToken = useAuthStore.getState().accessToken;
+// const accessToken = useAuthStore.getState().accessToken;
+
+// 추가
+const getValidToken = () => {
+  const storeToken = useAuthStore.getState().accessToken;
+  console.log('사용할 토큰:', storeToken);
+  return storeToken;
+};
+const accessToken = getValidToken();
+
+console.log('실제 사용할 토큰:', useAuthStore.getState().accessToken);
+console.log('토큰 상태 확인:', {
+  envToken: process.env.NEXT_PUBLIC_ACCESS_TOKEN,
+  storeToken: useAuthStore.getState().accessToken,
+  storeState: useAuthStore.getState(),
+});
 
 // 장바구니에 상품 추가
 export async function fetchAddToCart({
@@ -77,14 +92,22 @@ export async function fetchCartList(
   page: number = 1,
   limit: number = 10,
 ): Promise<CartListRes> {
-  // 디버깅 코드 추가
-  console.log('환경 변수 확인:');
-  console.log('NEXT_PUBLIC_API_URL:', API_URL);
-  console.log('NEXT_PUBLIC_ACCESS_TOKEN:', accessToken);
+  // 추가
+  const accessToken = useAuthStore.getState().accessToken;
+
+  console.log('최종 사용 토큰:', accessToken);
+  console.log('토큰 길이:', accessToken?.length);
 
   if (!API_URL || !accessToken) {
+    console.error('필수 값 누락:', { API_URL, accessToken: !!accessToken });
     throw new Error('환경 변수가 올바르게 설정되지 않았습니다.');
   }
+
+  // 디버깅 코드 추가
+  // console.log('환경 변수 확인:');
+  // console.log('NEXT_PUBLIC_API_URL:', API_URL);
+  // console.log('NEXT_PUBLIC_ACCESS_TOKEN:', accessToken);
+
   const res = await fetch(`${API_URL}/carts`, {
     method: 'GET',
     headers: {
