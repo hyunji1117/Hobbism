@@ -1,4 +1,4 @@
-import SearchList from '@/app/search/searchList';
+import SearchList from '@/app/(main)/search/searchList';
 import TopButton from '@/components/common/TopButton';
 import { fetchProducts } from '@/data/functions/ProductFetch';
 import filterValidProducts from '@/utils/product';

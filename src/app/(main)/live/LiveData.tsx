@@ -1,6 +1,6 @@
 'use client';
 
-import LiveContent from '@/app/live/LiveContent';
+import LiveContent from '@/app/(main)/live/LiveContent';
 import { useLiveStore } from '@/store/live.store';
 import Image from 'next/image';
 import { useEffect } from 'react';

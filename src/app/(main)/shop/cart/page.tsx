@@ -11,7 +11,7 @@ import { CartItem } from '@/types/cart';
 import CartList from '@/components/features/shopping-cart/CartList';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
-import Loading from '@/app/loading';
+import Loading from '@/app/(main)/loading';
 import { usePurchaseStore } from '@/store/order.store';
 import { useRouter } from 'next/navigation';
 import { useCartState } from '@/store/cartStore';
