@@ -1,3 +1,4 @@
+import { AdminButton } from '@/app/admin/AdminButton';
 import SocialLoginButtons from '@/components/features/auth/SocialLoginButtons';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -32,6 +33,7 @@ export default function Login() {
           {/* 로그인 버튼 */}
           <div className="mx-4 flex flex-col items-center gap-y-3">
             <SocialLoginButtons />
+            <AdminButton />
           </div>
 
           {/* 안내 문구 */}

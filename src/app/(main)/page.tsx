@@ -7,7 +7,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import Loading from '@/app/loading';
+import Loading from '@/app/(main)/loading';
 import Image from 'next/image';
 
 export default function Home() {

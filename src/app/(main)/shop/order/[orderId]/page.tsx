@@ -1,4 +1,4 @@
-import OrderDetailClient from '@/app/shop/order/[orderId]/OrderDetailClient';
+import OrderDetailClient from '@/app/(main)/shop/order/[orderId]/OrderDetailClient';
 import { fetchOrderDetail } from '@/data/functions/OrdersFetch';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
