@@ -1,4 +1,4 @@
-import ShopList from '@/app/shop/ShopList';
+import ShopList from '@/app/(main)/shop/ShopList';
 import { RandomHobbyBtn } from '@/components/features/shop/RandomHobby/RandomHobbyBtn';
 import { ShopBanner } from '@/components/features/shop/ShopBanner';
 import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';

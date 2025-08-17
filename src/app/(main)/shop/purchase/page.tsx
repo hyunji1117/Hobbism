@@ -1,4 +1,4 @@
-import PurchaseClient from '@/app/shop/purchase/PurchaseClient';
+import PurchaseClient from '@/app/(main)/shop/purchase/PurchaseClient';
 import { getUserAttribute } from '@/data/actions/user';
 import { authOptions } from '@/lib/auth';
 import { Metadata } from 'next';

@@ -1,4 +1,4 @@
-import LiveData from '@/app/live/LiveData';
+import LiveData from '@/app/(main)/live/LiveData';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

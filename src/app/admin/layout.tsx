@@ -1,32 +1,30 @@
 import '@/styles/globals.css';
 import localFont from 'next/font/local';
-import { MobileFrame } from '@/components/layout/moblie-frame/MobileFrame';
 import ModalProvider from '@/components/common/ModalProvider';
 import Script from 'next/script';
-import AdBannerModal from '@/components/features/user/alarm/AdBannerModal';
 import { ToastProvider } from '@/components/common/ToastProvider';
 
 const pretendard = localFont({
-  src: '../../public/fonts/PretendardVariable.woff2',
+  src: '../../../public/fonts/PretendardVariable.woff2',
   display: 'swap',
   weight: '45 920',
   variable: '--font-pretendard',
 });
 
 export const metadata = {
-  title: 'Hobbism',
-  description: '취미기반 쇼핑 커뮤니티 사이트',
+  title: 'Hobbism Admin',
+  description: 'Hobbism 관리자 페이지',
   openGraph: {
-    title: 'Hobbism',
-    description: '취미기반 쇼핑 커뮤니티 사이트',
-    url: 'https://hobbism.vercel.app/',
-    siteName: 'Hobbism',
+    title: 'Hobbism Admin',
+    description: 'Hobbism 관리자 페이지',
+    url: 'https://hobbism.vercel.app/admin',
+    siteName: 'Hobbism Admin',
     images: [
       {
         url: '/images/hobbism.png',
         width: 1200,
         height: 630,
-        alt: 'Hobbism',
+        alt: 'Hobbism Admin',
       },
     ],
     locale: 'ko_KR',
@@ -34,7 +32,7 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
+export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -47,13 +45,15 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
       </head>
-      <body className={`${pretendard.className}`}>
-        <MobileFrame>
-          {children}
-          <AdBannerModal />
+      <body className={`${pretendard.className} min-h-screen bg-gray-50`}>
+        <div className="min-h-screen w-full max-w-none">
+          {/* PC First 반응형 컨테이너 */}
+          <div className="mx-auto min-h-screen w-full bg-white shadow-lg lg:max-w-7xl xl:max-w-screen-2xl">
+            <main className="min-h-screen w-full">{children}</main>
+          </div>
           <ModalProvider />
           <ToastProvider />
-        </MobileFrame>
+        </div>
       </body>
     </html>
   );
