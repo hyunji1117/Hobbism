@@ -5,7 +5,7 @@ import Script from 'next/script';
 import { ToastProvider } from '@/components/common/ToastProvider';
 
 const pretendard = localFont({
-  src: '../../../public/fonts/PretendardVariable.woff2',
+  src: '../../public/fonts/PretendardVariable.woff2',
   display: 'swap',
   weight: '45 920',
   variable: '--font-pretendard',
