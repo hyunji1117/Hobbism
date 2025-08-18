@@ -174,12 +174,18 @@ const BrandRegistrationForm = () => {
     '도매',
   ];
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (
+    field: string,
+    value: string | number | File | null,
+  ) => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.');
       setFormData(prev => ({
         ...prev,
-        [parent]: { ...prev[parent as keyof BrandForm], [child]: value },
+        [parent]: {
+          ...(prev[parent as keyof BrandForm] as Record<string, string>),
+          [child]: value,
+        },
       }));
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));
@@ -187,25 +193,41 @@ const BrandRegistrationForm = () => {
   };
 
   const addToArray = (
-    field: keyof BrandForm,
+    field:
+      | 'certifications'
+      | 'awards'
+      | 'keywords'
+      | 'businessAreas'
+      | 'targetMarket'
+      | 'distributionChannels',
     value: string,
     currentValue: string,
     setter: (value: string) => void,
   ) => {
-    if (currentValue.trim() && !formData[field].includes(currentValue.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        [field]: [...(prev[field] as string[]), currentValue.trim()],
-      }));
-      setter('');
+    if (currentValue.trim()) {
+      const currentArray = formData[field] as string[];
+      if (!currentArray.includes(currentValue.trim())) {
+        setFormData(prev => ({
+          ...prev,
+          [field]: [...currentArray, currentValue.trim()],
+        }));
+        setter('');
+      }
     }
   };
 
   const removeFromArray = (field: keyof BrandForm, valueToRemove: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: (prev[field] as string[]).filter(item => item !== valueToRemove),
-    }));
+    setFormData(prev => {
+      const currentArray = prev[field];
+      // 배열인지 확인하고 filter 사용
+      if (Array.isArray(currentArray)) {
+        return {
+          ...prev,
+          [field]: currentArray.filter(item => item !== valueToRemove),
+        };
+      }
+      return prev;
+    });
   };
 
   const handleCheckboxChange = (

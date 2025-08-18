@@ -134,7 +134,10 @@ const ProductRegistrationForm = () => {
     { value: 'kotobukiya', label: 'Kotobukiya' },
   ];
 
-  const handleInputChange = (field: keyof ProductForm, value: any) => {
+  const handleInputChange = (
+    field: keyof ProductForm,
+    value: string | number | boolean | File | null,
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
