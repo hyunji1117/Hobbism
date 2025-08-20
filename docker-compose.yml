@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  hobbism-frontend:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      # Datadog 라벨 추가
+      - DD_SERVICE=hobbism-frontend
+      - DD_ENV=dev
+      - DD_VERSION=1.0.0
+    labels:
+      # Datadog 자동 발견을 위한 라벨
+      com.datadoghq.ad.check_names: '["http_check"]'
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"url": "http://%%host%%:3000"}]'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    stdin_open: true
+    tty: true

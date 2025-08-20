@@ -1,0 +1,21 @@
+name: Run Datadog Synthetic tests
+
+on:
+  push:
+    branches: ['main', 'develop']
+  pull_request:
+    branches: ['main', 'develop']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Datadog Synthetic tests
+        uses: DataDog/synthetics-ci-github-action@v1.4.0
+        with:
+          api_key: ${{ secrets.DD_SYNTHETICS_API_KEY }}
+          app_key: ${{ secrets.DD_SYNTHETICS_APP_KEY }}
+          public_ids: 'rpt-ca5-ba6'
