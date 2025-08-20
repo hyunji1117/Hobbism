@@ -1,0 +1,25 @@
+# kubernetes/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hobbism-frontend
+  labels:
+    app: hobbism-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hobbism-frontend
+  template:
+    metadata:
+      labels:
+        app: hobbism-frontend
+    spec:
+      containers:
+        - name: hobbism-frontend
+          image: hobbism-frontend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: 'production'

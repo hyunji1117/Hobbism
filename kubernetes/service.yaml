@@ -1,0 +1,13 @@
+# kubernetes/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: hobbism-service
+spec:
+  selector:
+    app: hobbism-frontend
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+  type: LoadBalancer
