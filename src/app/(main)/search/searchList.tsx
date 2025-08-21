@@ -8,7 +8,7 @@ import filterValidProducts from '@/utils/product';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PulseLoader } from 'react-spinners';
+import { PropagateLoader } from 'react-spinners';
 
 export default function SearchList({
   initialData,
@@ -117,7 +117,7 @@ export default function SearchList({
       {/* ===== loading 중 렌더링 ===== */}
       {loading && (
         <div className="fixed top-1/2 left-1/2 mb-3 -translate-1/2">
-          <PulseLoader color="#4A4A4A" />
+          <PropagateLoader color="#4A4A4A" />
         </div>
       )}
 
