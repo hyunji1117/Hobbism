@@ -7,7 +7,7 @@ import {
   fetchUpdateCartItemQuantity,
   fetchDeleteAllCarts,
 } from '@/data/functions/CartFetch.client';
-import { CartItem } from '@/types/cart';
+import { CartItem, CartQuantityUpdateRes } from '@/types/cart';
 import CartList from '@/components/features/shopping-cart/CartList';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -45,8 +45,8 @@ export default function CartPage() {
         }));
 
         setCartItems(items);
-        // 🎯 전역 장바구니 개수 업데이트
-        await refreshCartCount();
+        // 전역 장바구니 개수 업데이트
+        // await refreshCartCount();
       } catch (err) {
         console.error('장바구니 데이터를 가져오는 중 오류 발생:', err);
         setErrorMessage('장바구니 데이터를 불러오는 데 실패했습니다.');
@@ -58,21 +58,17 @@ export default function CartPage() {
     loadCartItems();
   }, [refreshCartCount]);
 
-  // 전체 선택 토글 핸들러
-  const handleCheckAll = (checked: boolean) => {
-    setIsAllChecked(checked);
-    setCartItems(prev =>
-      prev.map(item => ({
-        ...item,
-        isChecked: checked,
-      })),
-    );
-  };
-
   // 전체 선택 버튼 핸들러
   const handleAllSelect = () => {
     const newCheckedState = !isAllChecked;
-    handleCheckAll(newCheckedState);
+
+    setIsAllChecked(newCheckedState);
+    setCartItems(prev =>
+      prev.map(item => ({
+        ...item,
+        isChecked: newCheckedState,
+      })),
+    );
   };
 
   // 총 결제 금액 계산
@@ -100,16 +96,28 @@ export default function CartPage() {
 
   // 수량 변경 핸들러
   const handleQuantityChange = async (id: number, quantity: number) => {
+    console.log(`🔄 수량 변경 시작 - ID: ${id}, 새 수량: ${quantity}`);
+
     try {
-      const updatedItem = await fetchUpdateCartItemQuantity(id, quantity);
-      setCartItems(prevItems =>
-        prevItems.map(item =>
-          item.product._id === id
-            ? { ...item, quantity: updatedItem.data.quantity }
-            : item,
-        ),
-      );
-      // 🎯 수량 변경 후 전역 개수 업데이트 (일관성을 위해)
+      // API 호출
+      await fetchUpdateCartItemQuantity(id, quantity);
+
+      // 상태 업데이트
+      setCartItems(prevItems => {
+        const updatedItems = prevItems.map(item => {
+          // 장바구니 아이템 ID로 비교할 것!
+          if (item._id === id) {
+            console.log(
+              `✅ 장바구니 아이템 ID 매칭 성공! ${item.product.name}의 수량: ${item.quantity} → ${quantity}`,
+            );
+            return { ...item, quantity: quantity };
+          }
+          return item;
+        });
+
+        return updatedItems;
+      });
+
       await refreshCartCount();
     } catch (error) {
       console.error('수량 변경 중 오류 발생:', error);
@@ -137,7 +145,7 @@ export default function CartPage() {
       );
 
       setCartItems(remainingItems);
-      // 🎯 상품 삭제 후 전역 장바구니 개수 업데이트
+      // 상품 삭제 후 전역 장바구니 개수 업데이트
       await refreshCartCount();
 
       toast.success('선택된 상품이 삭제되었습니다.');
@@ -234,7 +242,7 @@ export default function CartPage() {
         onCheckItem={handleCheckItem}
         onQuantityChange={handleQuantityChange}
         isAllChecked={isAllChecked}
-        onCheckAll={handleCheckAll}
+        onCheckAll={handleAllSelect}
       />
 
       {/* 결제 정보 */}
