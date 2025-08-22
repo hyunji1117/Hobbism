@@ -53,7 +53,7 @@ export default function CartAction({
   const handleOptionSelect = (type: 'size' | 'color', value: string) => {
     if (type === 'size') setSelectedSize(value);
     if (type === 'color') setSelectedColor(value);
-    setLoading(false);
+    // setLoading(false);
   };
 
   // 장바구니 담기
@@ -92,10 +92,10 @@ export default function CartAction({
         resetOptions(); // 옵션 초기화
       } catch (error) {
         console.error('장바구니 추가 중 오류 발생:', error);
-        toast.error('장바구니 추가에 실패했습니다.');
-        setLoading(false); // 실패 시 다시 활성화
+        toast.error('새로고침 후 다시 시도해주세요');
+        // setLoading(false); // 실패 시 다시 활성화
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     } else {
       setIsBottomSheetOpen(true);

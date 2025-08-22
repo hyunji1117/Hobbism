@@ -38,6 +38,7 @@ export default function CartPage() {
       try {
         setIsLoading(true);
         const data = await fetchCartList(1, 10);
+
         const items = data.item.map(item => ({
           ...item,
           isChecked: false,
@@ -45,8 +46,8 @@ export default function CartPage() {
         }));
 
         setCartItems(items);
-        // 🎯 전역 장바구니 개수 업데이트
-        await refreshCartCount();
+        // 전역 장바구니 개수 업데이트
+        // await refreshCartCount();
       } catch (err) {
         console.error('장바구니 데이터를 가져오는 중 오류 발생:', err);
         setErrorMessage('장바구니 데이터를 불러오는 데 실패했습니다.');
@@ -58,58 +59,65 @@ export default function CartPage() {
     loadCartItems();
   }, [refreshCartCount]);
 
-  // 전체 선택 토글 핸들러
-  const handleCheckAll = (checked: boolean) => {
-    setIsAllChecked(checked);
-    setCartItems(prev =>
-      prev.map(item => ({
-        ...item,
-        isChecked: checked,
-      })),
-    );
-  };
-
   // 전체 선택 버튼 핸들러
-  const handleAllSelect = () => {
-    const newCheckedState = !isAllChecked;
-    handleCheckAll(newCheckedState);
-  };
-
-  // 총 결제 금액 계산
   useEffect(() => {
-    const total = cartItems
+    const newTotalPrice = cartItems
       .filter(item => item.isChecked)
       .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    setTotalPrice(total);
+    setTotalPrice(newTotalPrice);
   }, [cartItems]);
 
+  const handleAllSelect = () => {
+    const newCheckedState = !isAllChecked;
+
+    setIsAllChecked(newCheckedState);
+    const updatedItems = cartItems.map(item => ({
+      ...item,
+      isChecked: newCheckedState,
+    }));
+    setCartItems(updatedItems);
+
+    const newTotalPrice = updatedItems
+      .filter(item => item.isChecked)
+      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    setTotalPrice(newTotalPrice);
+  };
+
   // 개별 상품 체크 핸들러
-  const handleCheckItem = (id: number, checked: boolean) => {
-    setCartItems(prev =>
-      prev.map(item =>
-        item.product._id === id ? { ...item, isChecked: checked } : item,
-      ),
+  const handleCheckItem = (
+    id: number,
+    checked: boolean,
+    color: string,
+    size: string,
+  ) => {
+    const updatedItems = cartItems.map(item =>
+      item.product._id === id && item.color === color && item.size === size
+        ? { ...item, isChecked: checked }
+        : item,
     );
 
-    // 전체 선택 상태 업데이트
-    const updatedItems = cartItems.map(item =>
-      item.product._id === id ? { ...item, isChecked: checked } : item,
-    );
-    setIsAllChecked(updatedItems.every(item => item.isChecked));
+    setCartItems(updatedItems);
+
+    // 전체 선택 상태를 업데이트할 때, 모든 체크박스가 선택된 경우에만 true로 설정
+    if (checked) {
+      setIsAllChecked(updatedItems.every(item => item.isChecked));
+    }
   };
 
   // 수량 변경 핸들러
   const handleQuantityChange = async (id: number, quantity: number) => {
     try {
-      const updatedItem = await fetchUpdateCartItemQuantity(id, quantity);
+      // API 호출
+      await fetchUpdateCartItemQuantity(id, quantity);
+
+      // 상태 업데이트
       setCartItems(prevItems =>
         prevItems.map(item =>
-          item.product._id === id
-            ? { ...item, quantity: updatedItem.data.quantity }
-            : item,
+          // 장바구니 아이템 ID로 비교할 것!
+          item._id === id ? { ...item, quantity: quantity } : item,
         ),
       );
-      // 🎯 수량 변경 후 전역 개수 업데이트 (일관성을 위해)
+
       await refreshCartCount();
     } catch (error) {
       console.error('수량 변경 중 오류 발생:', error);
@@ -137,7 +145,7 @@ export default function CartPage() {
       );
 
       setCartItems(remainingItems);
-      // 🎯 상품 삭제 후 전역 장바구니 개수 업데이트
+      // 상품 삭제 후 전역 장바구니 개수 업데이트
       await refreshCartCount();
 
       toast.success('선택된 상품이 삭제되었습니다.');
@@ -178,6 +186,26 @@ export default function CartPage() {
   if (isLoading) return <Loading />;
   if (errorMessage) return <p>{errorMessage}</p>;
 
+  // 빈 장바구니 상태 처리
+  if (cartItems.length === 0) {
+    return (
+      <div className="flex min-h-[calc(100vh-200px)] flex-col items-center justify-center px-4">
+        <div className="p-12 text-center">
+          <h2 className="mb-2 text-2xl font-bold text-gray-900">
+            장바구니에 담긴 상품이 없어요
+          </h2>
+          <p className="mb-8 text-lg text-gray-500">원하는 상품을 담아보세요</p>
+          <button
+            className="min-w-[120px] cursor-pointer rounded-[5px] bg-[#4B5563] px-2 py-2 text-[16px] font-semibold text-white transition-colors hover:bg-[#2c2f33]"
+            onClick={() => router.push('/shop')}
+          >
+            상품 보러 가기
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col px-4">
       <hr className="mt-10" />
@@ -214,7 +242,7 @@ export default function CartPage() {
         onCheckItem={handleCheckItem}
         onQuantityChange={handleQuantityChange}
         isAllChecked={isAllChecked}
-        onCheckAll={handleCheckAll}
+        onCheckAll={handleAllSelect}
       />
 
       {/* 결제 정보 */}
