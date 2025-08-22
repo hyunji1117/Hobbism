@@ -98,12 +98,10 @@ export default function CartPage() {
 
     setCartItems(updatedItems);
 
-    setIsAllChecked(updatedItems.every(item => item.isChecked));
-
-    const newTotalPrice = updatedItems
-      .filter(item => item.isChecked)
-      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    setTotalPrice(newTotalPrice);
+    // 전체 선택 상태를 업데이트할 때, 모든 체크박스가 선택된 경우에만 true로 설정
+    if (checked) {
+      setIsAllChecked(updatedItems.every(item => item.isChecked));
+    }
   };
 
   // 수량 변경 핸들러
