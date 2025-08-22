@@ -4,7 +4,12 @@ import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
 
 interface CartListProps {
   cartItems: CartItem[];
-  onCheckItem: (id: number, checked: boolean) => void;
+  onCheckItem: (
+    id: number,
+    checked: boolean,
+    color: string,
+    size: string,
+  ) => void;
   onQuantityChange: (id: number, quantity: number) => Promise<void>;
   isAllChecked: boolean;
   onCheckAll: (checked: boolean) => void;
@@ -32,7 +37,9 @@ const CartList: React.FC<CartListProps> = ({
             color={item.color}
             selectedOption={item.selectedOption}
             isChecked={item.isChecked}
-            onCheck={onCheckItem}
+            onCheck={(id, checked) =>
+              onCheckItem(id, checked, item.color, item.size)
+            }
             onQuantityChange={onQuantityChange}
             isAllChecked={isAllChecked}
           />
@@ -41,4 +48,5 @@ const CartList: React.FC<CartListProps> = ({
     </div>
   );
 };
+
 export default CartList;
