@@ -7,7 +7,7 @@ import {
   fetchUpdateCartItemQuantity,
   fetchDeleteAllCarts,
 } from '@/data/functions/CartFetch.client';
-import { CartItem, CartQuantityUpdateRes } from '@/types/cart';
+import { CartItem } from '@/types/cart';
 import CartList from '@/components/features/shopping-cart/CartList';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -38,6 +38,7 @@ export default function CartPage() {
       try {
         setIsLoading(true);
         const data = await fetchCartList(1, 10);
+
         const items = data.item.map(item => ({
           ...item,
           isChecked: false,
@@ -59,64 +60,65 @@ export default function CartPage() {
   }, [refreshCartCount]);
 
   // 전체 선택 버튼 핸들러
+  useEffect(() => {
+    const newTotalPrice = cartItems
+      .filter(item => item.isChecked)
+      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    setTotalPrice(newTotalPrice);
+  }, [cartItems]);
+
   const handleAllSelect = () => {
     const newCheckedState = !isAllChecked;
 
     setIsAllChecked(newCheckedState);
-    setCartItems(prev =>
-      prev.map(item => ({
-        ...item,
-        isChecked: newCheckedState,
-      })),
-    );
-  };
+    const updatedItems = cartItems.map(item => ({
+      ...item,
+      isChecked: newCheckedState,
+    }));
+    setCartItems(updatedItems);
 
-  // 총 결제 금액 계산
-  useEffect(() => {
-    const total = cartItems
+    const newTotalPrice = updatedItems
       .filter(item => item.isChecked)
       .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    setTotalPrice(total);
-  }, [cartItems]);
+    setTotalPrice(newTotalPrice);
+  };
 
   // 개별 상품 체크 핸들러
-  const handleCheckItem = (id: number, checked: boolean) => {
-    setCartItems(prev =>
-      prev.map(item =>
-        item.product._id === id ? { ...item, isChecked: checked } : item,
-      ),
+  const handleCheckItem = (
+    id: number,
+    checked: boolean,
+    color: string,
+    size: string,
+  ) => {
+    const updatedItems = cartItems.map(item =>
+      item.product._id === id && item.color === color && item.size === size
+        ? { ...item, isChecked: checked }
+        : item,
     );
 
-    // 전체 선택 상태 업데이트
-    const updatedItems = cartItems.map(item =>
-      item.product._id === id ? { ...item, isChecked: checked } : item,
-    );
+    setCartItems(updatedItems);
+
     setIsAllChecked(updatedItems.every(item => item.isChecked));
+
+    const newTotalPrice = updatedItems
+      .filter(item => item.isChecked)
+      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    setTotalPrice(newTotalPrice);
   };
 
   // 수량 변경 핸들러
   const handleQuantityChange = async (id: number, quantity: number) => {
-    console.log(`🔄 수량 변경 시작 - ID: ${id}, 새 수량: ${quantity}`);
-
     try {
       // API 호출
       await fetchUpdateCartItemQuantity(id, quantity);
 
       // 상태 업데이트
-      setCartItems(prevItems => {
-        const updatedItems = prevItems.map(item => {
+      setCartItems(prevItems =>
+        prevItems.map(item =>
           // 장바구니 아이템 ID로 비교할 것!
-          if (item._id === id) {
-            console.log(
-              `✅ 장바구니 아이템 ID 매칭 성공! ${item.product.name}의 수량: ${item.quantity} → ${quantity}`,
-            );
-            return { ...item, quantity: quantity };
-          }
-          return item;
-        });
-
-        return updatedItems;
-      });
+          item._id === id ? { ...item, quantity: quantity } : item,
+        ),
+      );
 
       await refreshCartCount();
     } catch (error) {
