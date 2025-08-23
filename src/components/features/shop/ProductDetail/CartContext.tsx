@@ -10,14 +10,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       <CartContext.Provider value={{ cartCount: 0 }}>
         {children}
       </CartContext.Provider>
-      {/* 선택된 옵션 표시 */}
-      {/* {(selectedSize || selectedColor) && (
-        <p className="h-auto w-500 text-sm text-gray-500" bg-blue-500>
-          {selectedSize && `사이즈: ${selectedSize}`}
-          {selectedSize && selectedColor && ' | '}
-          {selectedColor && `색상: ${selectedColor}`}
-        </p>
-      )} */}
     </>
   );
 }
