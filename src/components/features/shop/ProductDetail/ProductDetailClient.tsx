@@ -1,18 +1,16 @@
+// 상품 상세 정보, 수량 선택, 총 결제 금액 컴포넌트
 'use client';
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { ChevronLeft, ShoppingCart } from 'lucide-react';
-import {
-  ProductActionButtons,
-  TotalPrice,
-} from '@/components/features/shop/ProductDetail/ProductDetail';
+import { TotalPrice } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { OptionSelector } from '@/components/features/shop/ProductDetail/OptionSelector';
 import { useCart } from '@/components/features/shop/ProductDetail/CartContext';
 import { ProductQuantitySelector } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { fetchAddToCart } from '@/data/functions/CartFetch.client';
-
+import { PaymentButton } from '@/components/common/PaymentButton';
 import { usePurchaseStore } from '@/store/order.store';
 import { SmallLoading } from '@/components/common/SmallLoading';
 import toast from 'react-hot-toast';
@@ -46,19 +44,26 @@ export default function CartAction({
   const resetOptions = () => {
     setSelectedSize(undefined);
     setSelectedColor(undefined);
-    setLoading(false); // 옵션 초기화 시 버튼도 활성화
+    setLoading(false);
+  };
+
+  // 버튼 텍스트 결정 함수
+  const getButtonText = () => {
+    if (loading) return '처리 중...';
+    if (price * quantity !== undefined)
+      return `${(price * quantity).toLocaleString()}원 결제하기`;
+    return '결제하기';
   };
 
   // 옵션 선택 시 버튼 활성화
   const handleOptionSelect = (type: 'size' | 'color', value: string) => {
     if (type === 'size') setSelectedSize(value);
     if (type === 'color') setSelectedColor(value);
-    // setLoading(false);
   };
 
   // 장바구니 담기
   const handleAddToCart = async () => {
-    if (loading) return; // 이미 비활성화면 중복 방지
+    if (loading) return;
 
     if (isBottomSheetOpen) {
       // 옵션이 있는 경우
@@ -76,7 +81,7 @@ export default function CartAction({
         }
       }
 
-      setLoading(true); // 버튼 비활성화
+      setLoading(true);
 
       try {
         const response = await fetchAddToCart({
@@ -88,14 +93,13 @@ export default function CartAction({
         console.log('장바구니 추가 성공 응답:', response);
 
         toast.success('장바구니에 상품이 추가되었습니다!');
-        setIsBottomSheetOpen(false); // 바텀시트 닫기
-        resetOptions(); // 옵션 초기화
+        setIsBottomSheetOpen(false);
+        resetOptions();
       } catch (error) {
         console.error('장바구니 추가 중 오류 발생:', error);
         toast.error('새로고침 후 다시 시도해주세요');
-        // setLoading(false); // 실패 시 다시 활성화
       } finally {
-        // setLoading(false);
+        setLoading(false);
       }
     } else {
       setIsBottomSheetOpen(true);
@@ -107,14 +111,14 @@ export default function CartAction({
       setIsBottomSheetOpen(true);
       return;
     }
-    if (
-      options?.size?.length &&
-      !selectedSize &&
-      options?.color?.length &&
-      !selectedColor
-    ) {
-      toast.error('옵션을 하나 이상 선택해주세요!');
-      return;
+    if (hasOptions) {
+      const sizeRequired = options?.size?.length && !selectedSize;
+      const colorRequired = options?.color?.length && !selectedColor;
+
+      if (sizeRequired || colorRequired) {
+        toast.error('옵션을 선택해주세요!');
+        return;
+      }
     }
 
     setIsBottomSheetOpen(false);
@@ -135,13 +139,13 @@ export default function CartAction({
 
     usePurchaseStore.getState().setPurchaseData([purchaseData]);
     router.push(`/shop/purchase`);
-    resetOptions(); // 옵션 초기화
+    resetOptions();
   };
 
   const swipeHandlers = useSwipeable({
     onSwipedDown: () => {
       setIsBottomSheetOpen(false);
-      resetOptions(); // 옵션 초기화
+      resetOptions();
     },
     trackMouse: true,
   });
@@ -153,24 +157,27 @@ export default function CartAction({
 
   return (
     <>
-      {/* 상품 액션 버튼 */}
-      <div className="bt-rounded-[8px] fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-4 py-3">
-        <ProductActionButtons
-          onCartClick={handleAddToCart}
-          onBuyNowClick={handleBuyNow}
-          product={{
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            productImg: item.productImg || '',
-          }}
-          options={options?.size?.map(size => ({
-            id: size.toString(),
-            name: `사이즈 ${size}`,
-            price: item.price,
-          }))}
-          // 버튼 비활성화 조건 전달
-        />
+      {/* 상품 액션 버튼 - 공통 컴포넌트 사용 */}
+      <div className="fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-4 py-3">
+        <div className="mb-3 flex h-[50px] justify-between gap-3">
+          <button
+            onClick={handleAddToCart}
+            disabled={loading}
+            className={`w-[40%] min-w-[105px] cursor-pointer rounded-[5px] border border-[#C3C3C3] px-2 py-2 text-[16px] text-black hover:bg-[#EAEAEA] ${
+              loading ? 'cursor-not-allowed opacity-50' : ''
+            }`}
+          >
+            장바구니 담기
+          </button>
+
+          <PaymentButton
+            onClick={handleBuyNow}
+            variant="primary"
+            isLoading={loading}
+            text={getButtonText()}
+            amount={price * quantity}
+          />
+        </div>
       </div>
 
       {/* 바텀시트 어두운 배경 */}
@@ -179,7 +186,7 @@ export default function CartAction({
           className="fixed inset-0 z-10 flex items-center justify-center"
           onClick={() => {
             setIsBottomSheetOpen(false);
-            resetOptions(); // 옵션 초기화
+            resetOptions();
           }}
         >
           <div className="h-full w-full max-w-[600px] bg-black opacity-50"></div>
