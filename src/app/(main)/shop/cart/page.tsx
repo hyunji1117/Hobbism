@@ -15,6 +15,9 @@ import Loading from '@/app/(main)/loading';
 import { usePurchaseStore } from '@/store/order.store';
 import { useRouter } from 'next/navigation';
 import { useCartState } from '@/store/cartStore';
+import { PaymentButton } from '@/components/common/PaymentButton';
+import { CartSummary } from '@/components/features/shopping-cart/CartSummary';
+import { CartSelectAll } from '@/components/features/shopping-cart/CartSelectAll';
 
 // 로컬에서만 사용하는 확장된 CartItem 타입
 interface ExtendedCartItem extends CartItem {
@@ -47,7 +50,7 @@ export default function CartPage() {
 
         setCartItems(items);
         // 전역 장바구니 개수 업데이트
-        // await refreshCartCount();
+        await refreshCartCount();
       } catch (err) {
         console.error('장바구니 데이터를 가져오는 중 오류 발생:', err);
         setErrorMessage('장바구니 데이터를 불러오는 데 실패했습니다.');
@@ -60,48 +63,71 @@ export default function CartPage() {
   }, [refreshCartCount]);
 
   // 전체 선택 버튼 핸들러
-  useEffect(() => {
-    const newTotalPrice = cartItems
-      .filter(item => item.isChecked)
-      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    setTotalPrice(newTotalPrice);
-  }, [cartItems]);
-
-  const handleAllSelect = () => {
-    const newCheckedState = !isAllChecked;
-
-    setIsAllChecked(newCheckedState);
-    const updatedItems = cartItems.map(item => ({
-      ...item,
-      isChecked: newCheckedState,
-    }));
-    setCartItems(updatedItems);
-
-    const newTotalPrice = updatedItems
-      .filter(item => item.isChecked)
-      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    setTotalPrice(newTotalPrice);
+  const handleCheckAll = (checked: boolean) => {
+    setIsAllChecked(checked);
+    setCartItems(prev =>
+      prev.map(item => ({
+        ...item,
+        isChecked: checked,
+      })),
+    );
   };
 
+  // "전체 선택" 버튼 클릭 UI 이벤트 처리만 담당
+  const handleAllSelect = () => {
+    const newCheckedState = !isAllChecked;
+    // 새로운 함수 호출로 변경
+    handleCheckAll(newCheckedState);
+  };
+
+  // 총 결제 금액 계산: cartItems가 변경될 때마다 총 금액 자동 재계산
+  useEffect(() => {
+    const total = cartItems
+      .filter(item => item.isChecked)
+      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    setTotalPrice(total);
+  }, [cartItems]);
+
   // 개별 상품 체크 핸들러
+  // const handleCheckItem = (
+  //   id: number,
+  //   checked: boolean,
+  //   color: string,
+  //   size: string,
+  // ) => {
+  // const updatedItems = cartItems.map(item =>
+  //   item.product._id === id && item.color === color && item.size === size
+  //     ? { ...item, isChecked: checked }
+  //     : item,
+  // );
+
+  //   setCartItems(updatedItems);
+
+  //   // 전체 선택 상태를 업데이트할 때, 모든 체크박스가 선택된 경우에만 true로 설정
+  //   if (checked) {
+  //     setIsAllChecked(updatedItems.every(item => item.isChecked));
+  //   }
+  // };
+
   const handleCheckItem = (
     id: number,
     checked: boolean,
     color: string,
     size: string,
   ) => {
-    const updatedItems = cartItems.map(item =>
-      item.product._id === id && item.color === color && item.size === size
-        ? { ...item, isChecked: checked }
-        : item,
+    setCartItems(prev =>
+      prev.map(item =>
+        item.product._id === id && item.color === color && item.size === size
+          ? { ...item, isChecked: checked }
+          : item,
+      ),
     );
 
-    setCartItems(updatedItems);
-
-    // 전체 선택 상태를 업데이트할 때, 모든 체크박스가 선택된 경우에만 true로 설정
-    if (checked) {
-      setIsAllChecked(updatedItems.every(item => item.isChecked));
-    }
+    // 전체 선택 상태 업데이트
+    const updatedItems = cartItems.map(item =>
+      item.product._id === id ? { ...item, isChecked: checked } : item,
+    );
+    setIsAllChecked(updatedItems.every(item => item.isChecked));
   };
 
   // 수량 변경 핸들러
@@ -209,31 +235,14 @@ export default function CartPage() {
   return (
     <div className="flex flex-col px-4">
       <hr className="mt-10" />
-      {/* 전체 선택 */}
-      <div className="relative flex">
-        <button
-          onClick={handleAllSelect}
-          aria-label={isAllChecked ? '전체 상품 선택 해제' : '전체 상품 선택'}
-          className="absolute top-3.5"
-        >
-          <Image
-            src={isAllChecked ? '/check-on.svg' : '/check-off.svg'}
-            alt="전체 선택 설정 버튼"
-            width={20}
-            height={20}
-            className="ml-5"
-          />
-        </button>
-        <span className="relative top-3 left-14 text-lg leading-6 font-semibold">
-          전체 선택
-        </span>
-        <button
-          className="absolute top-3 right-5 text-[#F05656]"
-          onClick={handleRemoveAll}
-        >
-          선택 삭제
-        </button>
-      </div>
+
+      {/* 전체 선택 컴포넌트 */}
+      <CartSelectAll
+        isAllChecked={isAllChecked}
+        onSelectAll={handleAllSelect}
+        onRemoveSelected={handleRemoveAll}
+      />
+
       <hr className="my-6" />
 
       {/* 장바구니에 담긴 상품 리스트 */}
@@ -242,37 +251,22 @@ export default function CartPage() {
         onCheckItem={handleCheckItem}
         onQuantityChange={handleQuantityChange}
         isAllChecked={isAllChecked}
-        onCheckAll={handleAllSelect}
+        onCheckAll={handleCheckAll}
       />
 
-      {/* 결제 정보 */}
-      <div className="mx-4 my-6 flex flex-col gap-y-4">
-        <div className="flex justify-between">
-          <span className="text-[#4B5563]">총 상품금액</span>
-          <span className="right-4 font-medium">
-            {totalPrice.toLocaleString()}원
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-[#4B5563]">배송비</span>
-          <span className="right-4">무료</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-lg leading-6 font-semibold">총 결제금액</span>
-          <span className="right-4 text-lg leading-6 font-semibold text-[#F05656]">
-            {totalPrice.toLocaleString()}원
-          </span>
-        </div>
-      </div>
+      {/* 결제 정보 요약 */}
+      <CartSummary totalPrice={totalPrice} />
 
-      {/* 결제 버튼 */}
+      {/* 결제 버튼 - 공통 컴포넌트 사용 */}
       <div className="top-3 px-4 py-3 text-center">
-        <button
-          className="mb-50 h-[3.5rem] w-full max-w-[21.875rem] cursor-pointer rounded-md bg-[#4B5563] text-xl font-semibold text-white hover:bg-[#2C2F33]"
+        <PaymentButton
+          amount={totalPrice}
+          // {handlePayment}로 수정 예정
           onClick={handleAddBuy}
-        >
-          결제하기
-        </button>
+          variant="secondary"
+          fullWidth
+          style={{ maxWidth: '21.875rem', margin: '0 auto' }}
+        />
       </div>
     </div>
   );

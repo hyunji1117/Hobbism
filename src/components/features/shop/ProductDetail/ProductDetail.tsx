@@ -1,6 +1,6 @@
+// 상품 상세 정보, 수량 선택, 총 결제 금액 컴포넌트
 'use client';
 
-// import { useEffect, useState } from 'react';
 import { Minus, Plus, X } from 'lucide-react';
 
 // 상품 상세 정보 컴포넌트
@@ -117,48 +117,6 @@ export const ProductQuantitySelector = ({
   );
 };
 
-// 상품 액션 버튼 컴포넌트
-interface ProductActionButtonsProps {
-  onCartClick: () => void;
-  onBuyNowClick: () => void;
-  product: {
-    id: string;
-    name: string;
-    price: number;
-    productImg: string;
-  };
-  options?: { id: string; name: string; price: number }[];
-  cartButtonDisabled?: boolean;
-}
-
-export const ProductActionButtons = ({
-  onCartClick,
-  onBuyNowClick,
-  product,
-  options,
-  cartButtonDisabled = false,
-}: ProductActionButtonsProps) => {
-  return (
-    <div className="mb-3 flex h-[50px] justify-between gap-3">
-      <button
-        onClick={onCartClick}
-        disabled={cartButtonDisabled}
-        className={`w-[40%] min-w-[105px] cursor-pointer rounded-[5px] border border-[#C3C3C3] px-2 py-2 text-[16px] text-black hover:bg-[#EAEAEA] ${
-          cartButtonDisabled ? 'cursor-not-allowed opacity-50' : ''
-        }`}
-      >
-        장바구니 담기
-      </button>
-      <button
-        onClick={onBuyNowClick}
-        className="w-[60%] min-w-[105px] cursor-pointer rounded-[5px] bg-[#4B5563] px-2 py-2 text-[16px] font-semibold text-white hover:bg-[#2C2F33]"
-      >
-        바로 구매하기
-      </button>
-    </div>
-  );
-};
-
 // 총 결제 금액 컴포넌트
 export const TotalPrice = ({
   quantity,
@@ -180,3 +138,5 @@ export const TotalPrice = ({
     </section>
   );
 };
+
+// ProductDetailClient.tsx에서 직접 PaymentButton을 사용
