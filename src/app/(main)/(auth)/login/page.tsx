@@ -1,5 +1,5 @@
 import { AdminButton } from '@/app/admin/AdminButton';
-import TreePage from '@/app/tree';
+// import TreePage from '@/app/tree';
 import SocialLoginButtons from '@/components/features/auth/SocialLoginButtons';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -36,7 +36,7 @@ export default function Login() {
             <SocialLoginButtons />
             <AdminButton />
           </div>
-          <TreePage />
+          {/* <TreePage /> */}
 
           {/* 안내 문구 */}
           <div className="mt-5 flex w-full flex-col items-center">
