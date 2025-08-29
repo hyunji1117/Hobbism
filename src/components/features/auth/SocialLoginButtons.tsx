@@ -21,10 +21,10 @@ export default function SocialLoginButtons() {
   return (
     <>
       {/* 구글 로그인 */}
-      <div className="relative flex w-full">
+      <div className="relative flex w-full max-w-md min-w-[295px]">
         {recentLoginType === 'google' && <RecentLogin className="" />}
         <LoginButton
-          className="flex items-center justify-center gap-3.5 rounded-lg border border-[#e5e7eb] bg-white py-3 text-[#4A4A4A] hover:bg-[#F8F8F8]"
+          className="flex items-center justify-center gap-3.5 rounded-[5px] border border-[#ECEDEE] bg-white py-3 text-[#2A2B2B] hover:bg-[#F8F8F8]"
           onClick={handleGoogleLogin}
         >
           <GoogleIcon className="size-5" />
@@ -32,10 +32,10 @@ export default function SocialLoginButtons() {
         </LoginButton>
       </div>
       {/* 카카오 로그인 */}
-      <div className="relative flex w-full">
+      <div className="relative flex w-full max-w-md min-w-[295px]">
         {recentLoginType === 'kakao' && <RecentLogin className="" />}
         <LoginButton
-          className="flex items-center justify-center gap-3.5 rounded-lg bg-[#FEE500] py-3 text-[#4A4A4A] hover:bg-[#FDD835]"
+          className="flex items-center justify-center gap-3.5 rounded-[5px] bg-[#FEE500] py-3 text-[#2A2B2B] hover:bg-[#FDD835]"
           onClick={handleKakaoLogin}
         >
           <KakaoIcon className="size-5" />
@@ -43,10 +43,10 @@ export default function SocialLoginButtons() {
         </LoginButton>
       </div>
       {/* 네이버 로그인 */}
-      <div className="relative flex w-full">
+      <div className="relative flex w-full max-w-md min-w-[295px]">
         {recentLoginType === 'naver' && <RecentLogin className="" />}
         <LoginButton
-          className="flex items-center justify-center gap-3.5 rounded-lg bg-[#03C75A] py-3 text-white hover:bg-[#02B851]"
+          className="flex items-center justify-center gap-3.5 rounded-[5px] bg-[#03C75A] py-3 text-white hover:bg-[#02B851]"
           onClick={handleNaverLogin}
         >
           <NaverIcon className="size-4" />
