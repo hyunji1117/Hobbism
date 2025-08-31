@@ -1,10 +1,11 @@
+// 공통 결제 버튼 컴포넌트 생성
 'use client';
 
-import { SmallLoading } from '@/components/common/SmallLoading';
 import { PaymentSelector } from '@/components/features/shopping-order/detail/purchase/PaymentSelector';
 import { PaymentSummary } from '@/components/features/shopping-order/detail/purchase/PaymentSummary';
 import { PurchaseAddress } from '@/components/features/shopping-order/detail/purchase/PurchaseAddress';
 import { PurchaseProductList } from '@/components/features/shopping-order/detail/purchase/PurchaseProductList';
+import { PaymentButton } from '@/components/common/PaymentButton';
 import { createOrder } from '@/data/actions/orders';
 import { useAuthStore } from '@/store/auth.store';
 import { usePurchaseStore } from '@/store/order.store';
@@ -39,6 +40,22 @@ export default function PurchaseClient({
     quantity: Number(item.quantity),
   }));
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!selectedPayment) {
+      e.preventDefault();
+      toast.error('결제 수단을 선택해 주세요.');
+      return;
+    }
+
+    if (!localAddressInfo.address || !localAddressInfo.postcode) {
+      e.preventDefault();
+      toast.error('배송지를 입력해 주세요.');
+      return;
+    }
+
+    console.log('폼 제출');
+  };
+
   return (
     <>
       <div className="pb-[10vh]">
@@ -59,25 +76,8 @@ export default function PurchaseClient({
         <PaymentSummary />
       </div>
 
-      <form
-        action={formAction}
-        onSubmit={e => {
-          if (!selectedPayment) {
-            e.preventDefault();
-            toast.error('결제 수단을 선택해 주세요.');
-            return;
-          }
-
-          if (!localAddressInfo.address || !localAddressInfo.postcode) {
-            e.preventDefault();
-            toast.error('배송지를 입력해 주세요.');
-            return;
-          }
-
-          console.log('폼 제출');
-        }}
-      >
-        {/* 구매 상품 */}
+      <form action={formAction} onSubmit={handleSubmit}>
+        {/* Hidden inputs for form data */}
         <input type="hidden" name="products" value={JSON.stringify(products)} />
         {/* 유저 정보: 이름, 휴대폰 */}
         <input type="hidden" name="name" value={userInfo.name || ''} />
@@ -107,17 +107,14 @@ export default function PurchaseClient({
           value={selectedPayment || ''}
         />
 
+        {/* 공통 결제 버튼 컴포넌트 사용 */}
         {purchaseData.length > 0 && (
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="fixed bottom-[2%] left-1/2 w-[93vw] max-w-[572px] -translate-x-1/2 cursor-pointer rounded-xl bg-[#4a4a4a] py-4 text-lg font-semibold text-white md:w-full"
-          >
-            {totalAmount.toLocaleString()}원 결제하기
-          </button>
+          <PaymentButton
+            amount={totalAmount}
+            isLoading={isLoading}
+            variant="fixed"
+          />
         )}
-
-        {isLoading && <SmallLoading />}
       </form>
     </>
   );
