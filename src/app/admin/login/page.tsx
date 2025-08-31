@@ -14,6 +14,11 @@ const AdminLoginPage = () => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  // 데모 계정 보호 관련 상태
+  const [showDemoAccount, setShowDemoAccount] = useState(false);
+  const [demoPin, setDemoPin] = useState('');
+  const [demoPinError, setDemoPinError] = useState('');
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // 입력 시 에러 메시지 제거
@@ -72,6 +77,30 @@ const AdminLoginPage = () => {
       setErrors({ form: '로그인에 실패했습니다. 다시 시도해주세요.' });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDemoPinSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (demoPin === '9999') {
+      setShowDemoAccount(true);
+      setDemoPinError('');
+      setDemoPin('');
+    } else {
+      setDemoPinError('잘못된 PIN 번호입니다.');
+      setDemoPin('');
+    }
+  };
+
+  const handleDemoPinChange = (value: string) => {
+    // 숫자만 입력 가능하도록 하고, 4자리까지만 입력
+    const numericValue = value.replace(/[^0-9]/g, '').slice(0, 4);
+    setDemoPin(numericValue);
+
+    // 에러 메시지 초기화
+    if (demoPinError) {
+      setDemoPinError('');
     }
   };
 
@@ -216,17 +245,81 @@ const AdminLoginPage = () => {
 
           {/* 데모 계정 안내 */}
           <div className="mt-6 rounded-lg bg-gray-50 p-4">
-            <h4 className="mb-2 text-sm font-medium text-gray-900">
-              📝 데모 계정
-            </h4>
-            <div className="space-y-1 text-xs text-gray-600">
-              <p>
-                <strong>이메일:</strong> admin@hobbism.com
-              </p>
-              <p>
-                <strong>비밀번호:</strong> admin123
-              </p>
-            </div>
+            {!showDemoAccount ? (
+              <div>
+                <h4 className="mb-3 text-sm font-medium text-gray-900">
+                  🔐 데모 계정 보기
+                </h4>
+                <form onSubmit={handleDemoPinSubmit} className="space-y-3">
+                  <div>
+                    <label className="mb-1 block text-xs text-gray-600">
+                      4자리 PIN 번호를 입력하세요
+                    </label>
+                    <div className="flex space-x-2">
+                      <input
+                        type="password"
+                        value={demoPin}
+                        onChange={e => handleDemoPinChange(e.target.value)}
+                        className={`flex-1 rounded border px-3 py-2 text-center text-sm focus:border-transparent focus:ring-2 focus:ring-red-500 ${
+                          demoPinError
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-gray-300'
+                        }`}
+                        placeholder="••••"
+                        maxLength={4}
+                        pattern="[0-9]*"
+                        inputMode="numeric"
+                      />
+                      <button
+                        type="submit"
+                        disabled={demoPin.length !== 4}
+                        className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        확인
+                      </button>
+                    </div>
+                    {demoPinError && (
+                      <p className="mt-1 text-xs text-red-600">
+                        {demoPinError}
+                      </p>
+                    )}
+                  </div>
+                </form>
+              </div>
+            ) : (
+              <div className="relative">
+                <button
+                  onClick={() => setShowDemoAccount(false)}
+                  className="absolute top-0 right-0 text-gray-400 hover:text-gray-600"
+                  aria-label="닫기"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+                <h4 className="mb-2 text-sm font-medium text-gray-900">
+                  📝 데모 계정
+                </h4>
+                <div className="space-y-1 text-xs text-gray-600">
+                  <p>
+                    <strong>이메일:</strong> admin@hobbism.com
+                  </p>
+                  <p>
+                    <strong>비밀번호:</strong> admin123
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
