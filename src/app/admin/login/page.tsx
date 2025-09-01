@@ -1,8 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import {
+  adminLogin,
+  sendPinFailureAlert,
+  clearAdminToken,
+} from '@/data/functions/AdminFetch.client';
 
 const AdminLoginPage = () => {
   const router = useRouter();
@@ -14,10 +19,80 @@ const AdminLoginPage = () => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  // 환경 변수에서 데모 계정 정보 가져오기
+  const DEMO_EMAIL = process.env.NEXT_PUBLIC_ADMIN_DEMO_EMAIL;
+  const DEMO_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_DEMO_PASSWORD;
+
+  // 차단 시간 설정 (초 단위) - 쉽게 변경 가능
+  const BLOCK_DURATION_SECONDS = 30; // 30초로 설정 (원하는 값으로 변경 가능)
+
   // 데모 계정 보호 관련 상태
   const [showDemoAccount, setShowDemoAccount] = useState(false);
   const [demoPin, setDemoPin] = useState('');
   const [demoPinError, setDemoPinError] = useState('');
+  const [pinAttempts, setPinAttempts] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [remainingTime, setRemainingTime] = useState<number>(0);
+
+  // 컴포넌트 마운트 시 기존 토큰 클리어
+  useEffect(() => {
+    clearAdminToken();
+  }, []);
+
+  // 로컬 스토리지에서 시도 횟수 불러오기
+  useEffect(() => {
+    const storedAttempts = localStorage.getItem('pinAttempts');
+    const blockedUntil = localStorage.getItem('blockedUntil');
+
+    if (storedAttempts) {
+      setPinAttempts(parseInt(storedAttempts));
+    }
+
+    if (blockedUntil) {
+      const blockedTime = parseInt(blockedUntil);
+      if (Date.now() < blockedTime) {
+        setIsBlocked(true);
+        const timeRemaining = blockedTime - Date.now();
+        setRemainingTime(Math.ceil(timeRemaining / 1000));
+
+        // 차단 시간이 지나면 자동으로 차단 해제
+        setTimeout(() => {
+          setIsBlocked(false);
+          setPinAttempts(0);
+          setRemainingTime(0);
+          localStorage.removeItem('pinAttempts');
+          localStorage.removeItem('blockedUntil');
+        }, timeRemaining);
+      } else {
+        // 차단 시간이 이미 지났으면 초기화
+        localStorage.removeItem('pinAttempts');
+        localStorage.removeItem('blockedUntil');
+      }
+    }
+  }, []);
+
+  // 카운트다운 타이머
+  useEffect(() => {
+    if (remainingTime > 0) {
+      const timer = setInterval(() => {
+        setRemainingTime(prev => {
+          if (prev <= 1) {
+            setIsBlocked(false);
+            setPinAttempts(0);
+            setEmailSent(false);
+            setDemoPinError(''); // 차단 해제 시 에러 메시지 제거
+            localStorage.removeItem('pinAttempts');
+            localStorage.removeItem('blockedUntil');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [remainingTime]);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -56,51 +131,169 @@ const AdminLoginPage = () => {
     setIsLoading(true);
 
     try {
-      // 여기에 실제 관리자 인증 로직 구현 예정
-      console.log('관리자 로그인 시도:', formData);
+      // API를 통한 실제 관리자 로그인
+      const result = await adminLogin(formData.email, formData.password);
 
-      // 임시 딜레이 (실제 API 호출 시뮬레이션)
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (result.ok) {
+        // 로그인 성공
+        console.log('관리자 로그인 성공:', result.data);
 
-      // 간단한 더미 인증 (실제로는 서버에서 검증)
-      if (
-        formData.email === 'admin@hobbism.com' &&
-        formData.password === 'admin123'
-      ) {
-        // 로그인 성공 시 관리자 페이지로 이동
+        // 로그인 상태 유지 옵션 처리
+        if (formData.rememberMe && typeof window !== 'undefined') {
+          localStorage.setItem('adminRememberMe', 'true');
+        }
+
+        // 관리자 페이지로 이동
         router.push('/admin');
       } else {
-        setErrors({ form: '이메일 또는 비밀번호가 올바르지 않습니다.' });
+        // 로그인 실패
+        setErrors({
+          form: result.message || '이메일 또는 비밀번호가 올바르지 않습니다.',
+        });
       }
     } catch (error) {
-      console.error('관리자 로그인 실패:', error);
+      console.error('관리자 로그인 오류:', error);
       setErrors({ form: '로그인에 실패했습니다. 다시 시도해주세요.' });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleDemoPinSubmit = (e: React.FormEvent) => {
+  const sendAlertEmail = async () => {
+    try {
+      // 이메일 발송을 위한 정보 수집
+      const attemptInfo = {
+        timestamp: new Date().toLocaleString('ko-KR'),
+        ipAddress:
+          typeof window !== 'undefined' ? window.location.hostname : 'Unknown',
+        userAgent:
+          typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+      };
+
+      // API를 통한 이메일 발송
+      const result = await sendPinFailureAlert(attemptInfo);
+
+      if (result.ok) {
+        console.log('경고 이메일 발송 완료');
+        setEmailSent(true);
+      } else {
+        console.error('이메일 발송 실패:', result.message);
+        // 이메일 발송 실패해도 차단은 진행
+        setEmailSent(true);
+      }
+    } catch (error) {
+      console.error('이메일 발송 중 오류:', error);
+      // 개발 환경에서는 오류를 무시하고 계속 진행
+      setEmailSent(true);
+    }
+  };
+
+  // PIN 검증 함수 - 서버 API 호출 버전 (선택사항)
+  const verifyPinWithServer = async (pin: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/admin/verify-pin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pin }),
+      });
+
+      const data = await response.json();
+      return data.success;
+    } catch (error) {
+      console.error('PIN 검증 오류:', error);
+      return false;
+    }
+  };
+
+  const handleDemoPinSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (demoPin === '9999') {
+    if (isBlocked) {
+      const minutes = Math.floor(remainingTime / 60);
+      const seconds = remainingTime % 60;
+      if (minutes > 0) {
+        setDemoPinError(
+          `차단되었습니다. ${minutes}분 ${seconds}초 후에 다시 시도하세요.`,
+        );
+      } else {
+        setDemoPinError(`차단되었습니다. ${seconds}초 후에 다시 시도하세요.`);
+      }
+      return;
+    }
+
+    // 서버 사이드 PIN 검증을 사용하는 경우 (권장)
+    // const isPinValid = await verifyPinWithServer(demoPin);
+
+    // 임시로 클라이언트 사이드 검증 (개발 환경)
+    // 프로덕션에서는 서버 사이드 검증 사용 권장
+    const EXPECTED_PIN = process.env.NEXT_PUBLIC_DEMO_PIN || '9999'; // 기본값 제공
+    const isPinValid = demoPin === EXPECTED_PIN;
+
+    if (isPinValid) {
       setShowDemoAccount(true);
       setDemoPinError('');
       setDemoPin('');
+      setPinAttempts(0);
+      localStorage.removeItem('pinAttempts');
+      setEmailSent(false);
     } else {
-      setDemoPinError('잘못된 PIN 번호입니다.');
+      const newAttempts = pinAttempts + 1;
+      setPinAttempts(newAttempts);
+      localStorage.setItem('pinAttempts', newAttempts.toString());
+
+      if (newAttempts >= 1) {
+        // 1회 실패 시 이메일 발송 및 설정된 시간만큼 차단
+        if (!emailSent) {
+          await sendAlertEmail();
+        }
+
+        const blockedUntil = Date.now() + BLOCK_DURATION_SECONDS * 1000; // 밀리초로 변환
+        localStorage.setItem('blockedUntil', blockedUntil.toString());
+        setIsBlocked(true);
+        setRemainingTime(BLOCK_DURATION_SECONDS); // 설정된 초 단위 시간
+
+        const displayMinutes = Math.floor(BLOCK_DURATION_SECONDS / 60);
+        const displaySeconds = BLOCK_DURATION_SECONDS % 60;
+        if (displayMinutes > 0) {
+          setDemoPinError(
+            `PIN 번호 입력을 실패하였습니다. ${displayMinutes}분 ${displaySeconds}초간 차단됩니다.`,
+          );
+        } else {
+          setDemoPinError(
+            `PIN 번호 입력을 실패하였습니다. ${displaySeconds}초간 차단됩니다.`,
+          );
+        }
+      }
+
       setDemoPin('');
     }
   };
 
   const handleDemoPinChange = (value: string) => {
+    // 차단된 상태에서는 입력 불가
+    if (isBlocked) return;
+
     // 숫자만 입력 가능하도록 하고, 4자리까지만 입력
     const numericValue = value.replace(/[^0-9]/g, '').slice(0, 4);
     setDemoPin(numericValue);
 
     // 에러 메시지 초기화
-    if (demoPinError) {
+    if (demoPinError && !isBlocked) {
       setDemoPinError('');
+    }
+  };
+
+  // 데모 계정으로 자동 입력 - 환경 변수 사용
+  const fillDemoCredentials = () => {
+    if (showDemoAccount && DEMO_EMAIL && DEMO_PASSWORD) {
+      setFormData({
+        email: DEMO_EMAIL,
+        password: DEMO_PASSWORD,
+        rememberMe: false,
+      });
+      setShowDemoAccount(false);
     }
   };
 
@@ -243,84 +436,126 @@ const AdminLoginPage = () => {
             </button>
           </form>
 
-          {/* 데모 계정 안내 */}
-          <div className="mt-6 rounded-lg bg-gray-50 p-4">
-            {!showDemoAccount ? (
-              <div>
-                <h4 className="mb-3 text-sm font-medium text-gray-900">
-                  🔐 데모 계정 보기
-                </h4>
-                <form onSubmit={handleDemoPinSubmit} className="space-y-3">
-                  <div>
-                    <label className="mb-1 block text-xs text-gray-600">
-                      4자리 PIN 번호를 입력하세요
-                    </label>
-                    <div className="flex space-x-2">
-                      <input
-                        type="password"
-                        value={demoPin}
-                        onChange={e => handleDemoPinChange(e.target.value)}
-                        className={`flex-1 rounded border px-3 py-2 text-center text-sm focus:border-transparent focus:ring-2 focus:ring-red-500 ${
-                          demoPinError
-                            ? 'border-red-300 bg-red-50'
-                            : 'border-gray-300'
-                        }`}
-                        placeholder="••••"
-                        maxLength={4}
-                        pattern="[0-9]*"
-                        inputMode="numeric"
-                      />
-                      <button
-                        type="submit"
-                        disabled={demoPin.length !== 4}
-                        className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        확인
-                      </button>
+          {/* 데모 계정 안내 - 개발 환경에서만 표시 */}
+          {process.env.NODE_ENV === 'development' && DEMO_EMAIL && (
+            <div className="mt-6 rounded-lg bg-gray-50 p-4">
+              {!showDemoAccount ? (
+                <div>
+                  <h4 className="mb-3 text-sm font-medium text-gray-900">
+                    🔐 데모 계정 보기
+                  </h4>
+                  <form onSubmit={handleDemoPinSubmit} className="space-y-3">
+                    <div>
+                      <label className="mb-1 block text-xs text-gray-600">
+                        4자리 PIN 번호를 입력하세요
+                      </label>
+                      <div className="flex space-x-2">
+                        <input
+                          type="password"
+                          value={demoPin}
+                          onChange={e => handleDemoPinChange(e.target.value)}
+                          className={`flex-1 rounded border px-3 py-2 text-center text-sm focus:border-transparent focus:ring-2 focus:ring-red-500 ${
+                            demoPinError
+                              ? 'border-red-300 bg-red-50'
+                              : 'border-gray-300'
+                          } ${isBlocked ? 'cursor-not-allowed opacity-50' : ''}`}
+                          placeholder={isBlocked ? '차단됨' : '••••'}
+                          maxLength={4}
+                          pattern="[0-9]*"
+                          inputMode="numeric"
+                          disabled={isBlocked}
+                        />
+                        <button
+                          type="submit"
+                          disabled={demoPin.length !== 4 || isBlocked}
+                          className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          확인
+                        </button>
+                      </div>
+                      {demoPinError && (
+                        <p className="mt-1 text-xs text-red-600">
+                          {demoPinError}
+                        </p>
+                      )}
+                      {isBlocked && remainingTime > 0 && (
+                        <div className="mt-3 rounded bg-red-100 p-3 text-center">
+                          <p className="text-sm font-medium text-red-800">
+                            🔒 차단 상태
+                          </p>
+                          <p className="mt-1 text-2xl font-bold text-red-900">
+                            {Math.floor(remainingTime / 60) > 0 ? (
+                              <>
+                                {Math.floor(remainingTime / 60)}:
+                                {(remainingTime % 60)
+                                  .toString()
+                                  .padStart(2, '0')}
+                              </>
+                            ) : (
+                              <>{remainingTime}초</>
+                            )}
+                          </p>
+                          <p className="mt-1 text-xs text-red-700">
+                            {Math.floor(remainingTime / 60) > 0
+                              ? '남은 차단 시간'
+                              : '곧 차단이 해제됩니다'}
+                          </p>
+                        </div>
+                      )}
+                      {emailSent && !isBlocked && (
+                        <p className="mt-2 text-xs text-purple-600">
+                          ⚠️ 보안 알림이 eve0204eve@gmail.com으로
+                          발송되었습니다.
+                        </p>
+                      )}
                     </div>
-                    {demoPinError && (
-                      <p className="mt-1 text-xs text-red-600">
-                        {demoPinError}
-                      </p>
-                    )}
-                  </div>
-                </form>
-              </div>
-            ) : (
-              <div className="relative">
-                <button
-                  onClick={() => setShowDemoAccount(false)}
-                  className="absolute top-0 right-0 text-gray-400 hover:text-gray-600"
-                  aria-label="닫기"
-                >
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-                <h4 className="mb-2 text-sm font-medium text-gray-900">
-                  📝 데모 계정
-                </h4>
-                <div className="space-y-1 text-xs text-gray-600">
-                  <p>
-                    <strong>이메일:</strong> admin@hobbism.com
-                  </p>
-                  <p>
-                    <strong>비밀번호:</strong> admin123
-                  </p>
+                  </form>
                 </div>
-              </div>
-            )}
-          </div>
+              ) : (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowDemoAccount(false)}
+                    className="absolute top-0 right-0 text-gray-400 hover:text-gray-600"
+                    aria-label="닫기"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                  <h4 className="mb-2 text-sm font-medium text-gray-900">
+                    📝 데모 계정 (개발 환경)
+                  </h4>
+                  <div className="space-y-1 text-xs text-gray-600">
+                    <p>
+                      <strong>이메일:</strong> {DEMO_EMAIL}
+                    </p>
+                    <p>
+                      <strong>비밀번호:</strong> ******
+                    </p>
+                    <p className="mt-2 text-xs text-gray-500">
+                      * 실제 계정 정보는 관리자에게 문의하세요
+                    </p>
+                  </div>
+                  <button
+                    onClick={fillDemoCredentials}
+                    className="mt-3 w-full rounded bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-blue-700"
+                  >
+                    데모 계정으로 자동 입력
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* 하단 링크 */}
@@ -341,6 +576,7 @@ const AdminLoginPage = () => {
             <li>• 공용 컴퓨터에서는 로그인 상태 유지를 사용하지 마세요</li>
             <li>• 비밀번호는 정기적으로 변경해주세요</li>
             <li>• 의심스러운 활동이 감지되면 즉시 보고해주세요</li>
+            <li>• PIN 번호 5회 이상 실패 시 보안 알림이 발송됩니다</li>
           </ul>
         </div>
 
