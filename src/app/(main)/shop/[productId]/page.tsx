@@ -3,7 +3,7 @@ import Tabbar from '@/components/layout/tabbar/Tabbar';
 import { CartProvider } from '@/components/features/shop/ProductDetail/CartContext';
 import { ProductDetailInfo } from '@/components/features/shop/ProductDetail/ProductDetail';
 import { fetchProductDetail } from '@/data/functions/ProductFetch';
-import CartAction from '@/components/features/shop/ProductDetail/ProductDetailClient'; // GoBackButton,
+import CartAction from '@/components/features/shop/ProductDetail/ProductDetailClient';
 
 export default async function ProductPage({
   params,
