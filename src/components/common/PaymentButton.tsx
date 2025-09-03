@@ -62,19 +62,17 @@ export function PaymentButton({
     <>
       {/* 버튼의 높이만큼 배경이 보이도록 여백 추가 */}
       <div className="pb-[80px]"></div>
-      <div className="fixed bottom-0 left-0 z-0 h-[80px] w-full bg-white pt-3">
-        <button
-          type={onClick ? 'button' : 'submit'}
-          onClick={onClick}
-          disabled={disabled || isLoading}
-          className={`${getButtonClassName()} ${
-            disabled || isLoading ? 'cursor-not-allowed opacity-50' : ''
-          }w-[60%] min-w-[105px] cursor-pointer rounded-[5px] bg-[#4B5563] px-2 py-2 text-[16px] font-semibold text-white hover:bg-[#2C2F33]`}
-          style={getFullWidthStyle()}
-        >
-          {getButtonText()}
-        </button>
-      </div>
+      <button
+        type={onClick ? 'button' : 'submit'}
+        onClick={onClick}
+        disabled={disabled || isLoading}
+        className={`${getButtonClassName()} ${
+          disabled || isLoading ? 'cursor-not-allowed opacity-50' : ''
+        }w-[60%] min-w-[105px] cursor-pointer rounded-[5px] bg-[#4B5563] px-2 py-2 text-[16px] font-semibold text-white hover:bg-[#2C2F33]`}
+        style={getFullWidthStyle()}
+      >
+        {getButtonText()}
+      </button>
     </>
   );
 }

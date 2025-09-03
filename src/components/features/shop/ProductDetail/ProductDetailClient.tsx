@@ -159,7 +159,7 @@ export default function CartAction({
     <>
       {/* 상품 액션 버튼 - 공통 컴포넌트 사용 */}
       <div className="fixed bottom-0 z-30 w-full max-w-[600px] bg-white px-4 py-3">
-        <div className="mb-3 flex h-[50px] justify-between gap-3">
+        <div className="mb-3 flex h-[50px] justify-between gap-1.5">
           <button
             onClick={handleAddToCart}
             disabled={loading}

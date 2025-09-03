@@ -411,12 +411,12 @@ const AdminLoginPage = () => {
                 </span>
               </label>
 
-              <Link
+              {/* <Link
                 href="/admin/forgot-password"
                 className="text-sm text-red-600 hover:text-red-800"
               >
                 비밀번호 찾기
-              </Link>
+              </Link> */}
             </div>
 
             {/* 로그인 버튼 */}
@@ -437,7 +437,7 @@ const AdminLoginPage = () => {
           </form>
 
           {/* 데모 계정 안내 - 개발 환경에서만 표시 */}
-          {process.env.NODE_ENV === 'development' && DEMO_EMAIL && (
+          {DEMO_EMAIL && (
             <div className="mt-6 rounded-lg bg-gray-50 p-4">
               {!showDemoAccount ? (
                 <div>
@@ -533,7 +533,7 @@ const AdminLoginPage = () => {
                     </svg>
                   </button>
                   <h4 className="mb-2 text-sm font-medium text-gray-900">
-                    📝 데모 계정 (개발 환경)
+                    📝 데모 계정
                   </h4>
                   <div className="space-y-1 text-xs text-gray-600">
                     <p>
