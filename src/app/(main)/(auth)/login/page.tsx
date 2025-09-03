@@ -15,7 +15,7 @@ export default function Login() {
     <>
       <div className="flex min-h-screen flex-col items-center justify-between px-4 py-12">
         {/* 로고 및 설명 */}
-        <div className="mb-8 flex flex-1 flex-col items-center justify-center">
+        <div className="flex flex-1 flex-col items-center justify-center">
           <Image
             className="w-[300px]"
             src="/images/etc/logo.webp"
@@ -39,7 +39,7 @@ export default function Login() {
           {/* <TreePage /> */}
 
           {/* 안내 문구 */}
-          <div className="mt-5 flex w-full flex-col items-center">
+          <div className="mt-8 flex w-full flex-col items-center">
             <p className="mobile-notice-text text-center text-[12px] text-[#c3c3c3]">
               로그인 시 개인정보 보호정책과 약관에 동의하며, 서비스 이용을 위해{' '}
               <br /> 이메일, 이름, 프로필 정보를 수집합니다.
