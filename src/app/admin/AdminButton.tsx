@@ -11,11 +11,13 @@ export function AdminButton() {
   };
 
   return (
-    <button
-      onClick={handleAdminLogin}
-      className="ml-[380px] flex w-[100px] items-center justify-center text-xs text-[#A1A9AD]"
-    >
-      관리자 페이지
-    </button>
+    <div className="relative flex h-full w-full max-w-md min-w-[300px]">
+      <button
+        onClick={handleAdminLogin}
+        className="ml-auto flex text-[0.9rem] text-[#A1A9AD]"
+      >
+        관리자 페이지
+      </button>
+    </div>
   );
 }

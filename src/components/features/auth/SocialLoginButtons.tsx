@@ -21,7 +21,7 @@ export default function SocialLoginButtons() {
   return (
     <>
       {/* 구글 로그인 */}
-      <div className="relative flex w-full max-w-md min-w-[295px]">
+      <div className="relative flex w-full max-w-md min-w-[300px]">
         {recentLoginType === 'google' && <RecentLogin className="" />}
         <LoginButton
           className="flex items-center justify-center gap-3.5 rounded-[5px] border border-[#ECEDEE] bg-white py-3 text-[#2A2B2B] hover:bg-[#F8F8F8]"
@@ -32,7 +32,7 @@ export default function SocialLoginButtons() {
         </LoginButton>
       </div>
       {/* 카카오 로그인 */}
-      <div className="relative flex w-full max-w-md min-w-[295px]">
+      <div className="relative flex w-full max-w-md min-w-[300px]">
         {recentLoginType === 'kakao' && <RecentLogin className="" />}
         <LoginButton
           className="flex items-center justify-center gap-3.5 rounded-[5px] bg-[#FEE500] py-3 text-[#2A2B2B] hover:bg-[#FDD835]"
@@ -43,7 +43,7 @@ export default function SocialLoginButtons() {
         </LoginButton>
       </div>
       {/* 네이버 로그인 */}
-      <div className="relative flex w-full max-w-md min-w-[295px]">
+      <div className="relative flex w-full max-w-md min-w-[300px]">
         {recentLoginType === 'naver' && <RecentLogin className="" />}
         <LoginButton
           className="flex items-center justify-center gap-3.5 rounded-[5px] bg-[#03C75A] py-3 text-white hover:bg-[#02B851]"
