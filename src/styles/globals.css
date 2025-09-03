@@ -116,25 +116,33 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   html {
     scrollbar-gutter: stable;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
 
 @layer utilities {
+
   /* 스크롤바 숨기기 유틸리티 */
   .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
+
   .scrollbar-hide::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
+    /* Chrome, Safari, Opera */
   }
 
   @media (min-width: 600px) {
+
     .frame-guideline::before,
     .frame-guideline::after {
       content: '';
@@ -146,6 +154,7 @@
       background-color: #eaeaea;
       z-index: 9999;
     }
+
     .frame-guideline::before {
       left: 50%;
       transform: translateX(-300px);
@@ -165,6 +174,7 @@
     width: 2.25em;
     height: 1.25em;
   }
+
   .custom-toggle::before {
     content: '';
     position: absolute;
@@ -191,6 +201,7 @@
 .spin-slow {
   animation: spin 3s linear infinite;
 }
+
 @keyframes spin {
   100% {
     transform: rotate(360deg);
@@ -201,6 +212,7 @@
   from {
     transform: translate(30px, -30px) rotate(-10deg);
   }
+
   to {
     transform: translate(0, 0) rotate(0);
   }
@@ -210,6 +222,7 @@
   from {
     transform: translate(-30px, 30px) rotate(10deg);
   }
+
   to {
     transform: translate(0, 0) rotate(0);
   }
@@ -219,35 +232,39 @@
   0% {
     transform: scale3d(1, 1, 1);
   }
+
   30% {
     transform: scale3d(1.1, 0.9, 1);
   }
+
   40% {
     transform: scale3d(0.9, 1.1, 1);
   }
+
   50% {
     transform: scale3d(1.05, 0.95, 1);
   }
+
   65% {
     transform: scale3d(0.95, 1.05, 1);
   }
+
   75% {
     transform: scale3d(1.1, 0.9, 1);
   }
+
   100% {
     transform: scale3d(1, 1, 1);
   }
 }
 
 .bear-top-animation {
-  animation: slideInFromTopRight 1s 0.4s cubic-bezier(1, -0.81, 0.31, 1.16)
-    forwards;
+  animation: slideInFromTopRight 1s 0.4s cubic-bezier(1, -0.81, 0.31, 1.16) forwards;
   transform: translate(30px, -30px) rotate(-10deg);
 }
 
 .bear-bottom-animation {
-  animation: slideInFromBottomLeft 1s 0.2s cubic-bezier(1, -0.81, 0.31, 1.16)
-    forwards;
+  animation: slideInFromBottomLeft 1s 0.2s cubic-bezier(1, -0.81, 0.31, 1.16) forwards;
   transform: translate(-30px, 30px) rotate(10deg);
 }
 
@@ -266,7 +283,7 @@
   }
 
   .mobile-text {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .bear-top-animation {
@@ -274,7 +291,7 @@
   }
 
   .mobile-recent-login .recent-login-text {
-    font-size: 0.6rem;
+    font-size: 0.9rem;
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
   }
