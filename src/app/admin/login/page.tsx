@@ -298,11 +298,11 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 pt-20 pb-10">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 pt-15 pb-10">
       <div className="w-full max-w-md">
         {/* 관리자 로고 및 타이틀 */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-red-600">
+        <div className="text-center">
+          <div className="mx-auto mb-4 flex h-15 w-15 items-center justify-center rounded-full bg-red-600">
             <svg
               className="h-10 w-10 text-white"
               fill="none"
@@ -322,7 +322,7 @@ const AdminLoginPage = () => {
         </div>
 
         {/* 로그인 카드 */}
-        <div className="rounded-xl bg-white p-8 shadow-2xl">
+        <div className="mx-8 mt-8 mb-4 rounded-xl bg-white p-8 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* 전체 에러 메시지 */}
             {errors.form && (
@@ -559,7 +559,7 @@ const AdminLoginPage = () => {
         </div>
 
         {/* 하단 링크 */}
-        <div className="mt-8 text-center">
+        <div className="text-center">
           <Link
             href="/login"
             className="text-sm text-gray-300 hover:text-white"
@@ -569,7 +569,7 @@ const AdminLoginPage = () => {
         </div>
 
         {/* 보안 안내 */}
-        <div className="mt-6 rounded-lg bg-gray-800 p-4">
+        <div className="mx-8 mt-6 rounded-lg bg-gray-800 p-4">
           <h4 className="mb-2 text-sm font-medium text-white">🔒 보안 안내</h4>
           <ul className="space-y-1 text-xs text-gray-300">
             <li>• 관리자 계정은 승인된 관리자만 사용할 수 있습니다</li>
