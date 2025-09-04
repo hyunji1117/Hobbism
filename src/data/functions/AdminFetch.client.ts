@@ -50,8 +50,8 @@ export const clearAdminToken = () => {
 export async function adminLogin(email: string, password: string) {
   try {
     // 개발 환경에서 데모 계정 처리
-    // if (!API_URL || process.env.NODE_ENV === 'development') {
-    if (!API_URL) {
+    if (!API_URL || process.env.NODE_ENV === 'production') {
+      // if (!API_URL) {
       // 환경 변수가 설정되어 있고, 입력값이 일치하는 경우
       if (
         DEMO_EMAIL &&
@@ -246,15 +246,6 @@ export async function sendPinFailureAlert(attemptInfo: {
   } catch (error) {
     console.error('PIN 실패 알림 이메일 발송 오류:', error);
 
-    // 개발 환경에서는 실패해도 계속 진행
-    // if (process.env.NODE_ENV === 'development') {
-    console.log('개발 환경: 이메일 API 호출 실패를 무시합니다.');
-    return {
-      ok: true,
-      message: '개발 환경에서는 이메일이 발송되지 않습니다.',
-    };
-    // }
-
     return {
       ok: false,
       message:
@@ -277,7 +268,7 @@ export async function verifyAdminSession() {
 
     // 개발 환경 데모 토큰 처리
     if (
-      // process.env.NODE_ENV === 'development' &&
+      process.env.NODE_ENV === 'production' &&
       token.startsWith('demo-admin-token-')
     ) {
       return {
