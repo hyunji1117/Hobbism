@@ -8,7 +8,7 @@ import { useLiveStore } from '@/store/live.store';
 import { Product } from '@/types';
 import filterValidProducts from '@/utils/product';
 import { JSX, useCallback, useEffect, useRef, useState } from 'react';
-import { PropagateLoader } from 'react-spinners';
+import { ClipLoader } from 'react-spinners';
 
 export default function ShopList({ initialData }: { initialData: Product[] }) {
   //       state: 무한 스크롤 상태 변수          //
@@ -177,9 +177,14 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
         </div>
 
         <div ref={observerRef} className="h-5" />
+        {/* 상품 리스트 하단 로딩 */}
         {loading && (
           <div className="fixed bottom-15 left-1/2 z-10 max-w-[600px] -translate-x-1/2">
-            <PropagateLoader color="#4A4A4A" />
+            <ClipLoader
+              color="#4A4A4A"
+              size={20}
+              cssOverride={{ borderWidth: '3px' }}
+            />
           </div>
         )}
         {!hasNextPage && !loading && (
