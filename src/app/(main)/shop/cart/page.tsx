@@ -258,7 +258,7 @@ export default function CartPage() {
       <CartSummary totalPrice={totalPrice} />
 
       {/* 결제 버튼 - 공통 컴포넌트 사용 */}
-      <div className="top-3 px-4 py-3 text-center">
+      <div className="fixed bottom-0 left-0 w-full bg-white px-4 py-3 text-center shadow-md">
         <PaymentButton
           amount={totalPrice}
           // {handlePayment}로 수정 예정
