@@ -61,7 +61,6 @@ export function PaymentButton({
   return (
     <>
       {/* 버튼의 높이만큼 배경이 보이도록 여백 추가 */}
-      <div className="pb-[80px]"></div>
       <button
         type={onClick ? 'button' : 'submit'}
         onClick={onClick}
