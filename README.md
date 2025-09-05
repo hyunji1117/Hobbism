@@ -8,7 +8,7 @@
 <br />
 <hr />
 
-## 📢 프로젝트 개요 ([기획 방향서 CLICK!](./Hobbism-플랫폼-기획-방향서))
+## 📢 프로젝트 개요 ([기획 방향서 CLICK!](https://github.com/hyunji1117/Hobbism/wiki/Hobbism-%ED%94%8C%EB%9E%AB%ED%8F%BC-%EA%B8%B0%ED%9A%8D-%EB%B0%A9%ED%96%A5%EC%84%9C))
 
 - **문제 정의**
   - 코어 유저 전용 소통 플랫폼 부재
@@ -20,7 +20,7 @@
 
 <br />
 
-## ✨ 주요 기능 [상세보기 CLICK!](./기능-상세-보기)
+## ✨ 주요 기능 [상세보기 CLICK!](https://github.com/hyunji1117/Hobbism/wiki/%EA%B8%B0%EB%8A%A5-%EC%83%81%EC%84%B8-%EB%B3%B4%EA%B8%B0)
 
 - **소셜 로그인** : Google/Kakao/Naver 연동 빠른 접근
 - **상품 상세 & 장바구니** : 상품 상세 페이지 확인부터 장바구니, 결제까지 원스톱 _(✅ 담당 기능)_
@@ -66,12 +66,10 @@
 | **우영찬** | PE      | 로그인/회원가입, 기타 페이지                                                |
 | **장아영** | PO      | 쇼핑 메인, 결제, 라이브                                                     |
 
-👉 자세한 기여 내용은 [팀 & 기여](./팀-&-기여) 문서 참고
+👉 자세한 기여 내용은 [팀 & 기여](https://github.com/hyunji1117/Hobbism/wiki/%ED%8C%80-&-%EA%B8%B0%EC%97%AC) 문서 참고
 <br />
 <br />
 
 ### 🐟 MVP 유저 플로우차트
 
 <img width="700" height="auto" alt="플로우차트(간략화 버전)" src="https://github.com/user-attachments/assets/beaf8338-04e5-4ec4-8d7f-e3478e1da274" />
-
-[플로우 차트 상세 버전 보기](https://drive.google.com/file/d/1qlFVfXZBTtbwlmW-Bs1LSlT45L72_NE9/view?usp=sharing)
