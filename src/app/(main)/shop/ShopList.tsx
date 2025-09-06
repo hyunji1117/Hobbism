@@ -1,4 +1,5 @@
-'use client';
+// app/(main)/shop/ShopList.tsx - 클라이언트 컴포넌트
+'use client'; // 필수: React Hooks 사용
 
 import { ShopAd } from '@/components/features/shop/ShopAd';
 import { ShopCategory } from '@/components/features/shop/ShopCategory';
@@ -12,31 +13,31 @@ import { ClipLoader } from 'react-spinners';
 
 export default function ShopList({ initialData }: { initialData: Product[] }) {
   //       state: 무한 스크롤 상태 변수          //
-  const [products, setProducts] = useState<Product[]>(initialData ?? []); // 화면에 그려질 게시물 목록
-  const [page, setPage] = useState(1); // 현재 불러올 페이지 번호
-  const [loading, setLoading] = useState(false); // fetch 진행중 여부
-  const [hasNextPage, setHasNextPage] = useState(false); // 다음 페이지가 있는지
-  const [pageParams, setPageParams] = useState<number[]>([]); // 이미 가져온 페이지 번호 기록
-  const observerRef = useRef<HTMLDivElement | null>(null); // 무한 스크롤 트리거 참조
+  const [products, setProducts] = useState<Product[]>(initialData ?? []);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [pageParams, setPageParams] = useState<number[]>([]);
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
   //        function: 게시물 로딩 함수          //
   const loadingProducts = useCallback(
     async (page: number) => {
-      if (pageParams.includes(page)) return; // 이미 요청했던 page라면 중복 호출 차단
+      if (pageParams.includes(page)) return;
       setLoading(true);
 
-      const data = await fetchProducts(page); // 서버에서 (page)번 페이지 게시물 받아옴
+      const data = await fetchProducts(page);
       const filteredData = filterValidProducts(data);
 
       setProducts(prev => {
         const newData = filteredData.filter(
           d => !prev.some(p => p._id === d._id),
-        ); // 중복 제거 로직
+        );
         return [...prev, ...newData];
       });
 
-      setPageParams(prev => [...prev, page]); // 요청한 page 번호를 기록 -> 중복 호출 방지
-      setHasNextPage(data.length !== 0); // '다음 페이지가 있는가?' 판정: 이번에 가져온 data가 0개면 더 없음
+      setPageParams(prev => [...prev, page]);
+      setHasNextPage(data.length !== 0);
 
       setLoading(false);
     },
@@ -62,11 +63,10 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
 
     const observer = new IntersectionObserver(
       async ([entry]) => {
-        // div가 화면에 50% 이상 보이고, 다음 페이지도 있으며, 로딩 중이 아닐 때
         if (entry.isIntersecting && hasNextPage && !loading) {
           const nextPage = pageRef.current + 1;
           await loadingProducts(nextPage);
-          setPage(nextPage); // page 값을 1 증가
+          setPage(nextPage);
         }
       },
       {
@@ -76,7 +76,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
 
     observer.observe(target);
 
-    return () => observer.disconnect(); // 클린업
+    return () => observer.disconnect();
   }, [hasNextPage, loading, loadingProducts]);
 
   //       state: 선택된 카테고리 상태       //
@@ -158,7 +158,7 @@ export default function ShopList({ initialData }: { initialData: Product[] }) {
 
   //         effect: page 값이 변할 때마다 fetch       //
   useEffect(() => {
-    loadingProducts(page); //page가 바뀔 때마다 해당 페이지 게시물 로드
+    loadingProducts(page);
   }, [page, loadingProducts]);
 
   //          render: 전체 카테고리 별 상품 렌더링        //

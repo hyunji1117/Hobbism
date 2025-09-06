@@ -61,6 +61,12 @@ export interface CardItemCardProps {
 export interface CartListRes {
   ok: number;
   item: CartItem[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 // 장바구니 상품 여러건 삭제

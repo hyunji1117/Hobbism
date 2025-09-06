@@ -62,7 +62,7 @@ export default function Header() {
   const isCommunityWritePage = pathname === '/community/write'; // 커뮤니티 작성 페이지
   const isSettingPage = pathname === '/user/setting'; // 설정 페이지
   const isEditPage = pathname === '/user/edit'; // 프로필 수정 페이지
-  const isCartPage = pathname === '/shop/cart'; // 장바구니 페이지
+  const isCartPage = pathname === '/cart'; // 장바구니 페이지
   const isTermsPage = pathname === '/terms'; // 약관 페이지
   const isPolicyPage = pathname === '/policy'; // 개인정보 처리방침 페이지
   const isNoticePage = pathname.startsWith('/notice'); // 공지사항 페이지
@@ -198,7 +198,7 @@ export default function Header() {
 
             {showCartIcon && (
               <div className="relative">
-                <Link href="/shop/cart" className="relative">
+                <Link href="/cart" className="relative">
                   <CartIcon />
                 </Link>
               </div>

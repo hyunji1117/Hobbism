@@ -1,4 +1,5 @@
-import ShopList from '@/app/(main)/shop/ShopList';
+// app/(main)/shop/page.tsx - 서버 컴포넌트
+import ShopList from './ShopList'; // 같은 폴더의 ShopList.tsx
 import { RandomHobbyBtn } from '@/components/features/shop/RandomHobby/RandomHobbyBtn';
 import { ShopBanner } from '@/components/features/shop/ShopBanner';
 import { ShopLiveProducts } from '@/components/features/shop/ShopLiveProducts';
@@ -20,8 +21,10 @@ export default async function ShopPage() {
     return date.month() === now.month() && date.year() === now.year();
   };
 
+  // 서버에서 초기 데이터 페칭
   const initialData = await fetchProducts(1);
   const initialFiltered = filterValidProducts(initialData);
+
   const liveData = await fetchAllProducts();
   const initialLiveFiltered = liveData
     .filter(product => product.extra.isLiveSpecial)
@@ -43,7 +46,7 @@ export default async function ShopPage() {
       {/* 오늘의 취미 랜덤 뽑기 */}
       <RandomHobbyBtn />
 
-      {/* 전체(카테고리 별) 상품 */}
+      {/* 전체(카테고리 별) 상품 - 클라이언트 컴포넌트 */}
       <ShopList initialData={initialFiltered} />
     </>
   );
