@@ -26,7 +26,7 @@ interface ExtendedCartItem extends CartItem {
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<ExtendedCartItem[]>([]);
-  const [isAllChecked, setIsAllChecked] = useState(false);
+  const [isAllChecked, setIsAllChecked] = useState(true);
   const [totalPrice, setTotalPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -42,9 +42,10 @@ export default function CartPage() {
         setIsLoading(true);
         const data = await fetchCartList(1, 10);
 
+        // useEffect에서 장바구니 데이터 로드 시 모든 아이템 체크 해제 상태로 초기화
         const items = data.item.map(item => ({
           ...item,
-          isChecked: false,
+          isChecked: true,
           selectedOption: item.selectedOption,
         }));
 
@@ -115,19 +116,17 @@ export default function CartPage() {
     color: string,
     size: string,
   ) => {
-    setCartItems(prev =>
-      prev.map(item =>
+    setCartItems(prev => {
+      const updated = prev.map(item =>
         item.product._id === id && item.color === color && item.size === size
           ? { ...item, isChecked: checked }
           : item,
-      ),
-    );
+      );
 
-    // 전체 선택 상태 업데이트
-    const updatedItems = cartItems.map(item =>
-      item.product._id === id ? { ...item, isChecked: checked } : item,
-    );
-    setIsAllChecked(updatedItems.every(item => item.isChecked));
+      // 함수형 업데이트 내부에서 전체 선택 상태 계산
+      setIsAllChecked(updated.every(item => item.isChecked));
+      return updated;
+    });
   };
 
   // 수량 변경 핸들러
