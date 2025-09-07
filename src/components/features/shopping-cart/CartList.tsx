@@ -15,7 +15,7 @@ interface CartListProps {
   onCheckAll: (checked: boolean) => void;
 }
 
-const CartList: React.FC<CartListProps> = ({
+export const CartList: React.FC<CartListProps> = ({
   cartItems,
   onCheckItem,
   onQuantityChange,

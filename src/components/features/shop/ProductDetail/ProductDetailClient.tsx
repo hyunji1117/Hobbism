@@ -13,6 +13,7 @@ import { fetchAddToCart } from '@/data/functions/CartFetch.client';
 import { PaymentButton } from '@/components/common/PaymentButton';
 import { usePurchaseStore } from '@/store/order.store';
 import { SmallLoading } from '@/components/common/SmallLoading';
+import { useCartState } from '@/store/cartStore';
 import toast from 'react-hot-toast';
 
 export default function CartAction({
@@ -38,6 +39,8 @@ export default function CartAction({
   const [quantity, setQuantity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  // zustand store에서 refreshCartCount 함수 가져오기
+  const { refreshCartCount } = useCartState();
 
   const hasOptions = options && (options.size || options.color);
 
@@ -91,6 +94,9 @@ export default function CartAction({
           color: selectedColor,
         });
         console.log('장바구니 추가 성공 응답:', response);
+
+        // 장바구니 카운트 업데이트
+        await refreshCartCount();
 
         toast.success('장바구니에 상품이 추가되었습니다!');
         setIsBottomSheetOpen(false);
