@@ -94,7 +94,7 @@ export function CartItemCard({
     }
   };
 
-  //        한건 상품 삭제        //
+  //        개별상품 삭제        //
   const handleRemoveItem = async () => {
     try {
       await deleteCartItem(cartId);

@@ -151,6 +151,23 @@ export default function CartPage() {
     }
   };
 
+  // 개별 상품 삭제 핸들러
+  const handleRemoveItem = (cartId: number) => {
+    // CartItemCard에서 이미 API 호출과 토스트 메시지를 처리하므로
+    // 여기서는 상태 업데이트만 처리
+    setCartItems(prev => {
+      const remainingItems = prev.filter(item => item._id !== cartId);
+
+      // 삭제 후 남은 상품이 없으면 CartEmpty가 자동으로 렌더링됨
+      // 추가 메시지가 필요하면 여기에 작성
+
+      return remainingItems;
+    });
+
+    // 전역 장바구니 개수 업데이트
+    refreshCartCount();
+  };
+
   // 선택된 상품 삭제
   const handleSelectionRemove = async () => {
     const selectedItems = cartItems.filter(item => item.isChecked);
@@ -235,6 +252,7 @@ export default function CartPage() {
         cartItems={cartItems}
         onCheckItem={handleCheckItem}
         onQuantityChange={handleQuantityChange}
+        onRemoveItem={handleRemoveItem}
         isAllChecked={isAllChecked}
         onCheckAll={handleCheckAll}
       />
