@@ -5,19 +5,19 @@ import Image from 'next/image';
 
 interface CartSelectAllProps {
   isAllChecked: boolean;
-  onSelectAll: () => void;
-  onRemoveSelected: () => void;
+  onToggleAll: () => void;
+  onSelectionRemove: () => void;
 }
 
 export function CartSelectAll({
   isAllChecked,
-  onSelectAll,
-  onRemoveSelected,
+  onToggleAll,
+  onSelectionRemove,
 }: CartSelectAllProps) {
   return (
     <div className="relative flex">
       <button
-        onClick={onSelectAll}
+        onClick={onToggleAll}
         aria-label={isAllChecked ? '전체 상품 선택 해제' : '전체 상품 선택'}
         className="absolute top-3.5"
       >
@@ -36,7 +36,7 @@ export function CartSelectAll({
 
       <button
         className="absolute top-3 right-5 text-[#F05656]"
-        onClick={onRemoveSelected}
+        onClick={onSelectionRemove}
       >
         선택 삭제
       </button>

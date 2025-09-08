@@ -18,7 +18,7 @@ import { useCartState } from '@/store/cartStore';
 import { PaymentButton } from '@/components/common/PaymentButton';
 import { CartSummary } from '@/components/features/shopping-cart/CartSummary';
 import { CartSelectAll } from '@/components/features/shopping-cart/CartSelectAll';
-import { EmptyCart } from '@/components/features/shopping-cart/EmptyCart';
+import { CartEmpty } from '@/components/features/shopping-cart/CartEmpty';
 
 // 로컬에서만 사용하는 확장된 CartItem 타입
 interface ExtendedCartItem extends CartItem {
@@ -76,7 +76,7 @@ export default function CartPage() {
   };
 
   // "전체 선택" 버튼 클릭 UI 이벤트 처리만 담당
-  const handleAllSelect = () => {
+  const handleToggleAll = () => {
     const newCheckedState = !isAllChecked;
     // 새로운 함수 호출로 변경
     handleCheckAll(newCheckedState);
@@ -152,7 +152,7 @@ export default function CartPage() {
   };
 
   // 선택된 상품 삭제
-  const handleRemoveAll = async () => {
+  const handleSelectionRemove = async () => {
     const selectedItems = cartItems.filter(item => item.isChecked);
     const selectedIds = selectedItems
       .map(item => item._id)
@@ -214,7 +214,7 @@ export default function CartPage() {
 
   // 빈 장바구니 상태 처리
   if (cartItems.length === 0) {
-    return <EmptyCart />;
+    return <CartEmpty />;
   }
 
   return (
@@ -224,8 +224,8 @@ export default function CartPage() {
       {/* 전체 선택 컴포넌트 */}
       <CartSelectAll
         isAllChecked={isAllChecked}
-        onSelectAll={handleAllSelect}
-        onRemoveSelected={handleRemoveAll}
+        onToggleAll={handleToggleAll}
+        onSelectionRemove={handleSelectionRemove}
       />
 
       <hr className="my-6" />
