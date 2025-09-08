@@ -4,12 +4,11 @@
 import {
   fetchUpdateCartItemQuantity,
   deleteCartItem,
-  fetchDeleteAllCarts,
 } from '@/data/functions/CartFetch.client';
 import { Check, Minus, Plus, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 export interface CartItemCardProps {
@@ -18,17 +17,12 @@ export interface CartItemCardProps {
   name: string;
   price: number;
   quantity: number;
-  selectedSize?: string;
-  selectedColor?: string;
   size?: string;
   color?: string;
-  selectedOption?: string;
   isChecked?: boolean;
-  isSelected?: boolean;
-  isAllChecked?: boolean;
   onQuantityChange?: (id: number, quantity: number) => void;
   onRemove?: (id: number) => void;
-  onCheck?: (id: number, checked: boolean) => void;
+  onCheck?: () => void;
   cartId: number;
 }
 
@@ -39,29 +33,20 @@ export function CartItemCard({
   name,
   price,
   quantity,
-  selectedSize,
-  selectedColor,
   size,
   color,
-  selectedOption,
   isChecked = false,
-  isSelected = true,
-  isAllChecked = false,
   onQuantityChange,
   onRemove,
   onCheck,
 }: CartItemCardProps) {
   // 로컬 상태 관리
   const [localQuantity, setLocalQuantity] = useState(quantity);
-  const [localChecked, setLocalChecked] = useState(isChecked);
   const [isDeleted, setIsDeleted] = useState(false);
-  const [isSelectedState, setIsSelected] = useState(isSelected);
 
   // 개별 체크박스 상태 변경
   const handleCheckedChange = () => {
-    const newChecked = !localChecked;
-    setLocalChecked(newChecked);
-    onCheck?.(id, newChecked);
+    onCheck?.();
   };
 
   //        수량 증가         //
@@ -107,11 +92,6 @@ export function CartItemCard({
     }
   };
 
-  //       전체 선택 상태 업데이트        //
-  useEffect(() => {
-    setLocalChecked(isAllChecked);
-  }, [isAllChecked]);
-
   if (isDeleted) {
     return null;
   }
@@ -124,16 +104,14 @@ export function CartItemCard({
           <button
             className="cursor-pointer"
             onClick={handleCheckedChange}
-            aria-label={localChecked ? '상품 선택 해제' : '상품 선택'}
+            aria-label={isChecked ? '상품 선택 해제' : '상품 선택'}
           >
             <div
               className={`flex h-4 w-4 items-center justify-center rounded-[3px] ${
-                localChecked
-                  ? 'bg-[#4B5564]' // 체크됨: 배경색
-                  : 'border border-gray-300 bg-white' // 체크 안됨: 테두리만
+                isChecked ? 'bg-[#4B5564]' : 'border border-gray-300 bg-white'
               }`}
             >
-              {localChecked && (
+              {isChecked && (
                 <Check size={12} className="text-white" strokeWidth={2.5} />
               )}
             </div>
@@ -168,7 +146,7 @@ export function CartItemCard({
               >
                 <X size={16} strokeWidth={1} />
               </button>
-              <Link href={`/shop/{id}`} prefetch={true}>
+              <Link href={`/shop/${id}`} prefetch={true}>
                 <p className="max-w-full truncate pr-6 text-[18px] font-semibold">
                   {name}
                 </p>
@@ -194,7 +172,7 @@ export function CartItemCard({
 
           {/* 옵션 값(이미지의 왼쪽 라인에 맞게 항상 정렬) */}
           {(size || color) && (
-            <div className="mt-2 flex h-[35.5px] max-w-[440px] items-center rounded-[2px] bg-[#EAEAEA] pl-4 text-sm text-[#787878]">
+            <div className="mt-2 flex h-[35.5px] items-center rounded-[2px] bg-gray-100 pl-4 text-sm text-[#787878]">
               {size && !color && <span>[SIZE]&nbsp;{`${size}`}</span>}
               {color && !size && <span>[COLOR]&nbsp;{`${color}`}</span>}
               {size && color && (
