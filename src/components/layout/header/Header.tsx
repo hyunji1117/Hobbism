@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth.store';
 import { useModalStore } from '@/store/modal.store';
-import { Info, Pencil, Siren } from 'lucide-react';
+import { House, Info, Pencil, Siren } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -202,6 +202,12 @@ export default function Header() {
                   <CartIcon />
                 </Link>
               </div>
+            )}
+
+            {isCartPage && (
+              <Link href="/shop" className="cursor-pointer">
+                <House className="h-6 w-6 text-[#4A4A4A]" />
+              </Link>
             )}
 
             {isUserPage && isMypage && <SettingButton />}
