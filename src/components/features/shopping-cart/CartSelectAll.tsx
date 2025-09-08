@@ -1,7 +1,7 @@
 // 장바구니 전체 선택 컴포넌트
 'use client';
 
-import Image from 'next/image';
+import { Check } from 'lucide-react';
 
 interface CartSelectAllProps {
   isAllChecked: boolean;
@@ -15,29 +15,27 @@ export function CartSelectAll({
   onSelectionRemove,
 }: CartSelectAllProps) {
   return (
-    <div className="relative flex">
-      <button
-        onClick={onToggleAll}
-        aria-label={isAllChecked ? '전체 상품 선택 해제' : '전체 상품 선택'}
-        className="absolute top-3.5"
-      >
-        <Image
-          src={isAllChecked ? '/check-on.svg' : '/check-off.svg'}
-          alt="전체 선택 설정 버튼"
-          width={20}
-          height={20}
-          className="ml-5"
-        />
-      </button>
+    <div className="relative flex items-center justify-between py-3">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onToggleAll}
+          aria-label={isAllChecked ? '전체 상품 선택 해제' : '전체 상품 선택'}
+        >
+          <div
+            className={`flex h-4 w-4 items-center justify-center rounded-[3px] ${
+              isAllChecked ? 'bg-[#4B5564]' : 'border border-gray-300 bg-white'
+            }`}
+          >
+            {isAllChecked && (
+              <Check size={12} className="text-white" strokeWidth={2.5} />
+            )}
+          </div>
+        </button>
 
-      <span className="relative top-3 left-14 text-lg leading-6 font-semibold">
-        전체 선택
-      </span>
+        <span className="font-semibold">전체 선택</span>
+      </div>
 
-      <button
-        className="absolute top-3 right-5 text-[#F05656]"
-        onClick={onSelectionRemove}
-      >
+      <button className="text-[#F05656]" onClick={onSelectionRemove}>
         선택 삭제
       </button>
     </div>

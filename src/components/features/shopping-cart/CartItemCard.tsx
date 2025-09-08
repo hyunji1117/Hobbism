@@ -4,12 +4,11 @@
 import {
   fetchUpdateCartItemQuantity,
   deleteCartItem,
-  fetchDeleteAllCarts,
 } from '@/data/functions/CartFetch.client';
-import { Minus, Plus, X } from 'lucide-react';
+import { Check, Minus, Plus, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 export interface CartItemCardProps {
@@ -18,17 +17,12 @@ export interface CartItemCardProps {
   name: string;
   price: number;
   quantity: number;
-  selectedSize?: string;
-  selectedColor?: string;
   size?: string;
   color?: string;
-  selectedOption?: string;
   isChecked?: boolean;
-  isSelected?: boolean;
-  isAllChecked?: boolean;
   onQuantityChange?: (id: number, quantity: number) => void;
   onRemove?: (id: number) => void;
-  onCheck?: (id: number, checked: boolean) => void;
+  onCheck?: () => void;
   cartId: number;
 }
 
@@ -39,29 +33,20 @@ export function CartItemCard({
   name,
   price,
   quantity,
-  selectedSize,
-  selectedColor,
   size,
   color,
-  selectedOption,
   isChecked = false,
-  isSelected = true,
-  isAllChecked = false,
   onQuantityChange,
   onRemove,
   onCheck,
 }: CartItemCardProps) {
   // 로컬 상태 관리
   const [localQuantity, setLocalQuantity] = useState(quantity);
-  const [localChecked, setLocalChecked] = useState(isChecked);
   const [isDeleted, setIsDeleted] = useState(false);
-  const [isSelectedState, setIsSelected] = useState(isSelected);
 
   // 개별 체크박스 상태 변경
   const handleCheckedChange = () => {
-    const newChecked = !localChecked;
-    setLocalChecked(newChecked);
-    onCheck?.(id, newChecked);
+    onCheck?.();
   };
 
   //        수량 증가         //
@@ -107,40 +92,29 @@ export function CartItemCard({
     }
   };
 
-  //       전체 선택 상태 업데이트        //
-  useEffect(() => {
-    setLocalChecked(isAllChecked);
-  }, [isAllChecked]);
-
   if (isDeleted) {
     return null;
   }
 
   return (
     <>
-      <div className="mx-auto flex w-full max-w-[500px] min-w-[250px] items-start gap-3 py-3">
+      <div className="flex w-full min-w-[250px] items-start gap-1.5 py-3">
         {/* 체크박스 */}
-        <div className="flex h-[80px] flex-shrink-0 items-center justify-center px-1">
+        <div className="flex h-[80px] flex-shrink-0 items-start justify-center px-1 pt-[1px]">
           <button
             className="cursor-pointer"
             onClick={handleCheckedChange}
-            aria-label={localChecked ? '상품 선택 해제' : '상품 선택'}
+            aria-label={isChecked ? '상품 선택 해제' : '상품 선택'}
           >
-            {localChecked ? (
-              <Image
-                src="/check-on.svg"
-                alt="check icon"
-                width={20}
-                height={20}
-              />
-            ) : (
-              <Image
-                src="/check-off.svg"
-                alt="uncheck icon"
-                width={20}
-                height={20}
-              />
-            )}
+            <div
+              className={`flex h-4 w-4 items-center justify-center rounded-[3px] ${
+                isChecked ? 'bg-[#4B5564]' : 'border border-gray-300 bg-white'
+              }`}
+            >
+              {isChecked && (
+                <Check size={12} className="text-white" strokeWidth={2.5} />
+              )}
+            </div>
           </button>
         </div>
 
@@ -157,7 +131,7 @@ export function CartItemCard({
               <Image
                 src={path || ''}
                 alt={name}
-                className="aspect-square rounded-lg border border-[#ECEDEE]"
+                className="aspect-square rounded-[5px] border border-[#ECEDEE]"
                 width={80}
                 height={80}
               />
@@ -172,7 +146,7 @@ export function CartItemCard({
               >
                 <X size={16} strokeWidth={1} />
               </button>
-              <Link href={`/shop/{id}`} prefetch={true}>
+              <Link href={`/shop/${id}`} prefetch={true}>
                 <p className="max-w-full truncate pr-6 text-[18px] font-semibold">
                   {name}
                 </p>
@@ -198,7 +172,7 @@ export function CartItemCard({
 
           {/* 옵션 값(이미지의 왼쪽 라인에 맞게 항상 정렬) */}
           {(size || color) && (
-            <div className="mt-2 flex h-[35.5px] max-w-[440px] items-center rounded-[2px] bg-[#EAEAEA] pl-4 text-sm text-[#787878]">
+            <div className="mt-2 flex h-[35.5px] items-center rounded-[2px] bg-gray-100 pl-4 text-sm text-[#787878]">
               {size && !color && <span>[SIZE]&nbsp;{`${size}`}</span>}
               {color && !size && <span>[COLOR]&nbsp;{`${color}`}</span>}
               {size && color && (
@@ -212,7 +186,7 @@ export function CartItemCard({
           )}
         </div>
       </div>
-      <hr className="mx-7 mb-5" />
+      <div className="mb-2.5 h-2 w-full bg-gray-100" />
     </>
   );
 }
