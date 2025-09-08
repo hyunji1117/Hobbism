@@ -3,7 +3,7 @@
 
 import { useRouter } from 'next/navigation';
 
-export function EmptyCart() {
+export function CartEmpty() {
   const router = useRouter();
 
   return (
