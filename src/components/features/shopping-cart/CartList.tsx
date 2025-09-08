@@ -11,6 +11,7 @@ interface CartListProps {
     size: string,
   ) => void;
   onQuantityChange: (id: number, quantity: number) => Promise<void>;
+  onRemoveItem?: (cartId: number) => void;
   isAllChecked: boolean;
   onCheckAll: (checked: boolean) => void;
 }
@@ -19,6 +20,7 @@ export const CartList: React.FC<CartListProps> = ({
   cartItems,
   onCheckItem,
   onQuantityChange,
+  onRemoveItem,
   isAllChecked,
   onCheckAll,
 }) => {
@@ -42,6 +44,7 @@ export const CartList: React.FC<CartListProps> = ({
             }
             onQuantityChange={onQuantityChange}
             isAllChecked={isAllChecked}
+            onRemove={onRemoveItem}
           />
         </div>
       ))}
