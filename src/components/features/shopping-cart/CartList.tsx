@@ -1,28 +1,21 @@
-//        장바구니에 추가된 상품 목록 렌더링 컴포넌트        //
+// CartList.tsx - 단순화된 버전
 import { CartItem } from '@/types/cart';
 import { CartItemCard } from '@/components/features/shopping-cart/CartItemCard';
 
 interface CartListProps {
   cartItems: CartItem[];
-  onCheckItem: (
-    id: number,
-    checked: boolean,
-    color: string,
-    size: string,
-  ) => void;
+  selectedIds: Set<number>;
+  onCheckItem: (cartId: number) => void;
   onQuantityChange: (id: number, quantity: number) => Promise<void>;
   onRemoveItem?: (cartId: number) => void;
-  isAllChecked: boolean;
-  onCheckAll: (checked: boolean) => void;
 }
 
 export const CartList: React.FC<CartListProps> = ({
   cartItems,
+  selectedIds,
   onCheckItem,
   onQuantityChange,
   onRemoveItem,
-  isAllChecked,
-  onCheckAll,
 }) => {
   return (
     <div>
@@ -37,13 +30,9 @@ export const CartList: React.FC<CartListProps> = ({
             quantity={item.quantity}
             size={item.size}
             color={item.color}
-            selectedOption={item.selectedOption}
-            isChecked={item.isChecked}
-            onCheck={(id, checked) =>
-              onCheckItem(id, checked, item.color, item.size)
-            }
+            isChecked={selectedIds.has(item._id)}
+            onCheck={() => onCheckItem(item._id)}
             onQuantityChange={onQuantityChange}
-            isAllChecked={isAllChecked}
             onRemove={onRemoveItem}
           />
         </div>

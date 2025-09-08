@@ -9,7 +9,6 @@ import {
 } from '@/data/functions/CartFetch.client';
 import { CartItem } from '@/types/cart';
 import CartList from '@/components/features/shopping-cart/CartList';
-import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Loading from '@/app/(main)/loading';
 import { usePurchaseStore } from '@/store/order.store';
@@ -20,21 +19,24 @@ import { CartSummary } from '@/components/features/shopping-cart/CartSummary';
 import { CartSelectAll } from '@/components/features/shopping-cart/CartSelectAll';
 import { CartEmpty } from '@/components/features/shopping-cart/CartEmpty';
 
-// 로컬에서만 사용하는 확장된 CartItem 타입
-interface ExtendedCartItem extends CartItem {
-  isChecked: boolean;
-}
-
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<ExtendedCartItem[]>([]);
-  const [isAllChecked, setIsAllChecked] = useState(true);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
   // Zustand state 사용
   const { refreshCartCount } = useCartState();
+
+  // 파생 상태들
+  const isAllChecked =
+    cartItems.length > 0 && selectedIds.size === cartItems.length;
+  const selectedItems = cartItems.filter(item => selectedIds.has(item._id));
+  const totalPrice = selectedItems.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0,
+  );
 
   // 장바구니 데이터 로드
   useEffect(() => {
@@ -43,15 +45,10 @@ export default function CartPage() {
         setIsLoading(true);
         const data = await fetchCartList(1, 10);
 
-        // useEffect에서 장바구니 데이터 로드 시 모든 아이템 체크 해제 상태로 초기화
-        const items = data.item.map(item => ({
-          ...item,
-          isChecked: true,
-          selectedOption: item.selectedOption,
-        }));
+        setCartItems(data.item);
+        // 기본적으로 모든 아이템 선택
+        setSelectedIds(new Set(data.item.map(item => item._id)));
 
-        setCartItems(items);
-        // 전역 장바구니 개수 업데이트
         await refreshCartCount();
       } catch (err) {
         console.error('장바구니 데이터를 가져오는 중 오류 발생:', err);
@@ -64,84 +61,33 @@ export default function CartPage() {
     loadCartItems();
   }, [refreshCartCount]);
 
-  // 전체 선택 버튼 핸들러
-  const handleCheckAll = (checked: boolean) => {
-    setIsAllChecked(checked);
-    setCartItems(prev =>
-      prev.map(item => ({
-        ...item,
-        isChecked: checked,
-      })),
-    );
-  };
-
-  // "전체 선택" 버튼 클릭 UI 이벤트 처리만 담당
+  // 전체 선택/해제 토글
   const handleToggleAll = () => {
-    const newCheckedState = !isAllChecked;
-    // 새로운 함수 호출로 변경
-    handleCheckAll(newCheckedState);
+    if (isAllChecked) {
+      setSelectedIds(new Set()); // 모두 해제
+    } else {
+      setSelectedIds(new Set(cartItems.map(item => item._id))); // 모두 선택
+    }
   };
 
-  // 총 결제 금액 계산: cartItems가 변경될 때마다 총 금액 자동 재계산
-  useEffect(() => {
-    const total = cartItems
-      .filter(item => item.isChecked)
-      .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    setTotalPrice(total);
-  }, [cartItems]);
-
-  // 개별 상품 체크 핸들러
-  // const handleCheckItem = (
-  //   id: number,
-  //   checked: boolean,
-  //   color: string,
-  //   size: string,
-  // ) => {
-  // const updatedItems = cartItems.map(item =>
-  //   item.product._id === id && item.color === color && item.size === size
-  //     ? { ...item, isChecked: checked }
-  //     : item,
-  // );
-
-  //   setCartItems(updatedItems);
-
-  //   // 전체 선택 상태를 업데이트할 때, 모든 체크박스가 선택된 경우에만 true로 설정
-  //   if (checked) {
-  //     setIsAllChecked(updatedItems.every(item => item.isChecked));
-  //   }
-  // };
-
-  const handleCheckItem = (
-    id: number,
-    checked: boolean,
-    color: string,
-    size: string,
-  ) => {
-    setCartItems(prev => {
-      const updated = prev.map(item =>
-        item.product._id === id && item.color === color && item.size === size
-          ? { ...item, isChecked: checked }
-          : item,
-      );
-
-      // 함수형 업데이트 내부에서 전체 선택 상태 계산
-      setIsAllChecked(updated.every(item => item.isChecked));
-      return updated;
-    });
+  // 개별 상품 체크
+  const handleCheckItem = (cartId: number) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(cartId)) {
+      newSelected.delete(cartId);
+    } else {
+      newSelected.add(cartId);
+    }
+    setSelectedIds(newSelected);
   };
 
   // 수량 변경 핸들러
   const handleQuantityChange = async (id: number, quantity: number) => {
     try {
-      // API 호출
       await fetchUpdateCartItemQuantity(id, quantity);
 
-      // 상태 업데이트
       setCartItems(prevItems =>
-        prevItems.map(item =>
-          // 장바구니 아이템 ID로 비교할 것!
-          item._id === id ? { ...item, quantity: quantity } : item,
-        ),
+        prevItems.map(item => (item._id === id ? { ...item, quantity } : item)),
       );
 
       await refreshCartCount();
@@ -153,44 +99,33 @@ export default function CartPage() {
 
   // 개별 상품 삭제 핸들러
   const handleRemoveItem = (cartId: number) => {
-    // CartItemCard에서 이미 API 호출과 토스트 메시지를 처리하므로
-    // 여기서는 상태 업데이트만 처리
-    setCartItems(prev => {
-      const remainingItems = prev.filter(item => item._id !== cartId);
+    setCartItems(prev => prev.filter(item => item._id !== cartId));
 
-      // 삭제 후 남은 상품이 없으면 CartEmpty가 자동으로 렌더링됨
-      // 추가 메시지가 필요하면 여기에 작성
+    // 선택 목록에서도 제거
+    const newSelected = new Set(selectedIds);
+    newSelected.delete(cartId);
+    setSelectedIds(newSelected);
 
-      return remainingItems;
-    });
-
-    // 전역 장바구니 개수 업데이트
     refreshCartCount();
   };
 
   // 선택된 상품 삭제
   const handleSelectionRemove = async () => {
-    const selectedItems = cartItems.filter(item => item.isChecked);
-    const selectedIds = selectedItems
-      .map(item => item._id)
-      .filter((id): id is number => typeof id === 'number');
+    const selectedIdArray = Array.from(selectedIds);
 
-    if (selectedIds.length === 0) {
+    if (selectedIdArray.length === 0) {
       toast.error('선택된 상품이 없습니다.');
       return;
     }
 
     try {
       setIsLoading(true);
-      await fetchDeleteAllCarts(selectedIds);
-      const remainingItems = cartItems.filter(
-        item => !selectedIds.includes(item._id as number),
-      );
+      await fetchDeleteAllCarts(selectedIdArray);
 
-      setCartItems(remainingItems);
-      // 상품 삭제 후 전역 장바구니 개수 업데이트
+      setCartItems(prev => prev.filter(item => !selectedIds.has(item._id)));
+      setSelectedIds(new Set()); // 선택 초기화
+
       await refreshCartCount();
-
       toast.success('선택된 상품이 삭제되었습니다.');
     } catch (error) {
       console.error('여러 건 삭제 중 오류 발생:', error);
@@ -202,8 +137,6 @@ export default function CartPage() {
 
   // 구매하기
   const handleAddBuy = () => {
-    const selectedItems = cartItems.filter(item => item.isChecked);
-
     if (selectedItems.length === 0) {
       toast.error('선택된 상품이 없습니다.');
       return;
@@ -228,43 +161,33 @@ export default function CartPage() {
 
   if (isLoading) return <Loading />;
   if (errorMessage) return <p>{errorMessage}</p>;
-
-  // 빈 장바구니 상태 처리
-  if (cartItems.length === 0) {
-    return <CartEmpty />;
-  }
+  if (cartItems.length === 0) return <CartEmpty />;
 
   return (
     <div className="flex flex-col px-4">
       <hr className="mt-10" />
 
-      {/* 전체 선택 컴포넌트 */}
       <CartSelectAll
         isAllChecked={isAllChecked}
         onToggleAll={handleToggleAll}
         onSelectionRemove={handleSelectionRemove}
       />
 
-      <hr className="my-6" />
+      {/* <hr className="my-6" /> */}
 
-      {/* 장바구니에 담긴 상품 리스트 */}
       <CartList
         cartItems={cartItems}
+        selectedIds={selectedIds}
         onCheckItem={handleCheckItem}
         onQuantityChange={handleQuantityChange}
         onRemoveItem={handleRemoveItem}
-        isAllChecked={isAllChecked}
-        onCheckAll={handleCheckAll}
       />
 
-      {/* 결제 정보 요약 */}
       <CartSummary totalPrice={totalPrice} />
 
-      {/* 결제 버튼 - 공통 컴포넌트 사용 */}
       <div className="fixed bottom-0 left-0 w-full bg-white px-4 py-3 text-center shadow-md">
         <PaymentButton
           amount={totalPrice}
-          // {handlePayment}로 수정 예정
           onClick={handleAddBuy}
           variant="secondary"
           fullWidth
