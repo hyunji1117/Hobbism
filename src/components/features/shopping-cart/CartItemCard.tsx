@@ -6,7 +6,7 @@ import {
   deleteCartItem,
   fetchDeleteAllCarts,
 } from '@/data/functions/CartFetch.client';
-import { Minus, Plus, X } from 'lucide-react';
+import { Check, Minus, Plus, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -118,29 +118,25 @@ export function CartItemCard({
 
   return (
     <>
-      <div className="mx-auto flex w-full max-w-[500px] min-w-[250px] items-start gap-3 py-3">
+      <div className="flex w-full min-w-[250px] items-start gap-1.5 py-3">
         {/* 체크박스 */}
-        <div className="flex h-[80px] flex-shrink-0 items-center justify-center px-1">
+        <div className="flex h-[80px] flex-shrink-0 items-start justify-center px-1 pt-[1px]">
           <button
             className="cursor-pointer"
             onClick={handleCheckedChange}
             aria-label={localChecked ? '상품 선택 해제' : '상품 선택'}
           >
-            {localChecked ? (
-              <Image
-                src="/check-on.svg"
-                alt="check icon"
-                width={20}
-                height={20}
-              />
-            ) : (
-              <Image
-                src="/check-off.svg"
-                alt="uncheck icon"
-                width={20}
-                height={20}
-              />
-            )}
+            <div
+              className={`flex h-4 w-4 items-center justify-center rounded-[3px] ${
+                localChecked
+                  ? 'bg-[#4B5564]' // 체크됨: 배경색
+                  : 'border border-gray-300 bg-white' // 체크 안됨: 테두리만
+              }`}
+            >
+              {localChecked && (
+                <Check size={12} className="text-white" strokeWidth={2.5} />
+              )}
+            </div>
           </button>
         </div>
 
@@ -157,7 +153,7 @@ export function CartItemCard({
               <Image
                 src={path || ''}
                 alt={name}
-                className="aspect-square rounded-lg border border-[#ECEDEE]"
+                className="aspect-square rounded-[5px] border border-[#ECEDEE]"
                 width={80}
                 height={80}
               />
@@ -212,7 +208,7 @@ export function CartItemCard({
           )}
         </div>
       </div>
-      <hr className="mx-7 mb-5" />
+      <div className="mb-2.5 h-2 w-full bg-gray-100" />
     </>
   );
 }

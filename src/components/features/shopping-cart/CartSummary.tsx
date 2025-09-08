@@ -15,7 +15,7 @@ export function CartSummary({
   const finalPrice = totalPrice - discount + shippingFee;
 
   return (
-    <div className="mx-4 my-6 flex flex-col gap-y-4 pb-[80px]">
+    <div className="mx-4 my-6 flex flex-col gap-y-2 pb-[80px]">
       <div className="flex justify-between">
         <span className="text-[#4B5563]">총 상품금액</span>
         <span className="right-4 font-medium">

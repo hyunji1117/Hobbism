@@ -173,7 +173,7 @@ export default function CartPage() {
         onSelectionRemove={handleSelectionRemove}
       />
 
-      <hr className="my-6" />
+      {/* <hr className="my-6" /> */}
 
       <CartList
         cartItems={cartItems}
