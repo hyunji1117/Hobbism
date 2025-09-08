@@ -95,7 +95,7 @@ export function CartItemCard({
   };
 
   //        한건 상품 삭제        //
-  const handleRemove = async () => {
+  const handleRemoveItem = async () => {
     try {
       await deleteCartItem(cartId);
       setIsDeleted(true);
@@ -104,19 +104,6 @@ export function CartItemCard({
     } catch (error) {
       console.error('삭제 실패:', error);
       toast.error('삭제에 실패했습니다. 다시 시도해주세요.');
-    }
-  };
-
-  //        여러건 상품 삭제        //
-  const handleRemoveAll = async () => {
-    try {
-      await fetchDeleteAllCarts([cartId]);
-      setIsSelected(true);
-      onRemove?.(cartId);
-      toast.success('상품이 선택되었습니다.');
-    } catch (error) {
-      console.error('상품 선택 실패:', error);
-      toast.error('상품이 선택되지 않았습니다.');
     }
   };
 
@@ -181,7 +168,7 @@ export function CartItemCard({
               {/* 삭제 버튼 - 상품명 오른쪽 끝 */}
               <button
                 className="absolute top-0 right-0 cursor-pointer"
-                onClick={handleRemove}
+                onClick={handleRemoveItem}
               >
                 <X size={16} strokeWidth={1} />
               </button>
