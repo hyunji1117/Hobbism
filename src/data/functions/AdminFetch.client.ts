@@ -50,7 +50,7 @@ export const clearAdminToken = () => {
 export async function adminLogin(email: string, password: string) {
   try {
     // 개발 환경에서 데모 계정 처리
-    if (!API_URL || process.env.NODE_ENV === 'production') {
+    if ((!API_URL || process.env.NODE_ENV === 'production', 'development')) {
       // if (!API_URL) {
       // 환경 변수가 설정되어 있고, 입력값이 일치하는 경우
       if (
@@ -269,6 +269,7 @@ export async function verifyAdminSession() {
     // 개발 환경 데모 토큰 처리
     if (
       process.env.NODE_ENV === 'production' &&
+      'development' &&
       token.startsWith('demo-admin-token-')
     ) {
       return {
