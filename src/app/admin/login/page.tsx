@@ -228,7 +228,7 @@ const AdminLoginPage = () => {
 
     // 임시로 클라이언트 사이드 검증 (개발 환경)
     // 프로덕션에서는 서버 사이드 검증 사용 권장
-    const EXPECTED_PIN = process.env.NEXT_PUBLIC_DEMO_PIN || '9999'; // 기본값 제공
+    const EXPECTED_PIN = process.env.NEXT_PUBLIC_DEMO_PIN;
     const isPinValid = demoPin === EXPECTED_PIN;
 
     if (isPinValid) {
@@ -322,7 +322,7 @@ const AdminLoginPage = () => {
         </div>
 
         {/* 로그인 카드 */}
-        <div className="mx-8 mt-8 mb-4 rounded-xl bg-white p-8 shadow-2xl">
+        <div className="mx-8 mt-8 mb-4 min-w-[250px] rounded-xl bg-white p-8 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* 전체 에러 메시지 */}
             {errors.form && (
@@ -443,7 +443,7 @@ const AdminLoginPage = () => {
                 <h4 className="mb-3 text-sm font-medium text-gray-900">
                   🔐 데모 계정 보기
                 </h4>
-                <form onSubmit={handleDemoPinSubmit} className="space-y-3">
+                <form onSubmit={handleDemoPinSubmit} className="space-y-0">
                   <div>
                     <label className="mb-1 block text-xs text-gray-600">
                       4자리 PIN 번호를 입력하세요
@@ -453,7 +453,7 @@ const AdminLoginPage = () => {
                         type="password"
                         value={demoPin}
                         onChange={e => handleDemoPinChange(e.target.value)}
-                        className={`flex-1 rounded border px-3 py-2 text-center text-sm focus:border-transparent focus:ring-2 focus:ring-red-500 ${
+                        className={`min-h-[38px] min-w-[90px] flex-1 rounded border px-3 py-2 text-center text-sm focus:border-transparent focus:ring-2 focus:ring-red-500 ${
                           demoPinError
                             ? 'border-red-300 bg-red-50'
                             : 'border-gray-300'
@@ -467,7 +467,7 @@ const AdminLoginPage = () => {
                       <button
                         type="submit"
                         disabled={demoPin.length !== 4 || isBlocked}
-                        className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="min-h-9.5 min-w-13 rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         확인
                       </button>
