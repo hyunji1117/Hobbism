@@ -436,126 +436,123 @@ const AdminLoginPage = () => {
             </button>
           </form>
 
-          {/* 데모 계정 안내 - 개발 환경에서만 표시 */}
-          {DEMO_EMAIL && (
-            <div className="mt-6 rounded-lg bg-gray-50 p-4">
-              {!showDemoAccount ? (
-                <div>
-                  <h4 className="mb-3 text-sm font-medium text-gray-900">
-                    🔐 데모 계정 보기
-                  </h4>
-                  <form onSubmit={handleDemoPinSubmit} className="space-y-3">
-                    <div>
-                      <label className="mb-1 block text-xs text-gray-600">
-                        4자리 PIN 번호를 입력하세요
-                      </label>
-                      <div className="flex space-x-2">
-                        <input
-                          type="password"
-                          value={demoPin}
-                          onChange={e => handleDemoPinChange(e.target.value)}
-                          className={`flex-1 rounded border px-3 py-2 text-center text-sm focus:border-transparent focus:ring-2 focus:ring-red-500 ${
-                            demoPinError
-                              ? 'border-red-300 bg-red-50'
-                              : 'border-gray-300'
-                          } ${isBlocked ? 'cursor-not-allowed opacity-50' : ''}`}
-                          placeholder={isBlocked ? '차단됨' : '••••'}
-                          maxLength={4}
-                          pattern="[0-9]*"
-                          inputMode="numeric"
-                          disabled={isBlocked}
-                        />
-                        <button
-                          type="submit"
-                          disabled={demoPin.length !== 4 || isBlocked}
-                          className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          확인
-                        </button>
-                      </div>
-                      {demoPinError && (
-                        <p className="mt-1 text-xs text-red-600">
-                          {demoPinError}
-                        </p>
-                      )}
-                      {isBlocked && remainingTime > 0 && (
-                        <div className="mt-3 rounded bg-red-100 p-3 text-center">
-                          <p className="text-sm font-medium text-red-800">
-                            🔒 차단 상태
-                          </p>
-                          <p className="mt-1 text-2xl font-bold text-red-900">
-                            {Math.floor(remainingTime / 60) > 0 ? (
-                              <>
-                                {Math.floor(remainingTime / 60)}:
-                                {(remainingTime % 60)
-                                  .toString()
-                                  .padStart(2, '0')}
-                              </>
-                            ) : (
-                              <>{remainingTime}초</>
-                            )}
-                          </p>
-                          <p className="mt-1 text-xs text-red-700">
-                            {Math.floor(remainingTime / 60) > 0
-                              ? '남은 차단 시간'
-                              : '곧 차단이 해제됩니다'}
-                          </p>
-                        </div>
-                      )}
-                      {emailSent && !isBlocked && (
-                        <p className="mt-2 text-xs text-purple-600">
-                          ⚠️ 보안 알림이 eve0204eve@gmail.com으로
-                          발송되었습니다.
-                        </p>
-                      )}
-                    </div>
-                  </form>
-                </div>
-              ) : (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowDemoAccount(false)}
-                    className="absolute top-0 right-0 text-gray-400 hover:text-gray-600"
-                    aria-label="닫기"
-                  >
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
+          {/* 데모 계정 안내 - 항상 표시 */}
+          <div className="mt-6 rounded-lg bg-gray-50 p-4">
+            {!showDemoAccount ? (
+              <div>
+                <h4 className="mb-3 text-sm font-medium text-gray-900">
+                  🔐 데모 계정 보기
+                </h4>
+                <form onSubmit={handleDemoPinSubmit} className="space-y-3">
+                  <div>
+                    <label className="mb-1 block text-xs text-gray-600">
+                      4자리 PIN 번호를 입력하세요
+                    </label>
+                    <div className="flex space-x-2">
+                      <input
+                        type="password"
+                        value={demoPin}
+                        onChange={e => handleDemoPinChange(e.target.value)}
+                        className={`flex-1 rounded border px-3 py-2 text-center text-sm focus:border-transparent focus:ring-2 focus:ring-red-500 ${
+                          demoPinError
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-gray-300'
+                        } ${isBlocked ? 'cursor-not-allowed opacity-50' : ''}`}
+                        placeholder={isBlocked ? '차단됨' : '••••'}
+                        maxLength={4}
+                        pattern="[0-9]*"
+                        inputMode="numeric"
+                        disabled={isBlocked}
                       />
-                    </svg>
-                  </button>
-                  <h4 className="mb-2 text-sm font-medium text-gray-900">
-                    📝 데모 계정
-                  </h4>
-                  <div className="space-y-1 text-xs text-gray-600">
-                    <p>
-                      <strong>이메일:</strong> {DEMO_EMAIL}
-                    </p>
-                    <p>
-                      <strong>비밀번호:</strong> ******
-                    </p>
-                    <p className="mt-2 text-xs text-gray-500">
-                      * 실제 계정 정보는 관리자에게 문의하세요
-                    </p>
+                      <button
+                        type="submit"
+                        disabled={demoPin.length !== 4 || isBlocked}
+                        className="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        확인
+                      </button>
+                    </div>
+                    {demoPinError && (
+                      <p className="mt-1 text-xs text-red-600">
+                        {demoPinError}
+                      </p>
+                    )}
+                    {isBlocked && remainingTime > 0 && (
+                      <div className="mt-3 rounded bg-red-100 p-3 text-center">
+                        <p className="text-sm font-medium text-red-800">
+                          🔒 차단 상태
+                        </p>
+                        <p className="mt-1 text-2xl font-bold text-red-900">
+                          {Math.floor(remainingTime / 60) > 0 ? (
+                            <>
+                              {Math.floor(remainingTime / 60)}:
+                              {(remainingTime % 60).toString().padStart(2, '0')}
+                            </>
+                          ) : (
+                            <>{remainingTime}초</>
+                          )}
+                        </p>
+                        <p className="mt-1 text-xs text-red-700">
+                          {Math.floor(remainingTime / 60) > 0
+                            ? '남은 차단 시간'
+                            : '곧 차단이 해제됩니다'}
+                        </p>
+                      </div>
+                    )}
+                    {emailSent && !isBlocked && (
+                      <p className="mt-2 text-xs text-purple-600">
+                        ⚠️ 보안 알림이 eve0204eve@gmail.com으로 발송되었습니다.
+                      </p>
+                    )}
                   </div>
+                </form>
+              </div>
+            ) : (
+              <div className="relative">
+                <button
+                  onClick={() => setShowDemoAccount(false)}
+                  className="absolute top-0 right-0 text-gray-400 hover:text-gray-600"
+                  aria-label="닫기"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+                <h4 className="mb-2 text-sm font-medium text-gray-900">
+                  📝 데모 계정
+                </h4>
+                <div className="space-y-1 text-xs text-gray-600">
+                  <p>
+                    <strong>이메일:</strong> {DEMO_EMAIL || '환경 변수 미설정'}
+                  </p>
+                  <p>
+                    <strong>비밀번호:</strong> ******
+                  </p>
+                  <p className="mt-2 text-xs text-gray-500">
+                    * 실제 계정 정보는 관리자에게 문의하세요
+                  </p>
+                </div>
+                {DEMO_EMAIL && DEMO_PASSWORD && (
                   <button
                     onClick={fillDemoCredentials}
                     className="mt-3 w-full rounded bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-blue-700"
                   >
                     데모 계정으로 자동 입력
                   </button>
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* 하단 링크 */}
