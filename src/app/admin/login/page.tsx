@@ -571,9 +571,7 @@ const AdminLoginPage = () => {
           <ul className="space-y-1 text-xs text-gray-300">
             <li>• 관리자 계정은 승인된 관리자만 사용할 수 있습니다</li>
             <li>• 공용 컴퓨터에서는 로그인 상태 유지를 사용하지 마세요</li>
-            <li>• 비밀번호는 정기적으로 변경해주세요</li>
             <li>• 의심스러운 활동이 감지되면 즉시 보고해주세요</li>
-            <li>• PIN 번호 5회 이상 실패 시 보안 알림이 발송됩니다</li>
           </ul>
         </div>
 
