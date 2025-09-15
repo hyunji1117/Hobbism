@@ -174,7 +174,7 @@ const AdminLoginPage = () => {
       const result = await sendPinFailureAlert(attemptInfo);
 
       if (result.ok) {
-        console.log('경고 이메일 발송 완료');
+        console.log('Warning');
         setEmailSent(true);
       } else {
         console.error('이메일 발송 실패:', result.message);
@@ -189,23 +189,23 @@ const AdminLoginPage = () => {
   };
 
   // PIN 검증 함수 - 서버 API 호출 버전 (선택사항)
-  const verifyPinWithServer = async (pin: string): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/admin/verify-pin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ pin }),
-      });
+  // const verifyPinWithServer = async (pin: string): Promise<boolean> => {
+  //   try {
+  //     const response = await fetch('/api/admin/verify-pin', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ pin }),
+  //     });
 
-      const data = await response.json();
-      return data.success;
-    } catch (error) {
-      console.error('PIN 검증 오류:', error);
-      return false;
-    }
-  };
+  //     const data = await response.json();
+  //     return data.success;
+  //   } catch (error) {
+  //     console.error('PIN 검증 오류:', error);
+  //     return false;
+  //   }
+  // };
 
   const handleDemoPinSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
