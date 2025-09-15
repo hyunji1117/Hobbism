@@ -49,10 +49,11 @@ export const clearAdminToken = () => {
 // 관리자 로그인
 export async function adminLogin(email: string, password: string) {
   try {
-    // 개발 환경에서 데모 계정 처리
-    if ((!API_URL || process.env.NODE_ENV === 'production', 'development')) {
-      // if (!API_URL) {
-      // 환경 변수가 설정되어 있고, 입력값이 일치하는 경우
+    if (
+      !API_URL ||
+      process.env.NODE_ENV === 'production' ||
+      process.env.NODE_ENV === 'development'
+    ) {
       if (
         DEMO_EMAIL &&
         DEMO_PASSWORD &&

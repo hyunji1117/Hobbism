@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -19,21 +19,45 @@ const AdminLoginPage = () => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // 환경 변수에서 데모 계정 정보 가져오기
-  const DEMO_EMAIL = process.env.NEXT_PUBLIC_ADMIN_DEMO_EMAIL;
-  const DEMO_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_DEMO_PASSWORD;
-
-  // 차단 시간 설정 (초 단위) - 쉽게 변경 가능
-  const BLOCK_DURATION_SECONDS = 30; // 30초로 설정 (원하는 값으로 변경 가능)
+  // 차단 시간 설정 (초 단위)
+  const BLOCK_DURATION_SECONDS = 30;
 
   // 데모 계정 보호 관련 상태
-  const [showDemoAccount, setShowDemoAccount] = useState(false);
+  // ===== 변경: showDemoAccount state 제거, 토큰 기반으로 변경 =====
+  const [demoToken, setDemoToken] = useState<string | null>(null); // JWT 토큰 저장
+  const [demoCredentials, setDemoCredentials] = useState<{
+    email: string;
+    password: string;
+    fullPassword?: string;
+  } | null>(null); // 서버에서 받은 데모 계정 정보
+  const [tokenExpiry, setTokenExpiry] = useState<number>(0); // 토큰 만료 시간
+  // ============================================================
+
   const [demoPin, setDemoPin] = useState('');
   const [demoPinError, setDemoPinError] = useState('');
   const [pinAttempts, setPinAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [remainingTime, setRemainingTime] = useState<number>(0);
+
+  // ===== 추가: 토큰 만료 타이머 =====
+  useEffect(() => {
+    if (tokenExpiry > 0) {
+      const checkExpiry = setInterval(() => {
+        const now = Math.floor(Date.now() / 1000);
+        if (now >= tokenExpiry) {
+          // 토큰 만료 시 초기화
+          setDemoToken(null);
+          setDemoCredentials(null);
+          setTokenExpiry(0);
+          clearInterval(checkExpiry);
+        }
+      }, 1000);
+
+      return () => clearInterval(checkExpiry);
+    }
+  }, [tokenExpiry]);
+  // ================================
 
   // 컴포넌트 마운트 시 기존 토큰 클리어
   useEffect(() => {
@@ -56,7 +80,6 @@ const AdminLoginPage = () => {
         const timeRemaining = blockedTime - Date.now();
         setRemainingTime(Math.ceil(timeRemaining / 1000));
 
-        // 차단 시간이 지나면 자동으로 차단 해제
         setTimeout(() => {
           setIsBlocked(false);
           setPinAttempts(0);
@@ -65,7 +88,6 @@ const AdminLoginPage = () => {
           localStorage.removeItem('blockedUntil');
         }, timeRemaining);
       } else {
-        // 차단 시간이 이미 지났으면 초기화
         localStorage.removeItem('pinAttempts');
         localStorage.removeItem('blockedUntil');
       }
@@ -81,7 +103,7 @@ const AdminLoginPage = () => {
             setIsBlocked(false);
             setPinAttempts(0);
             setEmailSent(false);
-            setDemoPinError(''); // 차단 해제 시 에러 메시지 제거
+            setDemoPinError('');
             localStorage.removeItem('pinAttempts');
             localStorage.removeItem('blockedUntil');
             return 0;
@@ -96,7 +118,6 @@ const AdminLoginPage = () => {
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // 입력 시 에러 메시지 제거
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
@@ -131,22 +152,17 @@ const AdminLoginPage = () => {
     setIsLoading(true);
 
     try {
-      // API를 통한 실제 관리자 로그인
       const result = await adminLogin(formData.email, formData.password);
 
       if (result.ok) {
-        // 로그인 성공
         console.log('관리자 로그인 성공:', result.data);
 
-        // 로그인 상태 유지 옵션 처리
         if (formData.rememberMe && typeof window !== 'undefined') {
           localStorage.setItem('adminRememberMe', 'true');
         }
 
-        // 관리자 페이지로 이동
         router.push('/admin');
       } else {
-        // 로그인 실패
         setErrors({
           form: result.message || '이메일 또는 비밀번호가 올바르지 않습니다.',
         });
@@ -161,7 +177,6 @@ const AdminLoginPage = () => {
 
   const sendAlertEmail = async () => {
     try {
-      // 이메일 발송을 위한 정보 수집
       const attemptInfo = {
         timestamp: new Date().toLocaleString('ko-KR'),
         ipAddress:
@@ -170,7 +185,6 @@ const AdminLoginPage = () => {
           typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
       };
 
-      // API를 통한 이메일 발송
       const result = await sendPinFailureAlert(attemptInfo);
 
       if (result.ok) {
@@ -178,18 +192,22 @@ const AdminLoginPage = () => {
         setEmailSent(true);
       } else {
         console.error('이메일 발송 실패:', result.message);
-        // 이메일 발송 실패해도 차단은 진행
         setEmailSent(true);
       }
     } catch (error) {
       console.error('이메일 발송 중 오류:', error);
-      // 개발 환경에서는 오류를 무시하고 계속 진행
       setEmailSent(true);
     }
   };
 
-  // PIN 검증 함수 - 서버 API 호출 버전 (선택사항)
-  const verifyPinWithServer = async (pin: string): Promise<boolean> => {
+  // ===== 변경: 서버 API를 통한 PIN 검증 함수 =====
+  const verifyPinWithServer = async (
+    pin: string,
+  ): Promise<{
+    success: boolean;
+    token?: string;
+    expiresIn?: number;
+  }> => {
     try {
       const response = await fetch('/api/admin/verify-pin', {
         method: 'POST',
@@ -200,13 +218,46 @@ const AdminLoginPage = () => {
       });
 
       const data = await response.json();
-      return data.success;
+      return data;
     } catch (error) {
       console.error('PIN 검증 오류:', error);
-      return false;
+      return { success: false };
     }
   };
+  // ============================================
 
+  // ===== 추가: 토큰으로 데모 계정 정보 가져오기 =====
+  const fetchDemoCredentials = async (token: string) => {
+    try {
+      const response = await fetch('/api/admin/demo-credentials', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.credentials) {
+        setDemoCredentials(data.credentials);
+        // 토큰 만료 시간 설정
+        if (data.credentials.tokenExpiry) {
+          setTokenExpiry(data.credentials.tokenExpiry);
+        }
+      } else {
+        // 토큰이 유효하지 않으면 초기화
+        setDemoToken(null);
+        setDemoPinError('토큰이 만료되었습니다. 다시 시도해주세요.');
+      }
+    } catch (error) {
+      console.error('데모 계정 정보 조회 오류:', error);
+      setDemoToken(null);
+    }
+  };
+  // ===============================================
+
+  // ===== 변경: PIN 제출 핸들러 - 서버 검증 사용 =====
   const handleDemoPinSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -223,36 +274,35 @@ const AdminLoginPage = () => {
       return;
     }
 
-    // 서버 사이드 PIN 검증을 사용하는 경우 (권장)
-    // const isPinValid = await verifyPinWithServer(demoPin);
+    // 서버에 PIN 검증 요청
+    const verificationResult = await verifyPinWithServer(demoPin);
 
-    // 임시로 클라이언트 사이드 검증 (개발 환경)
-    // 프로덕션에서는 서버 사이드 검증 사용 권장
-    const EXPECTED_PIN = process.env.NEXT_PUBLIC_DEMO_PIN;
-    const isPinValid = demoPin === EXPECTED_PIN;
-
-    if (isPinValid) {
-      setShowDemoAccount(true);
+    if (verificationResult.success && verificationResult.token) {
+      // PIN 검증 성공 - 토큰 저장
+      setDemoToken(verificationResult.token);
       setDemoPinError('');
       setDemoPin('');
       setPinAttempts(0);
       localStorage.removeItem('pinAttempts');
       setEmailSent(false);
+
+      // 토큰으로 데모 계정 정보 가져오기
+      await fetchDemoCredentials(verificationResult.token);
     } else {
+      // PIN 검증 실패
       const newAttempts = pinAttempts + 1;
       setPinAttempts(newAttempts);
       localStorage.setItem('pinAttempts', newAttempts.toString());
 
       if (newAttempts >= 1) {
-        // 1회 실패 시 이메일 발송 및 설정된 시간만큼 차단
         if (!emailSent) {
           await sendAlertEmail();
         }
 
-        const blockedUntil = Date.now() + BLOCK_DURATION_SECONDS * 1000; // 밀리초로 변환
+        const blockedUntil = Date.now() + BLOCK_DURATION_SECONDS * 1000;
         localStorage.setItem('blockedUntil', blockedUntil.toString());
         setIsBlocked(true);
-        setRemainingTime(BLOCK_DURATION_SECONDS); // 설정된 초 단위 시간
+        setRemainingTime(BLOCK_DURATION_SECONDS);
 
         const displayMinutes = Math.floor(BLOCK_DURATION_SECONDS / 60);
         const displaySeconds = BLOCK_DURATION_SECONDS % 60;
@@ -270,32 +320,33 @@ const AdminLoginPage = () => {
       setDemoPin('');
     }
   };
+  // ================================================
 
   const handleDemoPinChange = (value: string) => {
-    // 차단된 상태에서는 입력 불가
     if (isBlocked) return;
 
-    // 숫자만 입력 가능하도록 하고, 4자리까지만 입력
     const numericValue = value.replace(/[^0-9]/g, '').slice(0, 4);
     setDemoPin(numericValue);
 
-    // 에러 메시지 초기화
     if (demoPinError && !isBlocked) {
       setDemoPinError('');
     }
   };
 
-  // 데모 계정으로 자동 입력 - 환경 변수 사용
+  // ===== 변경: 데모 계정으로 자동 입력 - 서버에서 받은 정보 사용 =====
   const fillDemoCredentials = () => {
-    if (showDemoAccount && DEMO_EMAIL && DEMO_PASSWORD) {
+    if (demoCredentials && demoCredentials.fullPassword) {
       setFormData({
-        email: DEMO_EMAIL,
-        password: DEMO_PASSWORD,
+        email: demoCredentials.email,
+        password: demoCredentials.fullPassword,
         rememberMe: false,
       });
-      setShowDemoAccount(false);
+      // 토큰과 데모 정보 초기화 (일회성 사용)
+      setDemoToken(null);
+      setDemoCredentials(null);
     }
   };
+  // ==========================================================
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 pt-15 pb-10">
@@ -410,13 +461,6 @@ const AdminLoginPage = () => {
                   로그인 상태 유지
                 </span>
               </label>
-
-              {/* <Link
-                href="/admin/forgot-password"
-                className="text-sm text-red-600 hover:text-red-800"
-              >
-                비밀번호 찾기
-              </Link> */}
             </div>
 
             {/* 로그인 버튼 */}
@@ -436,9 +480,9 @@ const AdminLoginPage = () => {
             </button>
           </form>
 
-          {/* 데모 계정 안내 - 항상 표시 */}
+          {/* ===== 변경: 토큰 기반으로 조건부 렌더링 ===== */}
           <div className="mt-6 rounded-lg bg-gray-50 p-4">
-            {!showDemoAccount ? (
+            {!demoCredentials ? (
               <div>
                 <h4 className="mb-3 text-sm font-medium text-gray-900">
                   🔐 데모 계정 보기
@@ -510,7 +554,12 @@ const AdminLoginPage = () => {
             ) : (
               <div className="relative">
                 <button
-                  onClick={() => setShowDemoAccount(false)}
+                  onClick={() => {
+                    // 토큰과 데모 정보 초기화
+                    setDemoToken(null);
+                    setDemoCredentials(null);
+                    setTokenExpiry(0);
+                  }}
                   className="absolute top-0 right-0 text-gray-400 hover:text-gray-600"
                   aria-label="닫기"
                 >
@@ -533,16 +582,24 @@ const AdminLoginPage = () => {
                 </h4>
                 <div className="space-y-1 text-xs text-gray-600">
                   <p>
-                    <strong>이메일:</strong> {DEMO_EMAIL || '환경 변수 미설정'}
+                    <strong>이메일:</strong> {demoCredentials.email}
                   </p>
                   <p>
-                    <strong>비밀번호:</strong> ******
+                    <strong>비밀번호:</strong> {demoCredentials.password}
                   </p>
+                  {/* 토큰 남은 시간 표시 */}
+                  {tokenExpiry > 0 && (
+                    <p className="mt-2 text-xs text-yellow-600">
+                      ⏱️{' '}
+                      {Math.max(0, tokenExpiry - Math.floor(Date.now() / 1000))}
+                      초 후 자동 닫힘
+                    </p>
+                  )}
                   <p className="mt-2 text-xs text-gray-500">
                     * 실제 계정 정보는 관리자에게 문의하세요
                   </p>
                 </div>
-                {DEMO_EMAIL && DEMO_PASSWORD && (
+                {demoCredentials.fullPassword && (
                   <button
                     onClick={fillDemoCredentials}
                     className="mt-3 w-full rounded bg-blue-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-blue-700"
@@ -553,6 +610,7 @@ const AdminLoginPage = () => {
               </div>
             )}
           </div>
+          {/* =========================================== */}
         </div>
 
         {/* 하단 링크 */}
