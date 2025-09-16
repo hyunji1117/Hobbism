@@ -188,7 +188,7 @@ const AdminLoginPage = () => {
       const result = await sendPinFailureAlert(attemptInfo);
 
       if (result.ok) {
-        console.log('경고 이메일 발송 완료');
+        console.log('Warning');
         setEmailSent(true);
       } else {
         console.error('이메일 발송 실패:', result.message);
