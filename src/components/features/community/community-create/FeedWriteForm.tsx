@@ -121,7 +121,7 @@ export default function FeedWriteForm() {
   };
 
   //          event handler: 폼 제출 이벤트 처리          //
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: FormValues): Promise<void> => {
     if (!accessToken || !user?._id) return;
     setIsLoading(true);
     try {

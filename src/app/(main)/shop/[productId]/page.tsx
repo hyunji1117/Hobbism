@@ -51,7 +51,7 @@ export default async function ProductPage({
 
       <ProductDetailInfo
         item={{
-          _id: product._id,
+          _id: String(product._id),
           name: product.name,
           price: product.price,
           path: detailImage?.path ?? '',
