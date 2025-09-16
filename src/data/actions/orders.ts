@@ -22,7 +22,7 @@ export async function createOrder(
 
   const cartIds = products
     .map((item: CartItem) => item.cartId)
-    .filter((id): id is number => typeof id === 'number');
+    .filter((id: number): id is number => typeof id === 'number');
 
   let res: Response;
   let data: ApiRes<OrderProductType>;

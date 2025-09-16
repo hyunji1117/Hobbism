@@ -11,8 +11,18 @@ export const ProductDetailInfo = ({
   extra,
   sizes,
   colors,
+}: {
+  item: { _id: string; name: string; price: number; path: string };
+  price?: number;
+  discountRate: number;
+  extra: { recommendedBy?: string; originalPrice: number };
+  sizes?: string[];
+  colors?: string[];
 }) => {
-  const recommendData = {
+  const recommendData: Record<
+    string,
+    { name: string; color: string; textColor: string }
+  > = {
     inhwan: { name: '인환', color: 'bg-[#FE508B]', textColor: 'text-white' },
     hyunji: { name: '현지', color: 'bg-[#FAB91D]', textColor: 'text-black' },
     woomin: { name: '우민', color: 'bg-[#51AAED]', textColor: 'text-white' },

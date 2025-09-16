@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useAuthStore } from '@/store/auth.store';
 import { useEffect } from 'react';
 
-export default function TokenSync() {
+export default function TokenSync(): React.ReactElement | null {
   const { data: session, status } = useSession();
   const { setAccessToken, setLoginType, setUser, clearAuth } = useAuthStore();
 

@@ -24,7 +24,7 @@ export default function ItemPurchaseModal({ onClose, item }: Props) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handlePurchase = async (price: number) => {
+  const handlePurchase = async (price: number): Promise<void | null> => {
     if (!accessToken || !user?._id) return null;
     if (point < price) {
       setError('포인트가 부족합니다');

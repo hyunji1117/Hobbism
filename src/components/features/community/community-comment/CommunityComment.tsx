@@ -36,7 +36,7 @@ export default function CommunityComment({
     setTotalList(comments);
   }, [comments, setTotalList]);
 
-  const refreshComments = async () => {
+  const refreshComments = async (): Promise<void | null> => {
     const res = await fetchReplies(Number(post_id));
     if (res.ok !== 1) return null;
     setComments(res.item);
