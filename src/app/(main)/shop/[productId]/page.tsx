@@ -5,6 +5,11 @@ import { ProductDetailInfo } from '@/components/features/shop/ProductDetail/Prod
 import { fetchProductDetail } from '@/data/functions/ProductFetch';
 import CartAction from '@/components/features/shop/ProductDetail/ProductDetailClient';
 
+interface ProductOption {
+  size: (number | string)[];
+  color: string[];
+}
+
 export default async function ProductPage({
   params,
 }: {
@@ -28,7 +33,7 @@ export default async function ProductPage({
   const mainImageUrl = mainImage ? `${mainImage.path}` : '';
   const detailImageUrl = detailImage ? `${detailImage.path}` : '';
 
-  const options = Array.isArray(product.extra.options)
+  const options: ProductOption[] = Array.isArray(product.extra.options)
     ? product.extra.options
     : [];
 
@@ -46,7 +51,7 @@ export default async function ProductPage({
 
       <ProductDetailInfo
         item={{
-          _id: product._id,
+          _id: String(product._id),
           name: product.name,
           price: product.price,
           path: detailImage?.path ?? '',

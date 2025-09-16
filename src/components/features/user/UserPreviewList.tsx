@@ -37,7 +37,7 @@ export default function UserPreviewList({ recommendedUser }: Props) {
 
   //          effect: 북마크 정보를 기반으로 추천 유저를 업데이트          //
   useEffect(() => {
-    const fetchBookmarks = async () => {
+    const fetchBookmarks = async (): Promise<void> => {
       try {
         if (!accessToken) return null;
         const bookmarkRes = await getBookmarkList('user', accessToken);

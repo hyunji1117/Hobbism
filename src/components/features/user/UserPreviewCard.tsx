@@ -51,7 +51,7 @@ export default function UserPreviewCard({
   const decreaseFollow = useFollowCountStore(state => state.decreaseFollow);
 
   //          event handler: 팔로우/언팔로우 버튼 클릭 이벤트 처리          //
-  const handleFollow = async () => {
+  const handleFollow = async (): Promise<void> => {
     if (isFollowing && bookmarkId) {
       if (!accessToken) return null;
       const res = await deleteBookmark(bookmarkId, accessToken);

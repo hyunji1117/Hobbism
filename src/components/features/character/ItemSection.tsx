@@ -25,7 +25,7 @@ export default function ItemSection({ extra }: Props) {
   //          function: 오픈 모달 함수          //
   const openModal = useModalStore(state => state.openModal);
 
-  const handleItemClick = async (code: Code) => {
+  const handleItemClick = async (code: Code): Promise<void | null> => {
     if (!accessToken || !user?._id) return null;
 
     const updated = equippedItems.includes(code)
