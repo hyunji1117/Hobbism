@@ -5,6 +5,13 @@ const NEXT_PUBLIC_CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const openRoutes = ['/', '/login'];
+const adminRoutes = [
+  '/admin',
+  '/admin/sales',
+  '/admin/products',
+  '/admin/brands',
+  '/admin/cs',
+];
 
 // 엑세스 토큰 검증
 async function verifyAccessToken(
@@ -43,7 +50,6 @@ async function refreshAccessToken(
 
     if (response.ok) {
       const data = await response.json();
-
       return data.accessToken;
     }
   } catch (error) {
@@ -72,6 +78,30 @@ async function updateJwtToken(
   });
 }
 
+// 관리자 토큰 검증 - 추가
+async function verifyAdminToken(request: NextRequest): Promise<boolean> {
+  const adminToken = request.cookies.get('admin-session-token')?.value;
+
+  if (!adminToken) {
+    return false;
+  }
+
+  try {
+    // Admin token verification using your AdminFetch functions
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/admin/verify`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+        'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
+      },
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error('Admin token verification failed:', error);
+    return false;
+  }
+}
+
 // 비로그인자 접근 차단
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -80,6 +110,25 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/api/') || pathname.startsWith('/_next/')) {
     return NextResponse.next();
   }
+
+  // 관리자 경로 처리 - 추가
+  if (pathname.startsWith('/admin')) {
+    // /admin/login은 허용
+    if (pathname === '/admin/login') {
+      return NextResponse.next();
+    }
+
+    // 관리자 토큰 검증
+    const isAdminAuthenticated = await verifyAdminToken(request);
+
+    if (!isAdminAuthenticated) {
+      const loginUrl = new URL('/admin/login', request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    return NextResponse.next();
+  }
+
   // 공개 경로
   if (openRoutes.includes(pathname)) {
     return NextResponse.next();
