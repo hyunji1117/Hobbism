@@ -1,6 +1,5 @@
+// 데모 계정 정보 API (신규) - 추가 (JWT 검증 및 응답)
 import { NextRequest, NextResponse } from 'next/server';
-
-// jose 라이브러리 사용 (Edge Runtime 호환)
 import { jwtVerify } from 'jose';
 
 export async function POST(request: NextRequest) {
@@ -34,8 +33,8 @@ export async function POST(request: NextRequest) {
       }
 
       // 6. 데모 계정 정보 가져오기
-      const demoEmail = process.env.ADMIN_DEMO_EMAIL;
-      const demoPassword = process.env.ADMIN_DEMO_PASSWORD;
+      const demoEmail = process.env.NEXT_PUBLIC_ADMIN_DEMO_EMAIL;
+      const demoPassword = process.env.NEXT_PUBLIC_ADMIN_DEMO_PASSWORD;
 
       // 7. 비밀번호 마스킹
       const maskedPassword = demoPassword
@@ -72,15 +71,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     // 10. 일반 에러 처리
     console.error('데모 계정 정보 조회 중 오류:', error);
-
-    const errorMessage =
-      error instanceof Error ? error.message : '알 수 없는 오류';
-
     return NextResponse.json(
       {
         success: false,
         message: '서버 오류가 발생했습니다',
-        error: errorMessage,
       },
       { status: 500 },
     );
