@@ -1,4 +1,5 @@
 // 데모 계정 정보 API (신규) - 추가 (JWT 검증 및 응답)
+// src/app/api/admin/demo-credentials/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 

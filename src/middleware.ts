@@ -1,3 +1,5 @@
+// src/middleware.ts
+// 관리자 및 사용자 인증 미들웨어
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -5,13 +7,6 @@ const NEXT_PUBLIC_CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const openRoutes = ['/', '/login'];
-const adminRoutes = [
-  '/admin',
-  '/admin/sales',
-  '/admin/products',
-  '/admin/brands',
-  '/admin/cs',
-];
 
 // 엑세스 토큰 검증
 async function verifyAccessToken(
@@ -78,26 +73,41 @@ async function updateJwtToken(
   });
 }
 
-// 관리자 토큰 검증 - 추가
-async function verifyAdminToken(request: NextRequest): Promise<boolean> {
-  const adminToken = request.cookies.get('admin-session-token')?.value;
+// 관리자 세션 검증 (세션 스토리지 기반)
+async function verifyAdminSession(request: NextRequest): Promise<boolean> {
+  // 관리자 세션 쿠키 확인
+  const adminSessionToken = request.cookies.get('admin-session-token')?.value;
 
-  if (!adminToken) {
+  if (!adminSessionToken) {
+    console.log('관리자 세션 토큰 없음');
     return false;
   }
 
   try {
-    // Admin token verification using your AdminFetch functions
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/admin/verify`, {
-      headers: {
-        Authorization: `Bearer ${adminToken}`,
-        'Client-Id': NEXT_PUBLIC_CLIENT_ID || '',
-      },
-    });
+    // 세션 토큰 검증 (실제 구현에서는 데이터베이스나 Redis 확인)
+    // 여기서는 간단한 JWT 검증으로 대체
+    const { jwtVerify } = await import('jose');
+    const secret = new TextEncoder().encode(
+      process.env.JWT_SECRET || 'default-secret-key',
+    );
 
-    return response.ok;
+    const { payload } = await jwtVerify(adminSessionToken, secret);
+
+    // admin 세션인지 확인
+    if (payload.purpose !== 'admin_session') {
+      console.log('유효하지 않은 관리자 세션');
+      return false;
+    }
+
+    // 세션 만료 확인
+    if (payload.exp && Number(payload.exp) < Math.floor(Date.now() / 1000)) {
+      console.log('관리자 세션 만료됨');
+      return false;
+    }
+
+    return true;
   } catch (error) {
-    console.error('Admin token verification failed:', error);
+    console.error('관리자 세션 검증 실패:', error);
     return false;
   }
 }
@@ -106,30 +116,41 @@ async function verifyAdminToken(request: NextRequest): Promise<boolean> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 통과 경로
+  // API 경로와 Next.js 내부 경로는 통과
   if (pathname.startsWith('/api/') || pathname.startsWith('/_next/')) {
     return NextResponse.next();
   }
 
-  // 관리자 경로 처리 - 추가
+  // ===== 관리자 경로 처리 =====
   if (pathname.startsWith('/admin')) {
-    // /admin/login은 허용
+    // /admin/login은 항상 허용
     if (pathname === '/admin/login') {
+      // 이미 로그인된 경우 /admin으로 리다이렉트
+      const isAdminLoggedIn = await verifyAdminSession(request);
+      if (isAdminLoggedIn) {
+        const adminUrl = new URL('/admin', request.url);
+        return NextResponse.redirect(adminUrl);
+      }
       return NextResponse.next();
     }
 
-    // 관리자 토큰 검증
-    const isAdminAuthenticated = await verifyAdminToken(request);
+    // 그 외 모든 /admin/* 경로는 인증 필요
+    const isAdminAuthenticated = await verifyAdminSession(request);
 
     if (!isAdminAuthenticated) {
+      console.log(`[Admin Auth] 미인증 접근 차단: ${pathname}`);
       const loginUrl = new URL('/admin/login', request.url);
+      // 원래 가려던 경로를 쿼리 파라미터로 추가 (로그인 후 리다이렉트용)
+      loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
     }
 
+    console.log(`[Admin Auth] 인증된 접근 허용: ${pathname}`);
     return NextResponse.next();
   }
 
-  // 공개 경로
+  // ===== 일반 사용자 경로 처리 =====
+  // 공개 경로는 통과
   if (openRoutes.includes(pathname)) {
     return NextResponse.next();
   }
@@ -146,19 +167,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 토큰 있는 경우
+  // 토큰 있는 경우 검증
   if (token.accessToken && token._id) {
     const isValidToken = await verifyAccessToken(
       token.accessToken,
       token._id as number,
     );
-    // 재발급 시도
+
+    // 토큰 재발급 시도
     if (!isValidToken) {
       const refreshToken = request.cookies.get('refresh-token')?.value;
-      // 리프레시 토큰 확인
+
       if (refreshToken) {
         const newAccessToken = await refreshAccessToken(refreshToken);
-        // 엑세스 토큰 재발급
+
         if (newAccessToken) {
           try {
             const updatedJwtToken = await updateJwtToken(token, newAccessToken);
@@ -197,9 +219,10 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// 미들웨어 실행될 경로 (비로그인 시 차단 경로)
+// 미들웨어 실행될 경로 - 중요: /admin 경로 추가
 export const config = {
   matcher: [
+    // 일반 사용자 보호 경로
     '/character/:path*',
     '/community/:path*',
     '/live',
@@ -207,5 +230,7 @@ export const config = {
     '/user/:path*',
     '/hobby',
     '/search',
+    // 관리자 보호 경로 - 반드시 추가
+    '/admin/:path*',
   ],
 };

@@ -1,4 +1,5 @@
 // PIN 검증 API (신규) - 추가 (PIN 검증 및 JWT 토큰 발급)
+// src/app/api/admin/verify-pin/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { SignJWT } from 'jose';
 

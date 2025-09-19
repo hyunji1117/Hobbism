@@ -1,4 +1,5 @@
 // 관리자 페이지 전용 API 호출 함수
+// src/data/functions/AdminFetch.client.ts
 
 'use client';
 
@@ -47,6 +48,79 @@ export const clearAdminToken = () => {
 };
 
 // 관리자 로그인
+// export async function adminLogin(email: string, password: string) {
+//   try {
+//     if (
+//       !API_URL ||
+//       process.env.NODE_ENV === 'production' ||
+//       process.env.NODE_ENV === 'development'
+//     ) {
+//       if (
+//         DEMO_EMAIL &&
+//         DEMO_PASSWORD &&
+//         email === DEMO_EMAIL &&
+//         password === DEMO_PASSWORD
+//       ) {
+//         const demoToken = 'demo-admin-token-' + Date.now();
+//         setAdminToken(demoToken);
+//         return {
+//           ok: true,
+//           data: {
+//             token: demoToken,
+//             user: {
+//               email: DEMO_EMAIL,
+//               name: '관리자',
+//               role: 'admin',
+//             },
+//           },
+//         };
+//       } else {
+//         return {
+//           ok: false,
+//           message: '이메일 또는 비밀번호가 올바르지 않습니다.',
+//         };
+//       }
+//     }
+
+//     const res = await fetch(`${API_URL}/admin/login`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Client-Id': CLIENT_ID,
+//       },
+//       credentials: 'include',
+//       body: JSON.stringify({
+//         email,
+//         password,
+//       }),
+//     });
+
+//     if (!res.ok) {
+//       const errorData = await res.json().catch(() => ({}));
+//       throw new Error(errorData.message || '로그인에 실패했습니다.');
+//     }
+
+//     const data = await res.json();
+
+//     // 토큰 저장
+//     if (data.token) {
+//       setAdminToken(data.token);
+//     }
+
+//     return {
+//       ok: true,
+//       data,
+//     };
+//   } catch (error) {
+//     console.error('관리자 로그인 오류:', error);
+//     return {
+//       ok: false,
+//       message:
+//         error instanceof Error ? error.message : '로그인에 실패했습니다.',
+//     };
+//   }
+// }
+
 export async function adminLogin(email: string, password: string) {
   try {
     if (
@@ -60,55 +134,62 @@ export async function adminLogin(email: string, password: string) {
         email === DEMO_EMAIL &&
         password === DEMO_PASSWORD
       ) {
-        const demoToken = 'demo-admin-token-' + Date.now();
-        setAdminToken(demoToken);
-        return {
-          ok: true,
-          data: {
-            token: demoToken,
-            user: {
-              email: DEMO_EMAIL,
-              name: '관리자',
-              role: 'admin',
+        // API_URL이 없거나 개발 환경일 때만 로컬 토큰 사용
+        if (!API_URL || process.env.NODE_ENV === 'development') {
+          const demoToken = 'demo-admin-token-' + Date.now();
+          setAdminToken(demoToken);
+          return {
+            ok: true,
+            data: {
+              token: demoToken,
+              user: {
+                email: DEMO_EMAIL,
+                name: '관리자',
+                role: 'admin',
+              },
             },
-          },
-        };
-      } else {
-        return {
-          ok: false,
-          message: '이메일 또는 비밀번호가 올바르지 않습니다.',
-        };
+          };
+        }
       }
     }
 
-    const res = await fetch(`${API_URL}/admin/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Client-Id': CLIENT_ID,
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
+    // API_URL이 있으면 실제 API 호출
+    if (API_URL) {
+      const res = await fetch(`${API_URL}/admin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Client-Id': CLIENT_ID,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.message || '로그인에 실패했습니다.');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || '로그인에 실패했습니다.');
+      }
+
+      const data = await res.json();
+
+      // 토큰 저장
+      if (data.token) {
+        setAdminToken(data.token);
+      }
+
+      return {
+        ok: true,
+        data,
+      };
     }
 
-    const data = await res.json();
-
-    // 토큰 저장
-    if (data.token) {
-      setAdminToken(data.token);
-    }
-
+    // API_URL이 없고 데모 계정도 아닌 경우
     return {
-      ok: true,
-      data,
+      ok: false,
+      message: '로그인 설정이 올바르지 않습니다.',
     };
   } catch (error) {
     console.error('관리자 로그인 오류:', error);
@@ -123,18 +204,10 @@ export async function adminLogin(email: string, password: string) {
 // 관리자 로그아웃
 export async function adminLogout() {
   try {
-    const token = getAdminToken();
-
-    if (!token) {
-      throw new Error('로그인 상태가 아닙니다.');
-    }
-
-    const res = await fetch(`${API_URL}/admin/logout`, {
-      method: 'POST',
+    const res = await fetch('/api/admin/session', {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Client-Id': CLIENT_ID,
-        Authorization: `Bearer ${token}`,
       },
       credentials: 'include',
     });

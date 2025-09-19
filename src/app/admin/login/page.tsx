@@ -1,3 +1,4 @@
+// Admin Login Page - src/app/admin/login/page.tsx
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
