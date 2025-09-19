@@ -1,6 +1,6 @@
+// PIN 검증 API (신규) - 추가 (PIN 검증 및 JWT 토큰 발급)
+// src/app/api/admin/verify-pin/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-
-// App Router에서는 jose 라이브러리 사용 (Edge Runtime 호환)
 import { SignJWT } from 'jose';
 
 export async function POST(request: NextRequest) {
@@ -63,14 +63,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('PIN 검증 중 오류:', error);
 
-    const errorMessage =
-      error instanceof Error ? error.message : '알 수 없는 오류';
-
     return NextResponse.json(
       {
         success: false,
         message: '서버 오류가 발생했습니다',
-        error: errorMessage,
       },
       { status: 500 },
     );
